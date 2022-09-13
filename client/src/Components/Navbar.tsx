@@ -1,33 +1,22 @@
 import { NavLink } from "solid-app-router";
-import { $DEVCOMP, mergeProps } from "solid-js";
-
+import { mergeProps } from "solid-js";
 
 export default function Navbar() {
   document.title = "Valeria Roleplay | Forum";
-  /*
- 
-  */
- const searchBarFocus = () => {
-  const searchinput = document.getElementById('search_field') as HTMLDivElement | null;
-  const searchclose = document.querySelector<HTMLElement>('#search__close')!;
-  searchinput?.focus()
- }
 
   return (
   <>
    <nav data-component="navbar">
-    <div class="navbar__inner">
-      <div class="logo">
-        <h1>Forum</h1>
+    <div>
+      <a href="/">Valeria Forum</a>
       </div>
-      <div class="navbar__buttons">
-      <NavLink href="a">Feed</NavLink>
-      <NavLink href="b">Ansökningar</NavLink>
-      </div>
-      <div>
-        <button>Registrera</button>
-        <button>Logga in</button>
-      </div>
+    <ul>
+        <NavLink href="a">Feed</NavLink>
+        <NavLink href="b">Ansökningar</NavLink>
+    </ul>
+    <div>
+        <img src="https://media.discordapp.net/attachments/907975522003333150/981084630771982376/unknown.png" alt="Profilbild" />
+        Grizly
     </div>
    </nav>
   </>)

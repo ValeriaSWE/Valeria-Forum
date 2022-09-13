@@ -56,7 +56,7 @@ function SubTab() {
   return (
     <Show when={data()}>
       <h2>{data()!.name}</h2>
-      <p>async</p>
+      <p>This content is loaded asynchronously</p>
     </Show>
   );
 }
@@ -68,19 +68,23 @@ function Loader() {
 
 const Root = () => {
   return (
-    <>
-     <Router>
-      <Loader /><Routes>
-        <Route path="*" component={Home}></Route>
-        <Route path="/forum" component={Forum}>
-          <Route path="/" element={<Navigate href="feed" />} />
-          <Route path=":id" component={SubTab} />
-        </Route>
-      </Routes>
-    </Router>
-    </> 
+    <><Loader /><Routes>
+      <Route path="forum" component={Forum}>
+        <Route path="/" element={<Navigate href="feed" />} />
+        <Route path=":id" component={SubTab} />
+      </Route>
+      <Route path="*" component={Home} />
+    </Routes></> 
   )
 };
 
+const App = () => {
+  return (
+    <Router>
+        <Root />
+    </Router>
+  );
+};
+
 /* Rendering the App component to the root element. */
-render(() => <Root></Root>, document.getElementById('root') as HTMLElement);
+render(() => <App></App>, document.getElementById('root') as HTMLElement);
