@@ -1,0 +1,59 @@
+/* Importing All Style Modules */
+@import url('./Pages/StylingModules/Home.module.css');
+@import url('./Pages/StylingModules/Forum.module.css');
+@import url('./Components/Components.css');
+
+/*FONT*/ 
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+:root {
+  --color-white: #fff;
+}
+
+.loader {
+  display: block;
+  background-color: transparent;
+  height: 3px;
+}
+
+.loader.active {
+  display: block;
+  position: sticky;
+  z-index: 9999;
+  background: linear-gradient(
+    90deg,
+    rgba(46, 182, 29, 1) 20%,
+    rgba(0, 169, 223, 1) 50%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  background-size: 200%;
+  background-position-x: 100%;
+  animation: loader-scroll 3s ease infinite;
+}
+
+@keyframes loader-scroll {
+  0% {
+    background-position-x: 100%;
+  }
+  50% {
+    background-position-x: 5%;
+  }
+  100% {
+    background-position-x: 0%;
+  }
+}
