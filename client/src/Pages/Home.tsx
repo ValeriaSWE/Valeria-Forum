@@ -1,21 +1,28 @@
 import { mergeProps, Show } from "solid-js";
 import {Router,Routes, Route, Link, useRoutes, Outlet, RouteDefinition} from "solid-app-router";
 
+import styles from './StylingModules/Home.module.css'
+import { style } from "solid-js/web";
+
 export default function Home() {
   document.title = "Valeria Roleplay";
   const isAdmin = false;
   return (
   <>
-    <div data-page="home">
-        <div>
-          <img src="https://media.discordapp.net/attachments/958276034002812958/966061819296890970/unknown.png" alt="Bild" />
-          <h1>Valeria Roleplay</h1>
-          <div class="buttons">
-            <button><a>Discord</a></button>
-            <button><Link href="/forum">Forum</Link></button>
-            <button><a>FiveM</a></button>
+    <div class={styles.home}>
+        <div class={styles.container}>
+
+          <img class={styles.logo} src="https://cdn.discordapp.com/attachments/1015552695207202908/1018837703531446333/Valeria-Alt2.png" alt="Bild" />
+
+          <h1 class={styles.title}>VALERIA ROLEPLAY</h1>
+
+          <div class={styles.buttons}>
+            <a class={styles.btn}>Discord</a>
+            <a class={styles.btn} href='/forum'>Forum</a>
+            <a class={styles.btn} >FiveM</a>
+
             <Show when={isAdmin}>
-                <button>Admin</button>
+                <a>Admin</a>
               </Show>
           </div>
         </div>

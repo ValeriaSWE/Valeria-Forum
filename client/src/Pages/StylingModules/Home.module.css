@@ -1,9 +1,14 @@
 @import url('../../index.css');
 
-[data-page="home"] {
+body {
+    overflow: hidden;
+}
+
+.home {
     height: 100vh;
     width: 100vw;
     color: var(--color-white);
+    background-color: var(--color-blue-d);
     font-size: large;
     display: flex;
     flex-direction: column;
@@ -11,18 +16,80 @@
     justify-content: center;
 }
 
-[data-page="home"] > div {
+.container {
     margin: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    gap: 2rem;
 }
-[data-page="home"]> div > img {
-    height: 300px;
-    aspect-ratio: 1/1;
+
+.logo {
+    height: 20rem;
 }
-[data-page="home"] > div .buttons{
-    display: inline-flex;
-    gap: 15px;
+
+.buttons {
+    width: 50vw;
+    height: 5vh;
+    
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
+
+.btn {
+    width: 15vw;
+    height: 4vh;
+
+    border-radius: 5px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    user-select: none;
+
+    transition: 250ms ease-in-out;
+    box-shadow: 0 10px 8px -2px rgba(0, 0, 0, 0.298);
+}
+
+.btn:nth-child(1) {
+    background-color: #7289DA;
+}
+
+.btn:nth-child(2) {
+    background-color: #3A5783;
+}
+
+.btn:nth-child(3) {
+    background-color: #FF9040;
+}
+
+.btn, .btn:hover, .btn:visited {
+    color: white;
+    text-decoration: none;
+}
+
+.btn:hover {
+    opacity: 0.7;
+}
+
+@media only screen and (max-width: 600px) {
+    .buttons {
+        width: 50vw;
+        height: 50vw;
+        
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .btn {
+        width: 50vw;
+        height: 7vw;
+    }
+  }
 
