@@ -1,12 +1,18 @@
-const express = require('express')
+import express from 'express'
 const app = express()   
 const port = 8000
 
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
+import cors from 'cors'
+
+import { loginUser, registerUser } from "./controllers/user.js"
 
 app.use(express.json())
 // app.get('/', (req, res) => res.send('Hello World!'))
 
+// app.use(bodyParser.json({ limit: '30mb', extended: true }))
+// app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }))
+app.use(cors());
 
 const uri = "mongodb+srv://vaforum:MQNai79kxLGmpUC1@cluster0.v3wgq.mongodb.net/?retryWrites=true&w=majority"
 
@@ -22,12 +28,9 @@ async function connect() {
 connect()
 
 
-app.get('/getUser', (req, res) => {
-    // console.log(req.headers)
-    // res.append("hello", "world")
-    // res.type('application/json')
-    res.json({hello: "world"})
-})
+app.post('/user/login', loginUser)
+
+app.post('/user/register', registerUser)
 
 // app.set('/getUser')
 
