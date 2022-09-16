@@ -4,6 +4,7 @@ const port = 8000
 
 const mongoose = require('mongoose')
 
+app.use(express.json())
 // app.get('/', (req, res) => res.send('Hello World!'))
 
 
@@ -19,6 +20,14 @@ async function connect() {
 }
 
 connect()
+
+
+app.get('/getUser', (req, res) => {
+    // console.log(req.headers)
+    // res.append("hello", "world")
+    // res.type('application/json')
+    res.json({hello: "world"})
+})
 
 // app.set('/getUser')
 

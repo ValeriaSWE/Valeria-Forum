@@ -8,6 +8,7 @@ import './index.css';
 import Home from './Pages/Home';
 import Forum from "./Pages/Forum";
 import Feed from "./Components/Feed";
+import Dev from "./Pages/Dev";
 
 const routes: RouteDefinition[] = [
   /*{
@@ -27,7 +28,11 @@ const routes: RouteDefinition[] = [
   {
     path: "/forum",
     component: Forum,
-  }
+  },
+  {
+    path: "/dev",
+    component: Dev,
+  },
 ];
 
 function delay(ms: number) {
@@ -73,6 +78,7 @@ const Root = () => {
         <Route path="/" element={<Navigate href="feed" />} />
         <Route path=":id" component={SubTab} />
       </Route>
+      <Route path="/dev" component={Dev} />
       <Route path="*" component={Home} />
     </Routes></> 
   )
