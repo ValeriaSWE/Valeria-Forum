@@ -20,8 +20,6 @@ function delay(ms: number) {
 }
 
 async function fetchSubTabData(id: string) {
-  // await delay(1000);
-
   return {
     id,
     name: `SubTab ${id.toUpperCase()}`
@@ -49,10 +47,13 @@ function Loader() {
   return <div data-component="loader" class="loader" classList={{ active: isRouting() }} />;
 }
 
+/**
+ * Create the Routes
+ */
 const Root = () => {
   return (
     <><Loader /><Routes>
-      <Route path="forum" component={Forum}>
+      <Route path="/forum" component={Forum}>
         <Route path="/" element={<Navigate href="feed" />} />
         <Route path=":id" component={SubTab} />
       </Route>

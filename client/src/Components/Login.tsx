@@ -7,7 +7,13 @@ import styles from './StylingModules/Login.module.css'
 /**
  * Creates the visual elements for a login form
 */
-export default function Login() {
+export default function Login(props) {
+    function cancel() {
+        props.cancel()
+        $('#login-email').val('')
+        $('#login-password').val('')
+    }
+
     return(
         <>
             <div class={styles.loginInnerContainer}>
@@ -32,7 +38,7 @@ export default function Login() {
                 
                 <button class={styles.loginBtn} id="login-submit" onClick={loginSubmit}>Logga in</button>
                 
-
+                <button class={styles.cancelBtn} id="login-cancel" onClick={cancel}>Avbryt</button>
                 
                 {/* </form> */}
                 
@@ -68,7 +74,7 @@ const loginSubmit = async () => {
     try {
         const { data } = await loginUserServerPost(username, password)
         Auth(data)
-
+        window.location.reload();
     } catch (error) {
         $('#error').html(error.response.data.message)
         // console.log(error.response.data.message)

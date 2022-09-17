@@ -1,20 +1,35 @@
 import { createSignal, Show } from "solid-js";
 import { splitProps, JSX } from 'solid-js';
+import Login from "./Login";
+import Register from "./Register";
 import styles from './StylingModules/Navbar.module.css';
 
 export default function Navbar() {
   const [toggleResponsNav, setToggleResponsNav] = createSignal(false);
   const [open, setOpen] = createSignal(false);
+  const [showRegister, setShowRegister] = createSignal(false);
+  const [showLogin, setShowLogin] = createSignal(false);
 
-  const userData = JSON.parse(localStorage.getItem('profile')).result
+  let userData = {}
+  let loggedIn = false
+  let profilePicture = ''
+  if (localStorage.getItem('profile')) {
+    userData = JSON.parse(localStorage.getItem('profile')).result
+    profilePicture = `data:image/png;base64,${btoa(new Uint8Array(userData.profilePicture.data.data).reduce(function (data, byte) {
+      return data + String.fromCharCode(byte);
+    }, ''))}`
+    loggedIn = true
+  }
 
   // const tmp = String.fromCharCode( ... new Uint8Array(userData.profilePicture.data))
 
-  const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(userData.profilePicture.data.data).reduce(function (data, byte) {
-    return data + String.fromCharCode(byte);
-  }, ''))}`
 
   // console.log(profilePicture)
+
+  function logout() {
+    localStorage.removeItem('profile')
+    window.location.reload();
+  }
 
   window.onclick = function(e) {
     if(open()) {
@@ -115,7 +130,10 @@ export default function Navbar() {
             {/* {props.icon} */}
             {
               props.icon === "profilePicture" ?
-                <img src={profilePicture} class={styles.profilePicture}></img>
+                loggedIn ?
+                  <img src={profilePicture} class={styles.profilePicture}></img>
+                :
+                  "person"
               :
                 props.icon
             }
@@ -163,14 +181,22 @@ export default function Navbar() {
 
       const DropDownMain = () => {
         // console.log(JSON.parse(localStorage.getItem('profile')).result.username)
-        return(
-        <>
-       {/*} <DropdownItem> My Profile </DropdownItem> */ }
-          <DropdownItem label={userData.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={null} />
-          <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={"arrow_forward_ios"} action={SetMainDrop(!mainDrop())} />
-          <DropdownItem label={"Logga ut"} leftIcon={"logout"} rightIcon={null} action={null} />
-        </>
-        );
+        if (loggedIn) {
+          return(
+            <>          
+              <DropdownItem label={userData.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={null} />
+              <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={"arrow_forward_ios"} action={SetMainDrop(!mainDrop())} />
+              <DropdownItem label={"Logga ut"} leftIcon={"logout"} rightIcon={null} action={logout()} />
+            </>
+          );
+        } else {
+          return(
+            <>
+              <DropdownItem label={"Registrera Konto"} leftIcon={"person_add"} rightIcon={null} action={setShowRegister(true)} />
+              <DropdownItem label={"Logga in"} leftIcon={"login"} rightIcon={null} action={setShowLogin(true)} />
+            </>
+          );
+        }
       }
 
       const DropDownSettings = () => {
@@ -289,6 +315,12 @@ export default function Navbar() {
         </Show>
         <HamburgerIcon />
       </Nav>
+      <Show when={showRegister()}>
+        <Register cancel={() => setShowRegister(false)} />
+      </Show>
+      <Show when={showLogin()}>
+        <Login cancel={() => setShowLogin(false)} />
+      </Show>
     </>
   )
 }

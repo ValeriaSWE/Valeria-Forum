@@ -8,7 +8,15 @@ import styles from './StylingModules/Register.module.css'
 /**
  * Creates the visual elements for a registration form
 */
-export default function Register() {
+export default function Register(props) {
+    function cancel() {
+        props.cancel()
+        $('#register-email').val('')
+        $('#register-username').val('')
+        $('#register-password').val('')
+        $('#register-password-confirm').val('')
+    }
+
     return(
         <>
 
@@ -42,8 +50,8 @@ export default function Register() {
                 </div>
 
                 <button class={styles.registerBtn} id="register-submit" onClick={registerSubmit}>Registrera</button>
-
-
+                
+                <button class={styles.cancelBtn} id="register-cancel" onClick={cancel}>Avbryt</button>
 
                 {/* </form> */}
 
@@ -83,14 +91,14 @@ const registerSubmit = async () => {
     const email = $('#register-email').val()
     const username = $('#register-username').val()
     const password = $('#register-password').val()
-    const passwordConfirm = $('#register-password').val()
+    const passwordConfirm = $('#register-password-confirm').val()
 
     try {
         const {data} = await registerUserServerPost(email, password, passwordConfirm, username)
         Auth(data)
+        window.location.reload();
     } catch (error) {
         $('#error').html(error.response.data.message)
         // console.log(error.response.data.message)
     }
-
 }

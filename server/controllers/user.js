@@ -1,11 +1,10 @@
-import express from "express"
-import mongoose from "mongoose"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 import fs from "fs"
 
 import User from "../Schemas/User.js"
+import { IncorrectPassword, PasswordDontMatch, SomethingWrong, UserDoesntExists, UsernameTaken } from "../errorMessages.js"
 
 dotenv.config()
 
@@ -23,18 +22,18 @@ export const loginUser = async (req, res) => {
             existingUser = await User.findOne({ username: username })
         }
 
-        if(!existingUser) return res.status(404).json({ message: "Användaren finns inte." })
+        if(!existingUser) return res.status(404).json({ message: UserDoesntExists })
 
         const isPasswordCorrect = await bcrypt.compare(password, existingUser.password)
 
-        if (!isPasswordCorrect) return res.status(400).json({ message: "Ogiltligt lösen grabben." })
+        if (!isPasswordCorrect) return res.status(400).json({ message: IncorrectPassword })
 
         const token = jwt.sign({ username: existingUser.username, id: existingUser._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_TIMEOUT})
 
         return res.status(200).send({ result: existingUser, token })
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ message: "Ajdå! Något gick snett.", error })
+        return res.status(500).send({ message: SomethingWrong, error })
     }
 }
 
@@ -53,9 +52,9 @@ export const registerUser = async (req, res) => {
     try {
         const existingUser = await User.findOne({ username: username })
 
-        if(existingUser) return res.status(400).json({ message: "Användarnamet är redan uptaget." })
+        if(existingUser) return res.status(400).json({ message: UsernameTaken })
 
-        if(password !== passwordConfirm) return res.status(400).json({ message: "Lösenorden matchar inte." })
+        if(password !== passwordConfirm) return res.status(400).json({ message: PasswordDontMatch })
 
         const hashedPassword = await bcrypt.hash(password, 12)
 
@@ -68,7 +67,7 @@ export const registerUser = async (req, res) => {
         return res.status(200).send({ result, token })
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ message: "Ajdå! Något gick snett.", error })
+        return res.status(500).send({ message: SomethingWrong, error })
     }
 }
 
