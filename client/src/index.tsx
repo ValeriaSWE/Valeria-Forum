@@ -11,6 +11,7 @@ import Feed from "./Components/Feed";
 import Dev from "./Pages/Dev";
 import LoginPage from "./Pages/Login";
 import RegisterPage from "./Pages/Register";
+import NotFound from "./Pages/404";
 
 function delay(ms: number) {
   return new Promise<void>((res) => {
@@ -19,7 +20,7 @@ function delay(ms: number) {
 }
 
 async function fetchSubTabData(id: string) {
-  await delay(1000);
+  // await delay(1000);
 
   return {
     id,
@@ -58,7 +59,8 @@ const Root = () => {
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
       <Route path="/dev" component={Dev} />
-      <Route path="*" component={Home} />
+      <Route path="/" component={Home} />
+      <Route path="*" component={NotFound} />
     </Routes></> 
   )
 };
