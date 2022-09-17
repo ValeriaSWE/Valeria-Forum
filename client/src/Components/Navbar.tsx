@@ -1,3 +1,4 @@
+import axios from "axios";
 import { createSignal, Show } from "solid-js";
 import { splitProps, JSX } from 'solid-js';
 import Login from "./Login";
@@ -10,6 +11,13 @@ export default function Navbar() {
   const [showRegister, setShowRegister] = createSignal(false);
   const [showLogin, setShowLogin] = createSignal(false);
 
+  const checkToken = async (token) => {
+    console.log(token)
+    const { data } = await axios.post('http://localhost:8000/user/checkToken', {token})
+    console.log(data)
+    return data
+  }
+
   let userData = {}
   let loggedIn = false
   let profilePicture = ''
@@ -19,6 +27,11 @@ export default function Navbar() {
       return data + String.fromCharCode(byte);
     }, ''))}`
     loggedIn = true
+    checkToken(JSON.parse(localStorage.getItem('profile')).token).then(valid => {
+      if (!valid) {
+        logout()
+      }
+    }) 
   }
 
   // const tmp = String.fromCharCode( ... new Uint8Array(userData.profilePicture.data))

@@ -72,5 +72,16 @@ export const registerUser = async (req, res) => {
 }
 
 export const checkUserLoginTimeout = async (req, res) => {
-    
+    const { token } = req.body
+    // console.log(token)
+
+    // const decodedData = jwt.decode(token)
+    jwt.verify(token, process.env.JWT_TOKEN, function(err, decoded) {
+        if (err) return res.status(200).send(false)
+        return res.status(200).send(true)
+
+    })
+    // console.log(decodedData.exp * 1000)
+    // console.log(Date.now() - decodedData.exp * 1000)
+    // return Date.now() >= decodedData.exp * 1000
 }

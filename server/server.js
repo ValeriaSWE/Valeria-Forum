@@ -5,7 +5,7 @@ const port = 8000
 import mongoose from 'mongoose'
 import cors from 'cors'
 
-import { loginUser, registerUser } from "./controllers/user.js"
+import { checkUserLoginTimeout, loginUser, registerUser } from "./controllers/user.js"
 
 app.use(express.json())
 // app.get('/', (req, res) => res.send('Hello World!'))
@@ -31,6 +31,8 @@ connect()
 app.post('/user/login', loginUser)
 
 app.post('/user/register', registerUser)
+
+app.post('/user/checkToken', checkUserLoginTimeout)
 
 // app.set('/getUser')
 
