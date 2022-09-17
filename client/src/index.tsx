@@ -9,31 +9,8 @@ import Home from './Pages/Home';
 import Forum from "./Pages/Forum";
 import Feed from "./Components/Feed";
 import Dev from "./Pages/Dev";
-
-const routes: RouteDefinition[] = [
-  /*{
-    path: "",
-    component: Protected,
-    children: [
-      {
-        path: "forum",
-        component: Forum
-      } 
-    ]
-  }, */
-  {
-    path: "*",
-    component: Home
-  },
-  {
-    path: "/forum",
-    component: Forum,
-  },
-  {
-    path: "/dev",
-    component: Dev,
-  },
-];
+import LoginPage from "./Pages/Login";
+import RegisterPage from "./Pages/Register";
 
 function delay(ms: number) {
   return new Promise<void>((res) => {
@@ -78,6 +55,8 @@ const Root = () => {
         <Route path="/" element={<Navigate href="feed" />} />
         <Route path=":id" component={SubTab} />
       </Route>
+      <Route path="/login" component={LoginPage} />
+      <Route path="/register" component={RegisterPage} />
       <Route path="/dev" component={Dev} />
       <Route path="*" component={Home} />
     </Routes></> 
