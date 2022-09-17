@@ -19,49 +19,50 @@ export default function Register(props) {
 
     return(
         <>
+            <form onSubmit={e => e.preventDefault()}>
+                <div class={styles.registerInnerContainer}>
 
-            <div class={styles.registerInnerContainer}>
+                    <h2 class={styles.title}> REGISTRERA</h2>
+                    {/* <form action=""> */}
 
-                <h2 class={styles.title}> REGISTRERA</h2>
-                {/* <form action=""> */}
+                    <div class={styles.input}>
+                        <p>Anändarnamn:</p>
+                        <input type="text" name="username" id="register-username" />
+                    </div>
 
-                <div class={styles.input}>
-                    <p>Anändarnamn:</p>
-                    <input type="text" name="username" id="register-username" />
+                    <div class={styles.input}>
+                        <p>Email:</p>
+                        <input type="email" name="email" id="register-email" />
+                    </div>
+
+                    <div class={styles.input}>
+                        <p>Lösenord:</p>
+                        <input type="password" name="password" id="register-password"/>
+                    </div>
+
+                    <div class={styles.input}>
+                        <p>Upprepa lösenord:</p>
+                        <input type="password" name="password-confirm" id="register-password-confirm"/>
+                    </div>
+
+                    <div class={styles.forgotPassword}>
+                        <p></p>
+                    </div>
+
+                    <button class={styles.registerBtn} id="register-submit" onClick={registerSubmit}>Registrera</button>
+                    
+                    <button class={styles.cancelBtn} id="register-cancel" onClick={cancel}>Avbryt</button>
+
+                    {/* </form> */}
+
+                    <span class={styles.registerError} id="error"></span>
+
+                    <div class={styles.registerFooter}>
+                        <p>Valeria Roleplay | Registrering</p>
+                    </div>
+
                 </div>
-
-                <div class={styles.input}>
-                    <p>Email:</p>
-                    <input type="email" name="email" id="register-email" />
-                </div>
-
-                <div class={styles.input}>
-                    <p>Lösenord:</p>
-                    <input type="password" name="password" id="register-password"/>
-                </div>
-
-                <div class={styles.input}>
-                    <p>Upprepa lösenord:</p>
-                    <input type="password" name="password-confirm" id="register-password-confirm"/>
-                </div>
-
-                <div class={styles.forgotPassword}>
-                    <p></p>
-                </div>
-
-                <button class={styles.registerBtn} id="register-submit" onClick={registerSubmit}>Registrera</button>
-                
-                <button class={styles.cancelBtn} id="register-cancel" onClick={cancel}>Avbryt</button>
-
-                {/* </form> */}
-
-                <span class={styles.registerError} id="error"></span>
-
-                <div class={styles.registerFooter}>
-                    <p>Valeria Roleplay | Registrering</p>
-                </div>
-
-            </div>
+            </form>
 
         </>
     )

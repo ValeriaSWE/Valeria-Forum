@@ -16,39 +16,39 @@ export default function Login(props) {
 
     return(
         <>
-            <div class={styles.loginInnerContainer}>
+            <form onSubmit={e => e.preventDefault()}>
+                <div class={styles.loginInnerContainer}>
 
-                <h2 class={styles.title}> LOGGA IN</h2>
-                {/* <form action=""> */}
+                    <h2 class={styles.title}> LOGGA IN</h2>
 
-                <div class={styles.input}>
-                    <p>Anändarnamn / Email:</p>
-                    <input type="email" name="email" id="login-email" />
+                    <div class={styles.input}>
+                        <p>Anändarnamn / Email:</p>
+                        <input type="text" name="email" id="login-email" />
+                    </div>
+
+                    <div class={styles.input}>
+                        <p>Lösenord:</p>
+                        <input type="password" name="password" id="login-password"/>
+                    </div>
+
+                    <div class={styles.forgotPassword}>
+                        <p></p>
+                    </div>
+
+                    
+                    <button class={styles.loginBtn} id="login-submit" onClick={loginSubmit}>Logga in</button>
+                    
+                    <button class={styles.cancelBtn} id="login-cancel" onClick={cancel}>Avbryt</button>
+                    
+                    
+                    <span class={styles.loginError} id="error"></span>
+
+                    <div class={styles.loginFooter}>
+                        <p>Valeria Roleplay | Inloggning</p>
+                    </div>
+
                 </div>
-
-                <div class={styles.input}>
-                    <p>Lösenord:</p>
-                    <input type="password" name="password" id="login-password"/>
-                </div>
-
-                <div class={styles.forgotPassword}>
-                    <p></p>
-                </div>
-
-                
-                <button class={styles.loginBtn} id="login-submit" onClick={loginSubmit}>Logga in</button>
-                
-                <button class={styles.cancelBtn} id="login-cancel" onClick={cancel}>Avbryt</button>
-                
-                {/* </form> */}
-                
-                <span class={styles.loginError} id="error"></span>
-
-                <div class={styles.loginFooter}>
-                    <p>Valeria Roleplay | Inloggning</p>
-                </div>
-
-            </div>
+            </form>
 
         </>
     )
@@ -82,6 +82,3 @@ const loginSubmit = async () => {
     
 }
 
-const auth = async (data) => {
-    localStorage.setItem('profile', JSON.stringify({ ... data }))
-}

@@ -190,10 +190,18 @@ export default function Navbar() {
             </>
           );
         } else {
+          const login = () => {
+            setShowLogin(true)
+            setShowRegister(false)
+          }
+          const register = () => {
+            setShowRegister(true)
+            setShowLogin(false)
+          }
           return(
             <>
-              <DropdownItem label={"Registrera Konto"} leftIcon={"person_add"} rightIcon={null} action={setShowRegister(true)} />
-              <DropdownItem label={"Logga in"} leftIcon={"login"} rightIcon={null} action={setShowLogin(true)} />
+              <DropdownItem label={"Registrera Konto"} leftIcon={"person_add"} rightIcon={null} action={register()} />
+              <DropdownItem label={"Logga in"} leftIcon={"login"} rightIcon={null} action={login()} />
             </>
           );
         }
