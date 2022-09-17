@@ -2,19 +2,47 @@ import axios from "axios"
 import $ from "jquery"
 import { Auth } from "../functions/user.js"
 
+import styles from './StylingModules/Login.module.css'
+
 /**
  * Creates the visual elements for a login form
 */
 export default function Login() {
     return(
         <>
-            <h2>Login</h2>
-            {/* <form action=""> */}
-                <input type="email" name="email" id="login-email" />
-                <input type="password" name="password" id="login-password"/>
-                <button id="login-submit" onClick={loginSubmit}>Login</button>
-            {/* </form> */}
-            <span id="error">No Error</span>
+            <div class={styles.loginInnerContainer}>
+
+                <h2 class={styles.title}> LOGGA IN</h2>
+                {/* <form action=""> */}
+
+                <div class={styles.input}>
+                    <p>Anändarnamn / Email:</p>
+                    <input type="email" name="email" id="login-email" />
+                </div>
+
+                <div class={styles.input}>
+                    <p>Lösenord:</p>
+                    <input type="password" name="password" id="login-password"/>
+                </div>
+
+                <div class={styles.forgotPassword}>
+                    <p></p>
+                </div>
+
+                
+                <button class={styles.loginBtn} id="login-submit" onClick={loginSubmit}>Logga in</button>
+                
+
+                
+                {/* </form> */}
+                
+                <span class={styles.loginError} id="error"></span>
+
+                <div class={styles.loginFooter}>
+                    <p>Valeria Roleplay | Inloggning</p>
+                </div>
+
+            </div>
 
         </>
     )

@@ -87,7 +87,7 @@
 	width: 300px;
 	transform: translateX(-45%);
 	background-color: var(--color-blue-m);
-	border-radius: 12px;
+	border-radius: var(--border-radius);
 	box-shadow: 0px 1px 4px rgba(58, 87, 131, 0.8);
 	padding: 1rem;
 	overflow: hidden;
@@ -101,7 +101,7 @@
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
-	border-radius: 12px;
+	border-radius: var(--border-radius);
 	transition: background 300ms;
 }
 .navbar .dropdown .menuitem:hover {
@@ -198,9 +198,6 @@
 }
 .hamburger3 .bar4 {
 	transform-origin: 5%;
-}
-
-.checkbox3:checked + label > .hamburger3 {
 }
 
 .checkbox3:checked + label > .hamburger3 > .bar1 {

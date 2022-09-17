@@ -17,6 +17,14 @@ body {
 	--color-blue-l: #5179ba; /* Ljus Accent */
 	--color-blue-m: #3a5783; /* Mellan Accent */
 	--color-blue-d: #23395e; /* Mörk Accent */
+
+	--color-blue-l-hover: hsl(217, 43%, 47%); /* Ljus Accent Hover */
+	--color-blue-m-hover: hsl(216, 39%, 32%); /* Mellan Accent Hover*/
+	--color-blue-d-hover: hsl(218, 46%, 20%); /* Mörk Accent Hover*/
+
+
+
+	--border-radius: 8px;
 }
 
 * {

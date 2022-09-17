@@ -2,21 +2,59 @@ import axios from "axios"
 import $ from "jquery"
 import { Auth } from "../functions/user.js"
 
+import styles from './StylingModules/Register.module.css'
+
+
 /**
  * Creates the visual elements for a registration form
 */
 export default function Register() {
     return(
         <>
-            <h2>Register</h2>
-            {/* <form action=""> */}
-                <input type="text" name="username" id="register-username" />
-                <input type="email" name="email" id="register-email" />
-                <input type="password" name="password" id="register-password"/>
-                <input type="password" name="password-confirm" id="register-password-confirm"/>
-                <button id="register-submit" onClick={registerSubmit}>Register</button>
-            {/* </form> */}
-            <span id="error">No Error</span>
+
+            <div class={styles.registerInnerContainer}>
+
+                <h2 class={styles.title}> REGISTRERA</h2>
+                {/* <form action=""> */}
+
+                <div class={styles.input}>
+                    <p>Anändarnamn:</p>
+                    <input type="text" name="username" id="register-username" />
+                </div>
+
+                <div class={styles.input}>
+                    <p>Email:</p>
+                    <input type="email" name="email" id="register-email" />
+                </div>
+
+                <div class={styles.input}>
+                    <p>Lösenord:</p>
+                    <input type="password" name="password" id="register-password"/>
+                </div>
+
+                <div class={styles.input}>
+                    <p>Upprepa lösenord:</p>
+                    <input type="password" name="password-confirm" id="register-password-confirm"/>
+                </div>
+
+                <div class={styles.forgotPassword}>
+                    <p></p>
+                </div>
+
+                <button class={styles.registerBtn} id="register-submit" onClick={registerSubmit}>Registrera</button>
+
+
+
+                {/* </form> */}
+
+                <span class={styles.registerError} id="error"></span>
+
+                <div class={styles.registerFooter}>
+                    <p>Valeria Roleplay | Registrering</p>
+                </div>
+
+            </div>
+
         </>
     )
 }
