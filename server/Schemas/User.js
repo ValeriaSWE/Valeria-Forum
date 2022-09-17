@@ -7,6 +7,10 @@ const userSchema = new mongoose.Schema({
     password: {type: String, required: true},
     joinedAt: {type: Date, default: () => Date.now(), immutible: true},
     role: {type: String, default: "none"},
+    profilePicture: {
+        data: Buffer,
+        contentType: String 
+    }
 })
 
 // module.exports = mongoose.model("User", userSchema)

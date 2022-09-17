@@ -1,61 +1,63 @@
 /* Importing All Style Modules */
-@import url('./Components/Components.css');
+@import url("./Components/Components.css");
 
-/*FONT*/ 
+/*FONT*/
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap");
 
 body {
-  margin: 0;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+	margin: 0;
+	padding: 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	overflow-x: hidden;
 }
 
 :root {
-  --color-white: #fff;
-  --color-blue-l: #5179BA; /* Ljus Accent */
-  --color-blue-m: #3A5783; /* Mellan Accent */
-  --color-blue-d: #23395E; /* Mörk Accent */
-
+	--color-white: #fff;
+	--color-blue-l: #5179ba; /* Ljus Accent */
+	--color-blue-m: #3a5783; /* Mellan Accent */
+	--color-blue-d: #23395e; /* Mörk Accent */
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  font-family: 'Nunito', sans-serif;
+	margin: 0;
+	padding: 0;
+	font-family: "Nunito", sans-serif;
 }
 
 .loader {
-  display: fixed;
-  background-color: transparent;
-  height: 3px;
+	display: fixed;
+	background-color: transparent;
+	height: 3px;
+	position: fixed;
+	top: 0;
+	width: 100vw;
 }
 
 .loader.active {
-  display: block;
-  position: sticky;
-  z-index: 9999;
-  background: linear-gradient(
-    90deg,
-    rgba(205, 82, 249, 1) 20%,
-    rgba(0, 169, 223, 1) 50%,
-    rgba(255, 255, 255, 1) 50%,
-    rgba(255, 255, 255, 1) 100%
-  );
-  background-size: 200%;
-  background-position-x: 100%;
-  animation: loader-scroll 3s ease infinite;
+	display: block;
+	/* position: sticky; */
+	z-index: 9999;
+	background: linear-gradient(
+		90deg,
+		rgba(205, 82, 249, 1) 20%,
+		rgba(0, 169, 223, 1) 50%,
+		rgba(255, 255, 255, 0) 50%,
+		rgba(255, 255, 255, 0.1) 100%
+	);
+	background-size: 200%;
+	background-position-x: 100%;
+	animation: loader-scroll 3s ease infinite;
 }
 
 @keyframes loader-scroll {
-  0% {
-    background-position-x: 100%;
-  }
-  50% {
-    background-position-x: 5%;
-  }
-  100% {
-    background-position-x: 0%;
-  }
+	0% {
+		background-position-x: 100%;
+	}
+	50% {
+		background-position-x: 5%;
+	}
+	100% {
+		background-position-x: 0%;
+	}
 }

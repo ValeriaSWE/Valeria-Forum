@@ -6,6 +6,15 @@ export default function Navbar() {
   const [toggleResponsNav, setToggleResponsNav] = createSignal(false);
   const [open, setOpen] = createSignal(false);
 
+  const userData = JSON.parse(localStorage.getItem('profile')).result
+
+  // const tmp = String.fromCharCode( ... new Uint8Array(userData.profilePicture.data))
+
+  const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(userData.profilePicture.data.data).reduce(function (data, byte) {
+    return data + String.fromCharCode(byte);
+  }, ''))}`
+
+  // console.log(profilePicture)
 
   window.onclick = function(e) {
     if(open()) {
@@ -57,7 +66,7 @@ export default function Navbar() {
     return(
       <>
       <a class={styles.logo} href="/">
-        <ImageLogo imgSrc="https://media.discordapp.net/attachments/1015552695207202908/1018837703531446333/Valeria-Alt2.png?width=824&height=676" />
+        <ImageLogo imgSrc="../../images/valeria.png" />
       </a>
       </>
     );
@@ -103,7 +112,13 @@ export default function Navbar() {
         <li class={styles.navitem} >
           <a href="#" class={styles.iconbutton + " material-icons"}  id={props.action} onclick={() => {
             setOpen(!open())}}>
-            {props.icon}
+            {/* {props.icon} */}
+            {
+              props.icon === "profilePicture" ?
+                <img src={profilePicture} class={styles.profilePicture}></img>
+              :
+                props.icon
+            }
           </a>
           {open() && props.children}  
         </li>
@@ -130,7 +145,12 @@ export default function Navbar() {
            };
           }}>
             <span class={styles.iconbutton + " material-icons"} id="nav-item">
-             {props.leftIcon}
+              {
+                props.leftIcon === "profilePicture" ?
+                  <img src={profilePicture} class={styles.profilePicture}></img>
+                :
+                  props.leftIcon
+              }
             </span>
             {props.label}
             <span class={styles.iconright  + " material-icons"}  id="nav-item">
@@ -142,10 +162,11 @@ export default function Navbar() {
 
 
       const DropDownMain = () => {
+        // console.log(JSON.parse(localStorage.getItem('profile')).result.username)
         return(
         <>
        {/*} <DropdownItem> My Profile </DropdownItem> */ }
-          <DropdownItem label={"Profil"} leftIcon={"user"} rightIcon={null} action={null} />
+          <DropdownItem label={userData.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={null} />
           <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={"arrow_forward_ios"} action={SetMainDrop(!mainDrop())} />
           <DropdownItem label={"Logga ut"} leftIcon={"logout"} rightIcon={null} action={null} />
         </>
@@ -180,9 +201,9 @@ export default function Navbar() {
     return(
       <>
         <ul class={styles.navbaricons}>
-        <NavItem action={null} icon={"chat"} children={null} />
+          <NavItem action={null} icon={"chat"} children={null} />
           <NavItem action={null} icon={"notifications"} children={null}/>
-          <NavItem action={"profile"} icon={"profil"}>
+          <NavItem action={"profile"} icon={"profilePicture"}>
             <DropdwonMenu></DropdwonMenu>
           </NavItem>
         </ul>

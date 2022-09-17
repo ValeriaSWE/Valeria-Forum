@@ -3,6 +3,7 @@ import mongoose from "mongoose"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
+import fs from "fs"
 
 import User from "../Schemas/User.js"
 
@@ -12,7 +13,7 @@ export const loginUser = async (req, res) => {
     const { username, password } = req.body
 
     try {
-        const existingUser = await User.findOne({ email: username })
+        const existingUser = await User.findOne({ username: username })
 
         if(!existingUser) return res.status(404).json({ message: "User doesn't exist." })
 
@@ -20,7 +21,7 @@ export const loginUser = async (req, res) => {
 
         if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid password" })
 
-        const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_TIMEOUT})
+        const token = jwt.sign({ username: existingUser.username, id: existingUser._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_TIMEOUT})
 
         return res.status(200).send({ result: existingUser, token })
     } catch (error) {
@@ -39,10 +40,10 @@ export const loginUser = async (req, res) => {
  * @returns The result of the create method.
  */
 export const registerUser = async (req, res) => {
-    const { username, password, passwordConfirm } = req.body
+    const { email, password, passwordConfirm, username } = req.body
 
     try {
-        const existingUser = await User.findOne({ email: username })
+        const existingUser = await User.findOne({ username: username })
 
         if(existingUser) return res.status(400).json({ message: "User already exists." })
 
@@ -50,9 +51,11 @@ export const registerUser = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 12)
 
-        const result = await User.create({ email: username, password: hashedPassword })
+        const profilePicture = fs.readFileSync("./controllers/default_pfp.png")
 
-        const token = jwt.sign({ email: result.email, id: result._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_TIMEOUT})
+        const result = await User.create({ username: username, password: hashedPassword, email: email, profilePicture: { data: profilePicture, contentType: "image/png" } })
+
+        const token = jwt.sign({ username: result.username, id: result._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_TIMEOUT})
 
         return res.status(200).send({ result, token })
     } catch (error) {
@@ -61,18 +64,6 @@ export const registerUser = async (req, res) => {
     }
 }
 
-// app.post('/user/login', (req, res) => {
-//     // console.log(req.headers)
-//     // res.append("hello", "world")
-//     // res.type('application/json')
-//     console.log(req.body)
-//     res.status(200).json({hello: "world"})
-// })
-
-// app.post('/user/register', (req, res) => {
-//     // console.log(req.headers)
-//     // res.append("hello", "world")
-//     // res.type('application/json')
-//     console.log(req.body)
-//     res.status(200).send("Succesfully created user")
-// })
+export const checkUserLoginTimeout = async (req, res) => {
+    
+}
