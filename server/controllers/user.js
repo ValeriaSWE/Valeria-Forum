@@ -13,20 +13,28 @@ export const loginUser = async (req, res) => {
     const { username, password } = req.body
 
     try {
-        const existingUser = await User.findOne({ username: username })
+        const usernameIsEmail = username.includes('@')
 
-        if(!existingUser) return res.status(404).json({ message: "User doesn't exist." })
+        let existingUser
+        
+        if (usernameIsEmail) {
+            existingUser = await User.findOne({ email: username })
+        } else {
+            existingUser = await User.findOne({ username: username })
+        }
+
+        if(!existingUser) return res.status(404).json({ message: "Användaren finns inte." })
 
         const isPasswordCorrect = await bcrypt.compare(password, existingUser.password)
 
-        if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid password" })
+        if (!isPasswordCorrect) return res.status(400).json({ message: "Ogiltligt lösen grabben." })
 
         const token = jwt.sign({ username: existingUser.username, id: existingUser._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_TIMEOUT})
 
         return res.status(200).send({ result: existingUser, token })
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ message: "Something went wrong.", error })
+        return res.status(500).send({ message: "Ajdå! Något gick snett.", error })
     }
 }
 
@@ -45,9 +53,9 @@ export const registerUser = async (req, res) => {
     try {
         const existingUser = await User.findOne({ username: username })
 
-        if(existingUser) return res.status(400).json({ message: "User already exists." })
+        if(existingUser) return res.status(400).json({ message: "Användarnamet är redan uptaget." })
 
-        if(password !== passwordConfirm) return res.status(400).json({ message: "Password doesn't match." })
+        if(password !== passwordConfirm) return res.status(400).json({ message: "Lösenorden matchar inte." })
 
         const hashedPassword = await bcrypt.hash(password, 12)
 
@@ -60,7 +68,7 @@ export const registerUser = async (req, res) => {
         return res.status(200).send({ result, token })
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ message: "Something went wrong.", error })
+        return res.status(500).send({ message: "Ajdå! Något gick snett.", error })
     }
 }
 
