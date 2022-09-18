@@ -1,0 +1,31 @@
+@import url('../../index.css');
+
+.pageNotFound{
+   width: 100%;
+   height: calc(100vh - 60px);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+.pageNotFound .content {
+    height: 600px;
+    aspect-ratio: 16/9;
+    border-radius: 8px;
+    text-align: center;
+    color: #1c1c1f;
+}
+.pageNotFound .content i {
+    font-size: 12rem;
+}
+.pageNotFound .content a {
+    display: block;
+    margin-block-start: 1em;
+    font-size: 1.4rem;
+    color: var(--color-blue-l);
+    cursor: pointer;
+}
+.pageNotFound .content a:hover {
+    text-decoration: underline;
+    color: var(--color-blue-l-hover);
+
+}
