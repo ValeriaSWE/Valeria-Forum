@@ -12,6 +12,7 @@ import Dev from "./Pages/Dev";
 import LoginPage from "./Pages/Login";
 import RegisterPage from "./Pages/Register";
 import NotFound from "./Pages/404";
+import { CheckAuthLevel } from "./functions/user";
 
 function delay(ms: number) {
   return new Promise<void>((res) => {
@@ -47,6 +48,18 @@ function Loader() {
   return <div data-component="loader" class="loader" classList={{ active: isRouting() }} />;
 }
 
+/* Sets a permisson rank for certain routes */
+const ProtectedRoute = (authLevel: number) => {
+  return () => {
+    
+    return (
+      <Show when={localStorage.getItem('profile') && CheckAuthLevel(JSON.parse(localStorage.getItem('profile')).token, authLevel)} fallback={<NotFound />}>
+        <Outlet />
+      </Show>
+    );
+  }
+}
+
 /**
  * Create the Routes
  */
@@ -59,7 +72,10 @@ const Root = () => {
       </Route>
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
-      <Route path="/dev" component={Dev} />
+      <Route path="/dev" component={ProtectedRoute(10)}>
+        <Route path="" component={Dev} />
+        {/* <Dev /> */}
+      </Route>
       <Route path="/" component={Home} />
       <Route path="*" component={NotFound} />
     </Routes></> 

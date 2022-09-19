@@ -103,14 +103,15 @@ export default function Navbar() {
 
   function NavBarLinks() {
     interface NavLinkProps {
-      icon: JSX.Element;
+      icon: JSX.Element,
+      href: string
     }
 
     const NavLink = (props: NavLinkProps) => {
       return(
         <>
         <li class={styles.navlink}>
-          <a href="#" class={styles.linkbutton}>
+          <a href={props.href || "#"} class={styles.linkbutton}>
             {props.icon}
           </a>
         </li>
@@ -121,10 +122,14 @@ export default function Navbar() {
     return(
       <>
         <ul class={styles.navbarlinks}>
-          <NavLink icon="Ansökningar"></NavLink>
-          <NavLink icon="Medlemmar"></NavLink>
-          <NavLink icon="Trådar"></NavLink>
-          <NavLink icon="Tickets"></NavLink>
+          <NavLink icon="Flöde" href="/forum/feed"></NavLink>
+          <NavLink icon="Ansökningar" href="#"></NavLink>
+          <NavLink icon="Medlemmar" href="#"></NavLink>
+          <NavLink icon="Trådar" href="#"></NavLink>
+          <NavLink icon="Tickets" href="#"></NavLink>
+          <Show when={userData?.roleRank >= 10}>¨
+            <NavLink icon="DEV" href="/dev"></NavLink>
+          </Show>
         </ul>
       </>
     );

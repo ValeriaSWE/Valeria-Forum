@@ -34,6 +34,8 @@ app.post('/user/login', loginUser)
 app.post('/user/register', registerUser)
 
 app.post('/user/checkToken', Authorize(0), (req, res) => res.status(200).send(true))
+app.post('/user/decodeToken', Authorize(0), (req, res) => res.status(200).send(req.decoded))
+// app.post('/user/checkAuthLevel', Authorize(0), (req, res) => res.status(200).send())
 
 // app.set('/getUser')
 

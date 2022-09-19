@@ -12,8 +12,9 @@ export default function Dev() {
   const admin = false;
   return (
   <>
+    <Navbar />
     <h2>DEV</h2>
-    <Login/>
-    <Register/>
+    {/* <Login/> */}
+    {/* <Register/> */}
   </>)
 }
