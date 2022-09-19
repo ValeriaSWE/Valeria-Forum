@@ -1,12 +1,11 @@
 @import url('../../index.css');
 
-body {
-    overflow: hidden;
-}
+
 
 .home {
     height: 100vh;
     width: 100vw;
+    overflow: hidden;
     color: var(--color-white);
     background-color: var(--color-blue-d);
     font-size: large;

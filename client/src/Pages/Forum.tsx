@@ -1,5 +1,6 @@
 import { NavLink, Outlet, Route, RouteDefinition, Routes } from "solid-app-router";
 import { mergeProps, Suspense } from "solid-js";
+import styles from './StylingModules/Forum.module.css';
 import Navbar from "../Components/Navbar";
 
 
@@ -9,8 +10,8 @@ export default function Forum() {
 
   return (
   <>
-   <div data-page="forum">
     <Navbar />
+   <div class={styles.forum}>
     <div class="tab-content">
         <Suspense
           fallback={
