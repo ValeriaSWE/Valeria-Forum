@@ -17,9 +17,7 @@ export const Auth = async (data) => {
  */
 export const CheckAuthLevel = (token: string, authLevel: number) => {
     
-    const data = jwt_decode(token)
-    console.log(token)
-    console.log(data)
+    const data = jwt_decode(token)    
     
-    return (data?.roleRank >= authLevel)
+    return (data?.roleRank >= authLevel && data?.exp * 1000 >= Date.now())
 }

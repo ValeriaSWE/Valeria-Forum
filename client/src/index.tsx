@@ -13,6 +13,8 @@ import LoginPage from "./Pages/Login";
 import RegisterPage from "./Pages/Register";
 import NotFound from "./Pages/404";
 import { CheckAuthLevel } from "./functions/user";
+import NotAuthed from "./Pages/NotAuthed";
+import Admin from "./Pages/Admin";
 
 function delay(ms: number) {
   return new Promise<void>((res) => {
@@ -53,7 +55,7 @@ const ProtectedRoute = (authLevel: number) => {
   return () => {
     
     return (
-      <Show when={localStorage.getItem('profile') && CheckAuthLevel(JSON.parse(localStorage.getItem('profile')).token, authLevel)} fallback={<NotFound />}>
+      <Show when={localStorage.getItem('profile') && CheckAuthLevel(JSON.parse(localStorage.getItem('profile')).token, authLevel)} fallback={<NotAuthed />}>
         <Outlet />
       </Show>
     );
@@ -74,7 +76,9 @@ const Root = () => {
       <Route path="/register" component={RegisterPage} />
       <Route path="/dev" component={ProtectedRoute(10)}>
         <Route path="" component={Dev} />
-        {/* <Dev /> */}
+      </Route>
+      <Route path="/admin" component={ProtectedRoute(10)}>
+        <Route path="" component={Admin} />
       </Route>
       <Route path="/" component={Home} />
       <Route path="*" component={NotFound} />

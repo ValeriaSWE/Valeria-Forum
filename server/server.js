@@ -7,6 +7,8 @@ import cors from 'cors'
 
 import { loginUser, registerUser } from "./controllers/user.js"
 import { checkUserLoginTimeout, Authorize } from "./middleware/user.js"
+import { GetUserList, SetUserRole } from './controllers/admin.js'
+import { GetPosts } from './controllers/post.js'
 
 app.use(express.json())
 // app.get('/', (req, res) => res.send('Hello World!'))
@@ -33,10 +35,14 @@ app.post('/user/login', loginUser)
 
 app.post('/user/register', registerUser)
 
-app.post('/user/checkToken', Authorize(0), (req, res) => res.status(200).send(true))
-app.post('/user/decodeToken', Authorize(0), (req, res) => res.status(200).send(req.decoded))
+// app.post('/user/checkToken', Authorize(0), (req, res) => res.status(200).send(true))
+// app.post('/user/decodeToken', Authorize(0), (req, res) => res.status(200).send(req.decoded))
 // app.post('/user/checkAuthLevel', Authorize(0), (req, res) => res.status(200).send())
 
-// app.set('/getUser')
+app.get('/admin/getUserList', Authorize(10), GetUserList)
+app.post('/admin/setUserRole', Authorize(10), SetUserRole)
+
+app.get('/posts/getPinnedPosts', GetPosts(true))
+app.get('/posts/getAllPosts', GetPosts(false))
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

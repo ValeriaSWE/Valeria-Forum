@@ -19,9 +19,13 @@ export const checkUserLoginTimeout = async (req, res) => {
 
 export const Authorize = (authLevel) => {
     
-    return (req, res, next) => {
+    console.log(authLevel)
 
-        const { token } = req.body
+    return (req, res, next) => {
+        
+        // console.log(req.headers.authorization.split(' ')[1])
+
+        const token = req.headers.authorization.split(' ')[1]
         jwt.verify(token, process.env.JWT_TOKEN, function(err, decoded) {
             if (err) return res.status(400).send({message: InvalidToken, err})
             // return res.status(200).send(true)

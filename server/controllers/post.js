@@ -4,6 +4,7 @@ import Post from "../Schemas/Post.js"
 import Comment from "../Schemas/Comment.js"
 
 import { SomethingWrong } from "../errorMessages.js"
+import User from "../Schemas/User.js"
 
 dotenv.config()
 
@@ -16,6 +17,27 @@ export const createNewPost = async (req, res) => {
         return res.status(500).send({ message: SomethingWrong, error })
     }
 
+}
+
+export const createNewPostTMP = async () => {
+    const { title, content, creator, images } = { title: "test", content: "testing testing", creator: "632639574179187c3a527f95", images: [] }
+
+    try {
+        await Post.create({ title, creator, content, images})
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+export const GetPosts = (pinned) => {
+    return async (req, res) => {
+        let posts = await Post.where("pinned").equals(pinned).populate('creator').limit(20)
+
+        console.log(posts)
+        console.log(pinned)
+
+        res.status(200).json(posts)
+    }
 }
 
 // title: { type: String, required: true },

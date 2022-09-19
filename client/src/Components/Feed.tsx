@@ -1,11 +1,11 @@
 import styles from './StylingModules/Feed.module.css';
 import { splitProps, JSX } from 'solid-js';
 import Post from './Post';
+import { GetAllPosts, GetPinnedPosts } from '../api/posts';
+import $ from "jquery"
+
 export default function Feed() {
   
-
-
-
   function FeedContainer(props: {children: any}) {
     return(
     <>
@@ -43,25 +43,24 @@ export default function Feed() {
     </>)
   }
 
-
-  function Posts(prosps: {children: any}) {
-   
-
-    return(
-      <>
-      <div class={styles.posts}>
-        {prosps.children}
-      </div>
-      </>
-    )
-  }
-
   return(
-  <>
-  <Post data={{pinned: true, title: "Server updatering v2"}}></Post>
-  <Post data={{pinned: true, title: "Forum updatering v2 test test test test test test test test test test test test test test test "}}></Post>
-  <FeedContainer>
-    <EditFeedResult />
-  </FeedContainer>
-  </>)
+    <>
+      <FeedContainer>
+        <div id="pinned-posts"></div>
+        <EditFeedResult />
+        <div id="all-posts"></div>
+      </FeedContainer>
+    </>
+    )
 }
+
+$(async function () {
+  const PinnedPosts = await GetPinnedPosts()
+  PinnedPosts.data.forEach(post => {
+    $("#pinned-posts").append((<Post data={post} />))
+  });
+  const AllPosts = await GetAllPosts()
+  AllPosts.data.forEach(post => {
+    $("#all-posts").append((<Post data={post} />))
+  });
+})

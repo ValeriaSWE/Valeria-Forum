@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createSignal, Show } from "solid-js";
 import { splitProps, JSX } from 'solid-js';
+import { CheckAuthLevel } from "../functions/user";
 import Login from "./Login";
 import Register from "./Register";
 import styles from './StylingModules/Navbar.module.css';
@@ -11,27 +12,17 @@ export default function Navbar() {
   const [showRegister, setShowRegister] = createSignal(false);
   const [showLogin, setShowLogin] = createSignal(false);
 
-  const checkToken = async (token) => {
-    console.log(token)
-    const { data } = await axios.post('http://localhost:8000/user/checkToken', {token})
-    console.log(data)
-    return data
-  }
+  // const checkToken = CheckAuthLevel(JSON.parse(localStorage.getItem('profile')).token, 0)
 
   let userData = {}
   let loggedIn = false
   let profilePicture = ''
-  if (localStorage.getItem('profile')) {
+  if (localStorage.getItem('profile') && CheckAuthLevel(JSON.parse(localStorage.getItem('profile')).token, 0)) {
     userData = JSON.parse(localStorage.getItem('profile')).result
     profilePicture = `data:image/png;base64,${btoa(new Uint8Array(userData.profilePicture.data.data).reduce(function (data, byte) {
       return data + String.fromCharCode(byte);
     }, ''))}`
     loggedIn = true
-    checkToken(JSON.parse(localStorage.getItem('profile')).token).then(valid => {
-      if (!valid) {
-        logout()
-      }
-    }) 
   }
 
   // const tmp = String.fromCharCode( ... new Uint8Array(userData.profilePicture.data))
@@ -93,7 +84,7 @@ export default function Navbar() {
 
     return(
       <>
-      <a class={styles.logo} href="/">
+      <a class={styles.logo} href="/forum/">
         <ImageLogo imgSrc="../../images/valeria.png" />
       </a>
       </>
@@ -171,9 +162,10 @@ export default function Navbar() {
         rightIcon: string | null;
         action: any;
         label: string;
+        href: string;
       }){
         return(
-          <a href="#" class={styles.menuitem} id="menu-item" onclick={() => {
+          <a href={props.href || "#"} class={styles.menuitem} id="menu-item" onclick={() => {
            try{
             props.action;
            } catch (err) {
@@ -202,9 +194,12 @@ export default function Navbar() {
         if (loggedIn) {
           return(
             <>          
-              <DropdownItem label={userData.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={null} />
-              <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={"arrow_forward_ios"} action={SetMainDrop(!mainDrop())} />
-              <DropdownItem label={"Logga ut"} leftIcon={"logout"} rightIcon={null} action={logout()} />
+              <DropdownItem label={userData?.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={null}/>
+              <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={"arrow_forward_ios"} action={SetMainDrop(!mainDrop())}/>
+              <Show when={userData?.roleRank >= 10}>
+                <DropdownItem label={"Admin Panel"} leftIcon={"admin_panel_settings"} rightIcon={null} action={null} href={"/admin"}/>
+              </Show>
+              <DropdownItem label={"Logga ut"} leftIcon={"logout"} rightIcon={null} action={logout()}/>
             </>
           );
         } else {

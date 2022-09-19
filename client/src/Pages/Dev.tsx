@@ -1,10 +1,5 @@
-import { NavLink, Outlet, Route, RouteDefinition, Routes } from "solid-app-router";
-import { mergeProps, Suspense } from "solid-js";
 import Navbar from "../Components/Navbar";
-import axios from "axios"
-
-import Login from "../Components/Login"
-import Register from "../Components/Register";
+import $ from "jquery"
 
 export default function Dev() {
   document.title = "Valeria Roleplay | Dev";
@@ -14,7 +9,40 @@ export default function Dev() {
   <>
     <Navbar />
     <h2>DEV</h2>
-    {/* <Login/> */}
-    {/* <Register/> */}
   </>)
 }
+
+$(function () {
+  console.log(JSON.parse(localStorage.getItem('profile')))
+})
+
+function timeSince(date) {
+
+  var seconds = Math.floor((new Date() - date) / 1000);
+
+  var interval = seconds / 31536000;
+
+  if (interval > 1) {
+    return Math.floor(interval) + " years";
+  }
+  interval = seconds / 2592000;
+  if (interval > 1) {
+    return Math.floor(interval) + " months";
+  }
+  interval = seconds / 86400;
+  if (interval > 1) {
+    return Math.floor(interval) + " days";
+  }
+  interval = seconds / 3600;
+  if (interval > 1) {
+    return Math.floor(interval) + " hours";
+  }
+  interval = seconds / 60;
+  if (interval > 1) {
+    return Math.floor(interval) + " minutes";
+  }
+  return Math.floor(seconds) + " seconds";
+}
+// var aDay = 24*60*60*1000;
+// console.log(timeSince(new Date(Date.now()-aDay)));
+// console.log(timeSince(new Date(Date.now()-aDay*2)));

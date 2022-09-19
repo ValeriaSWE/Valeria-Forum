@@ -1,5 +1,6 @@
 import axios from "axios"
 import $ from "jquery"
+import { LoginUserServerPost } from "../api/user.jsx"
 import { Auth } from "../functions/user.js"
 
 import styles from './StylingModules/Login.module.css'
@@ -61,7 +62,7 @@ export default function Login(props) {
  * @param {String} username - String
  * @param {String} password - String
  */
-const loginUserServerPost = (username: String, password: String) => axios.post(`http://localhost:8000/user/login`, {username, password})
+// const loginUserServerPost = (username: String, password: String) => axios.post(`http://localhost:8000/user/login`, {username, password})
 
 /**
  * It takes the username and password from the form, sends it to the server, and if the server responds
@@ -72,7 +73,7 @@ const loginSubmit = async () => {
     const password = $('#login-password').val()
     
     try {
-        const { data } = await loginUserServerPost(username, password)
+        const { data } = await LoginUserServerPost(username, password)
         Auth(data)
         window.location.reload();
     } catch (error) {

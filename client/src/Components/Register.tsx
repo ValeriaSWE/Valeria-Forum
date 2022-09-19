@@ -1,5 +1,6 @@
 import axios from "axios"
 import $ from "jquery"
+import { RegisterUserServerPost } from "../api/user.jsx"
 import { Auth } from "../functions/user.js"
 
 import styles from './StylingModules/Register.module.css'
@@ -78,7 +79,6 @@ export default function Register(props) {
  * @param {String} passwordConfirm - String,
  * @param {String} username - String
  */
-const registerUserServerPost = (email: String, password: String, passwordConfirm: String, username: String) => axios.post('http://localhost:8000/user/register', {email, password, passwordConfirm, username})
 
 /**
  * registerSubmit takes the values of the username, password, and passwordConfirm fields, and then sends them to
@@ -95,7 +95,7 @@ const registerSubmit = async () => {
     const passwordConfirm = $('#register-password-confirm').val()
 
     try {
-        const {data} = await registerUserServerPost(email, password, passwordConfirm, username)
+        const {data} = await RegisterUserServerPost(email, password, passwordConfirm, username)
         Auth(data)
         window.location.reload();
     } catch (error) {

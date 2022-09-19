@@ -4,28 +4,35 @@ export default function Post(props: {
     data: any;
     // FÅR FIXAS SENARE :))
 }) {
-    const ShowRoleInPost = () => {
+    const ShowRoleInPost = (props: {
+        role: string;
+    }) => {
         return(
             <>
             <span class={styles.showRole}>
-            <i class={styles.role}>Dev</i>
-            <i class={styles.pinicon + " " + "material-icons"}>push_pin</i>
+            <i class={styles.role}>{props.role}</i>
             </span>
             </>
         )
     }
     
-    const PostStatitics = () => {
+    const PostStatitics = (props: {
+        date: string;
+        likes: number;
+        comments: number;
+    }) => {
+        const date = timeSince(new Date(props.date).getTime())
+
         return (
             <>
             <div class={styles.postStats}>
-                <p class={styles.date}>3 timmar sedan</p>
+                <p class={styles.date}>{date}</p>
                  <button>
                 <i class='material-icons'>thumb_up</i>
-                40 Likes</button>  
+                {props.likes} Likes</button>  
                 <button>
                 <i class='material-icons'>comment</i>
-                9 Kommentarer</button>
+                {props.comments} Kommentarer</button>
                 <button>
                 <i class='material-icons'>share</i>
                 dela</button>  
@@ -35,19 +42,56 @@ export default function Post(props: {
         )
        
     };
+
+    const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(props.data.creator.profilePicture.data.data).reduce(function (data, byte) {
+        return data + String.fromCharCode(byte);
+    }, ''))}`
+
     return(
     <>
     <div class={styles.post}>
         <div class={styles.postCreator}> 
-            <img class={styles.creatorImg} src="https://media.discordapp.net/attachments/1016102274667401278/1020440269176459375/AF2594FE-8DB2-41F9-BD5E-B9102D3967B1.jpg" alt="" />
-            <h2 class={styles.creatorName}>Grizly</h2>
+            <img class={styles.creatorImg} src={profilePicture} alt="" />
+            <h2 class={styles.creatorName}>{props.data.creator.username}</h2>
         </div>
         <div class={styles.feedTitle}>
-            {props.data.pinned && <ShowRoleInPost />}
+            {<ShowRoleInPost role={props.data.creator.role}/>}
+            {props.data.pinned ? <i class={styles.pinicon + " " + "material-icons"}>push_pin</i> : <></>}
             <p>{props.data.title}</p> 
         </div>
-        <PostStatitics />
+        <PostStatitics date={props.data.createdAt} likes={props.data.likes.length} comments={props.data.comments.length}/>
     </div>
     </>)
     ;
 }
+
+function timeSince(date) {
+
+    var seconds = Math.floor((new Date() - date) / 1000);
+  
+    var interval = seconds / 31536000;
+  
+    if (interval > 1) {
+      return Math.floor(interval) + " år";
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+      return Math.floor(interval) + " månader";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+      return Math.floor(interval) + " dagar";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+      return Math.floor(interval) + " timmar";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      return Math.floor(interval) + " minuter";
+    }
+    return Math.floor(seconds) + " sekunder";
+  }
+  var aDay = 24*60*60*1000;
+  console.log(timeSince(new Date(Date.now()-aDay)));
+  console.log(timeSince(new Date(Date.now()-aDay*2)));
