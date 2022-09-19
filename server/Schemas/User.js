@@ -7,10 +7,8 @@ const userSchema = new mongoose.Schema({
     password: {type: String, required: true},
     joinedAt: {type: Date, default: () => Date.now(), immutible: true},
     role: {type: String, default: "none"},
-    profilePicture: {
-        data: Buffer,
-        contentType: String 
-    }
+    roleRank: {type: Number, default: 0},
+    profilePicture: { data: Buffer, contentType: String }
 })
 
 var User = mongoose.model('User', userSchema);

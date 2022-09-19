@@ -28,7 +28,7 @@ export const loginUser = async (req, res) => {
 
         if (!isPasswordCorrect) return res.status(400).json({ message: IncorrectPassword })
 
-        const token = jwt.sign({ username: existingUser.username, id: existingUser._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_TIMEOUT})
+        const token = jwt.sign({ username: existingUser.username, roleRank: existingUser.roleRank, id: existingUser._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_TIMEOUT})
 
         return res.status(200).send({ result: existingUser, token })
     } catch (error) {
@@ -62,7 +62,7 @@ export const registerUser = async (req, res) => {
 
         const result = await User.create({ username: username, password: hashedPassword, email: email, profilePicture: { data: profilePicture, contentType: "image/png" } })
 
-        const token = jwt.sign({ username: result.username, id: result._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_TIMEOUT})
+        const token = jwt.sign({ username: result.username, roleRank: result.roleRank, id: result._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_TIMEOUT})
 
         return res.status(200).send({ result, token })
     } catch (error) {
@@ -71,17 +71,17 @@ export const registerUser = async (req, res) => {
     }
 }
 
-export const checkUserLoginTimeout = async (req, res) => {
-    const { token } = req.body
-    // console.log(token)
+// export const checkUserLoginTimeout = async (req, res) => {
+//     const { token } = req.body
+//     // console.log(token)
 
-    // const decodedData = jwt.decode(token)
-    jwt.verify(token, process.env.JWT_TOKEN, function(err, decoded) {
-        if (err) return res.status(200).send(false)
-        return res.status(200).send(true)
+//     // const decodedData = jwt.decode(token)
+//     jwt.verify(token, process.env.JWT_TOKEN, function(err, decoded) {
+//         if (err) return res.status(200).send(false)
+//         return res.status(200).send(true)
 
-    })
-    // console.log(decodedData.exp * 1000)
-    // console.log(Date.now() - decodedData.exp * 1000)
-    // return Date.now() >= decodedData.exp * 1000
-}
+//     })
+//     // console.log(decodedData.exp * 1000)
+//     // console.log(Date.now() - decodedData.exp * 1000)
+//     // return Date.now() >= decodedData.exp * 1000
+// }

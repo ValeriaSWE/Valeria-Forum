@@ -17,8 +17,8 @@ export default function Home() {
           <h1 class={styles.title}>VALERIA ROLEPLAY</h1>
 
           <div class={styles.buttons}>
-            <a class={styles.btn}>Discord</a>
-            <a class={styles.btn} href='/forum'>Forum</a>
+            <a class={styles.btn} href='https://discord.gg/nveyQhUBQr' target="_blank" >Discord</a>
+            <a class={styles.btn} href='/forum' >Forum</a>
             <a class={styles.btn} >FiveM</a>
 
             <Show when={isAdmin}>
