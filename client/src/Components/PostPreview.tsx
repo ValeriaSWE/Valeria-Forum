@@ -13,7 +13,7 @@ export default function PostPreview(props: {
             <>
             <span class={styles.showRole}>
             {/* {props.roleRank >= 5 ? <i class='material-icons'>verified</i> : <></>} */}
-            <i class={'material-icons ' + styles.verified}>verified</i>
+            <i class={'material-icons ' + styles.verified} data={props.role}>verified</i>
             <i class={styles.role} data={props.role}>{props.role}</i>
             </span>
             </>
@@ -62,7 +62,7 @@ export default function PostPreview(props: {
             <h2 class={styles.creatorName}>{props.data.creator.username}</h2>
         </div>
         <div class={styles.feedTitle}>
-            {props.data.pinned ? <i class={styles.pinicon + " " + "material-icons"}>push_pin</i> : <></>}
+            {props.data.pinned ? <i class={styles.pinicon + " material-icons"}>push_pin</i> : <></>}
             <p>{props.data.title}</p> 
         </div>
         <PostStatitics date={props.data.createdAt} likes={props.data.likes.length} comments={props.data.comments.length}/>
