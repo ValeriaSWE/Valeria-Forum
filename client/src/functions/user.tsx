@@ -6,7 +6,7 @@ import jwt_decode from "jwt-decode"
  */
 export const Auth = async (data) => {
     localStorage.setItem('profile', JSON.stringify({ ... data }))
-    console.log(data)
+    // console.log(data)
 }
 
 /**

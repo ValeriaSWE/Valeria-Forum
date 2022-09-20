@@ -1,6 +1,6 @@
 import styles from './StylingModules/Feed.module.css';
 import { splitProps, JSX } from 'solid-js';
-import Post from './Post';
+import PostPreview from './PostPreview';
 import { GetAllPosts, GetPinnedPosts } from '../api/posts';
 import $ from "jquery"
 
@@ -43,24 +43,58 @@ export default function Feed() {
     </>)
   }
 
+  function PinnedPosts() {
+
+  GetPinnedPosts().then((PinnedPosts) => {
+    PinnedPosts.data.forEach(post => {
+      $("#pinned-posts").append((<PostPreview data={post} />))
+    });
+  })
+
+
+    return (
+      <>
+        <div id="pinned-posts"></div>
+      </>
+    )
+  }
+
+  function AllPosts() {
+
+  GetAllPosts().then((AllPosts) => {
+    AllPosts.data.forEach(post => {
+      $("#all-posts").append((<PostPreview data={post} />))
+    });
+  })
+
+
+    return (
+      <>
+        <div id="all-posts"></div>
+      </>
+    )
+  }
+
   return(
     <>
       <FeedContainer>
-        <div id="pinned-posts"></div>
+        <PinnedPosts />
         <EditFeedResult />
-        <div id="all-posts"></div>
+        <AllPosts />
       </FeedContainer>
     </>
     )
 }
 
-$(async function () {
-  const PinnedPosts = await GetPinnedPosts()
-  PinnedPosts.data.forEach(post => {
-    $("#pinned-posts").append((<Post data={post} />))
-  });
-  const AllPosts = await GetAllPosts()
-  AllPosts.data.forEach(post => {
-    $("#all-posts").append((<Post data={post} />))
-  });
-})
+// async function updatePosts() {
+//   $("#pinned-posts").empty()
+//   $("#all-posts").empty()
+//   const PinnedPosts = await GetPinnedPosts()
+//   PinnedPosts.data.forEach(post => {
+//     $("#pinned-posts").append((<Post data={post} />))
+//   });
+//   const AllPosts = await GetAllPosts()
+//   AllPosts.data.forEach(post => {
+//     $("#all-posts").append((<Post data={post} />))
+//   });
+// }

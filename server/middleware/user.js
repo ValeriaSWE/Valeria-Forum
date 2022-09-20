@@ -8,7 +8,7 @@ export const checkUserLoginTimeout = async (req, res) => {
     // const decodedData = jwt.decode(token)
     jwt.verify(token, process.env.JWT_TOKEN, function(err, decoded) {
         if (err) return res.status(200).send(false)
-        console.log(decoded)
+        // console.log(decoded)
         return res.status(200).send(true)
 
     })
@@ -19,7 +19,7 @@ export const checkUserLoginTimeout = async (req, res) => {
 
 export const Authorize = (authLevel) => {
     
-    console.log(authLevel)
+    // console.log(authLevel)
 
     return (req, res, next) => {
         

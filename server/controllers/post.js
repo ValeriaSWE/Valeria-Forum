@@ -33,8 +33,8 @@ export const GetPosts = (pinned) => {
     return async (req, res) => {
         let posts = await Post.where("pinned").equals(pinned).populate('creator').limit(20)
 
-        console.log(posts)
-        console.log(pinned)
+        // console.log(posts)
+        // console.log(pinned)
 
         res.status(200).json(posts)
     }

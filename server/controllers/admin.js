@@ -9,7 +9,7 @@ export const GetUserList = async (req, res) => {
 
 export const SetUserRole = async (req, res) => {
     const { id, newRole, newRoleRank } = req.body
-    console.log(id, newRole, newRoleRank)
+    // console.log(id, newRole, newRoleRank)
 
     const user = await User.findById(id)
 

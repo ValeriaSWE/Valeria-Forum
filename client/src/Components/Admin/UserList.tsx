@@ -24,7 +24,7 @@ const EditUser = (user) => {
             </select>
             `)
             for (const key in Roles) {
-                console.log(key)
+                // console.log(key)
                 $('#role-select-' + user.username).append(`<option value="${key}">${key}</option>`)
             }
             $('#role-' + user.username).remove()
@@ -77,7 +77,7 @@ const UserElement = (props: {
 
 $(async function() {
     const {data} = await GetUserList(JSON.parse(localStorage.getItem("profile"))?.token)
-    console.log(data)
+    // console.log(data)
     data.forEach(user => {
         $('#list').append(<UserElement user={user} />)
     });
