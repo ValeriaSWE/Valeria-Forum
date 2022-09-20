@@ -15,6 +15,7 @@ import NotFound from "./Pages/404";
 import { CheckAuthLevel } from "./functions/user";
 import NotAuthed from "./Pages/NotAuthed";
 import Admin from "./Pages/Admin";
+import Post from "./Components/Post";
 
 function delay(ms: number) {
   return new Promise<void>((res) => {
@@ -62,6 +63,16 @@ const ProtectedRoute = (authLevel: number) => {
   }
 }
 
+function OnePost() {
+  const params = useParams()
+
+  return (
+    <>
+      <Post post={params.id} />
+    </>
+  )
+}
+
 /**
  * Create the Routes
  */
@@ -70,6 +81,7 @@ const Root = () => {
     <><Loader /><Routes>
       <Route path="/forum" component={Forum}>
         <Route path="/" element={<Navigate href="feed" />} />
+        <Route path="/post/:id" element={OnePost} />
         <Route path=":id" component={SubTab} />
       </Route>
       <Route path="/login" component={LoginPage} />

@@ -1,5 +1,6 @@
 import { Show } from 'solid-js';
 import styles from './StylingModules/Post.module.css';
+import roleBadge from './StylingModules/RoleBadge.module.css'
 
 export default function PostPreview(props: {
     minimal: boolean;
@@ -14,7 +15,7 @@ export default function PostPreview(props: {
             <span class={styles.showRole}>
             {/* {props.roleRank >= 5 ? <i class='material-icons'>verified</i> : <></>} */}
             <i class={'material-icons ' + styles.verified} data={props.role}>verified</i>
-            <i class={styles.role} data={props.role}>{props.role}</i>
+            <i class={roleBadge.role} data={props.role}>{props.role}</i>
             </span>
             </>
         )
@@ -39,7 +40,7 @@ export default function PostPreview(props: {
                 {props.comments} Kommentarer</button>
                 <button>
                 <i class='material-icons'>share</i>
-                dela</button>  
+                Dela</button>  
             </div>
 
             </>
@@ -53,7 +54,7 @@ export default function PostPreview(props: {
 
     return(
     <>
-    <div class={styles.post}>
+    <a class={styles.post} id={props.data._id} href={`/forum/post/${props.data._id}`} style="text-decoration: none;">
         <div class={styles.postCreator}> 
             <img class={styles.creatorImg} src={profilePicture} alt="" />
             <Show when={props.data.creator.roleRank >= 5}>
@@ -66,7 +67,7 @@ export default function PostPreview(props: {
             <p>{props.data.title}</p> 
         </div>
         <PostStatitics date={props.data.createdAt} likes={props.data.likes.length} comments={props.data.comments.length}/>
-    </div>
+    </a>
     </>)
     ;
 }

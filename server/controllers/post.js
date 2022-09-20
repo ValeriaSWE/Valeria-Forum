@@ -40,6 +40,33 @@ export const GetPosts = (pinned) => {
     }
 }
 
+export const GetPost = async (req, res) => {
+    const { id } = req.params
+
+    const post = await Post.findById(id).populate('creator').populate({
+        path: 'comments',
+        populate: { path: 'creator' }
+    })
+
+    res.status(200).send(post)
+}
+
+export const NewComment = async (req, res) => {
+    const { id } = req.params
+    const { content } = req.body
+    const { userId } = req
+
+    const post = await Post.findById(id).populate('creator').populate('comments')
+
+    const comment = await Comment.create({ content, creator: userId })
+
+    post.comments.push(comment._id)
+
+    post.save()
+
+    res.status(200).send(post)
+}
+
 // title: { type: String, required: true },
 // creator: { type: mongoose.Schema.Types.ObjectId, required: true },
 // content: { type: String, required: true },

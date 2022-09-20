@@ -1,7 +1,11 @@
-@import url('../../index.css');
+/* @import url('../../index.css'); */
 
-.forum{
-    width: 100%;
-    display: flex;
-    justify-content: center;
+.forum {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.tabContent {
+	/* z-index: -1; */
 }

@@ -8,7 +8,7 @@ import cors from 'cors'
 import { loginUser, registerUser } from "./controllers/user.js"
 import { checkUserLoginTimeout, Authorize } from "./middleware/user.js"
 import { GetUserList, SetUserRole } from './controllers/admin.js'
-import { GetPosts } from './controllers/post.js'
+import { GetPost, GetPosts, NewComment } from './controllers/post.js'
 
 app.use(express.json())
 // app.get('/', (req, res) => res.send('Hello World!'))
@@ -44,5 +44,8 @@ app.post('/admin/setUserRole', Authorize(10), SetUserRole)
 
 app.get('/posts/getPinnedPosts', GetPosts(true))
 app.get('/posts/getAllPosts', GetPosts(false))
+
+app.get('/posts/getPost/:id', GetPost)
+app.post('/posts/newComment/:id', Authorize(0), NewComment)
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

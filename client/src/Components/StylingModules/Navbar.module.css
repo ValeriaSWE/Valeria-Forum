@@ -22,8 +22,10 @@
 	box-shadow: 0px 1px 4px rgba(35, 57, 94, 0.8);
 	padding: 0px 1rem;
 	backdrop-filter: saturate(180%) blur(20px);
-	z-index: 999;
+	/* z-index: 999; */
 	user-select: none;
+	position: relative;
+	z-index: 999999;
 }
 
 .navbar .navbarNav {
@@ -45,9 +47,9 @@
 	/* aspect-ratio: 1/1; */
 }
 .logo {
-	z-index: 1;
+	/* z-index: 1; */
 	cursor: pointer;
-	z-index: 9;
+	/* z-index: 9; */
 }
 
 .navbar .navitem {
@@ -120,7 +122,7 @@
 	transition: filter 300ms;
 }
 .navbaricons {
-	z-index: 1;
+	/* z-index: 1; */
 }
 
 .navbarlinks {
@@ -133,7 +135,7 @@
 	align-items: center;
 	justify-content: center;
 	gap: 3rem;
-	z-index: 999;
+	/* z-index: 999; */
 }
 
 .linkbutton:hover {
@@ -239,7 +241,7 @@
 
 	nav .menuicon {
 		display: flex;
-		z-index: 99;
+		/* z-index: 99; */
 	}
 }
 
@@ -294,5 +296,5 @@
 .responsiveDropDown > ul > li > a {
 	text-decoration: none;
 	color: #fff;
-	z-index: 9999;
+	/* z-index: 9999; */
 }

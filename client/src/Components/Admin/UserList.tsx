@@ -1,5 +1,6 @@
 import $ from "jquery"
 import { GetUserList, SetUserRole } from "../../api/admin"
+import roleBadge from '../StylingModules/RoleBadge.module.css'
 
 const Roles = {
     'pleb': 0,
@@ -36,9 +37,7 @@ const EditUser = (user) => {
 
             user = tmp.data
 
-            $('#role-select-' + user.username).before(`
-                <p id="role-${user.username}">${user.role}</p>
-            `)
+            $('#role-select-' + user.username).before(<RoleElement user={user} />)
             $('#role-select-' + user.username).remove()
             $("#edit-" + user.username).html("Redigera")
         }
@@ -65,14 +64,24 @@ const UserElement = (props: {
             <div id="element" style={"display: flex; gap: 2rem;"}>
                 <img src={profilePicture} width="100px"/>
                 <h3 id={"username-" + user.username}>{user.username}</h3>
-                <p id={"role-" + user.username}>{user.role}</p>
+                {/* <p id={"role-" + user.username} class={roleBadge.role} data={user.role}>{user.role}</p> */}
+                <RoleElement user={user} />
                 <p>{user.email}</p>
                 {/* <p>{user.nicknames}</p> */}
                 <button id={"edit-" + user.username} onClick={EditUser(user)}>Redigera</button>
             </div>
         </>
     )
+}
 
+const RoleElement = (props: {
+    user: any;
+}) => {
+    return (
+        <>
+            <p id={"role-" + props.user.username} class={roleBadge.role} data={props.user.role}>{props.user.role}</p>
+        </>
+    )
 }
 
 $(async function() {

@@ -10,9 +10,9 @@ export default function Forum() {
 
   return (
   <>
-    <Navbar />
+  <Navbar />
    <div class={styles.forum}>
-    <div class="tab-content">
+    <div class={styles.tabContent}>
         <Suspense
           fallback={
             <p>Laddar innehåll</p>

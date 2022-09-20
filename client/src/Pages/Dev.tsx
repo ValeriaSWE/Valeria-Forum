@@ -1,5 +1,6 @@
 import Navbar from "../Components/Navbar";
 import $ from "jquery"
+import Post from "../Components/Post";
 
 export default function Dev() {
   document.title = "Valeria Roleplay | Dev";
@@ -9,12 +10,9 @@ export default function Dev() {
   <>
     <Navbar />
     <h2>DEV</h2>
+    <Post />
   </>)
 }
-
-$(function () {
-  console.log(JSON.parse(localStorage.getItem('profile')))
-})
 
 function timeSince(date) {
 
