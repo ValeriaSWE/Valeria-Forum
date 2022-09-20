@@ -31,6 +31,7 @@
 	-moz-box-shadow: 0 0 3px #adadad;
 	-webkit-box-shadow: 0 0 3px #adadad;
 	box-shadow: 0 0 3px #adadad;
+	z-index: 999;
 }
 
 .title {
