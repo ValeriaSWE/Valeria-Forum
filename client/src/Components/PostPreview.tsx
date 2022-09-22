@@ -1,5 +1,5 @@
 import { Show } from 'solid-js';
-import styles from './StylingModules/Post.module.css';
+import styles from './StylingModules/PostPreview.module.css';
 import roleBadge from './StylingModules/RoleBadge.module.css'
 
 export default function PostPreview(props: {
@@ -30,48 +30,45 @@ export default function PostPreview(props: {
 
         return (
             <>
-            <div class={styles.postStats}>
-                <p class={styles.date}>{date}</p>
-                 <button>
+           <div class={styles.postStatitics}>
+                <p class={styles.postDate}>{ timeSince(new Date(props.date).getTime())} Sedan</p>
+                <button>
                 <i class='material-icons'>thumb_up</i>
-                {props.likes} Likes</button>  
+                {props.likes}</button>  
                 <button>
                 <i class='material-icons'>comment</i>
-                {props.comments} Kommentarer</button>
+                {props.comments}</button>
                 <button>
-                <i class='material-icons'>share</i>
-                Dela</button>  
+                <i class='material-icons'>more_horiz</i></button>  
             </div>
-
             </>
         )
-       
     };
 
     const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(props.data.creator.profilePicture.data.data).reduce(function (data, byte) {
         return data + String.fromCharCode(byte);
     }, ''))}`
 
-    return(
+   return(
     <>
     <a class={styles.post} id={props.data._id} href={`/forum/post/${props.data._id}`} style="text-decoration: none;">
-        <div class={styles.postCreator}> 
-            <img class={styles.creatorImg} src={profilePicture} alt="" />
+        <div class={styles.postCreatorImg}>
+            <img class={styles.profileImg} src={profilePicture} alt="" />
             <Show when={props.data.creator.roleRank >= 5}>
                 <ShowRoleInPost role={props.data.creator.role}/>
             </Show>
             <h2 class={styles.creatorName}>{props.data.creator.username}</h2>
-        </div>
-        <div class={styles.feedTitle}>
             {props.data.pinned ? <i class={styles.pinicon + " material-icons"}>push_pin</i> : <></>}
-            <p>{props.data.title}</p> 
+        </div>
+        <div class={styles.postTitle}>
+            <h2>{props.data.title}</h2>
+            <p>{props.data.content}</p> 
         </div>
         <PostStatitics date={props.data.createdAt} likes={props.data.likes.length} comments={props.data.comments.length}/>
     </a>
-    </>)
-    ;
+    </>
+   )
 }
-
 function timeSince(date) {
 
     var seconds = Math.floor((new Date() - date) / 1000);

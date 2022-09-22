@@ -1,7 +1,7 @@
 import { GetPost, NewComment } from "../api/posts"
 import $ from "jquery"
 import roleBadge from './StylingModules/RoleBadge.module.css'
-import styles from './StylingModules/Post.module.css'
+import styles from './StylingModules/PostPreview.module.css'
 import { Show } from "solid-js"
 
 export default function Post(props: {
