@@ -29,35 +29,54 @@ export const createNewPostTMP = async () => {
     }
 }
 
+// createNewPostTMP()
+
 export const GetPosts = (pinned) => {
     return async (req, res) => {
         let { sort } = req.params
 
+        // if (sort.split('-')[0] == "hot") {
+        //     let dir = 1
+
+        //     if (sort.split('-')[1] == "inverse") {
+        //         dir = -1
+        //     }
+
+        //     sort = { likeCount: dir, commentCount: dir }
+
+        // } else {
+            
+        let sortPort = {}
+        let dir = -1
         if (sort.includes('-inverse')) {
-            sort = [[sort.split('-')[0], -1]]
-        } else {
-            sort = [[sort, 1]]
+            dir = 1
+            sort = sort.split('-')[0]
         }
 
-        // * needs fixing to be both likes and comments combined
-        if (sort[0][0] == "hot") {
-            sort = [['likes', sort[0][1]]]
-            let testPosts = await Post.aggregate([
-                {
-                    $match: { pinned: pinned }
-                },
-                {
-                    $addFields: { likeCount: {$size: { "$ifNull": [ "$likes", [] ] } }, commentCount: {$size: { "$ifNull": [ "$comments", [] ] } } }
-                },
-                {
-                    $sort: { likeCount: 1, commentCount: 1 }
-                }
-            ])
+        if (sort == "hot") {
+            sortPort = { likeCount: dir, commentCount: dir }
+        } else {
+            sortPort[sort] = dir
         }
+        // }
 
         console.log(sort)
 
-        let posts = await Post.where("pinned").equals(pinned).populate('likes').sort(sort).populate('creator').limit(20)
+        let posts = await Post.aggregate([
+            {
+                $match: { pinned: pinned }
+            },
+            {
+                $addFields: { likeCount: {$size: { "$ifNull": [ "$likes", [] ] } }, commentCount: {$size: { "$ifNull": [ "$comments", [] ] } } }
+            },
+            {
+                $sort: sortPort
+            },
+        ])
+
+        for (var k in posts) {
+            posts[k]['creator'] = await User.findById(posts[k]['creator'])
+        }
 
         // console.log(posts)
         // console.log(pinned)

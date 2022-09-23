@@ -26,10 +26,14 @@ export default function Feed() {
             <i class='material-icons'>group</i>
             <p>Följer</p>
           </div> */}
-          <button class={styles.editFeedIconButton} onClick={() => {
+          <button id='sort-hot' class={styles.editFeedIconButton} onClick={() => {
             let sort = "hot"
+            $('#current-sort-icon').remove()
             if (prevSort == "hot") {
               sort = "hot-inverse"
+              $('#sort-hot').append("<i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_up</i>")
+            } else {
+              $('#sort-hot').append("<i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_down</i>")
             }
 
             prevSort = sort
@@ -39,10 +43,14 @@ export default function Feed() {
             <i class='material-icons'>whatshot</i>
             <p>Populärt</p>
           </button>
-          <button class={styles.editFeedIconButton} onClick={() => {
+          <button id='sort-latest' class={styles.editFeedIconButton} onClick={() => {
             let sort = "createdAt"
+            $('#current-sort-icon').remove()
             if (prevSort == "createdAt") {
               sort = "createdAt-inverse"
+              $('#sort-latest').append("<i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_up</i>")
+            } else {
+              $('#sort-latest').append("<i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_down</i>")
             }
 
             prevSort = sort
@@ -51,6 +59,7 @@ export default function Feed() {
           }}>        
             <i class='material-icons'>sync</i>
             <p>Senaste</p>
+            <i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_down</i>
           </button>
         </div>
         <div class={styles.searchFeed}>        

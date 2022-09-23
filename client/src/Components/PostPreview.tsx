@@ -47,7 +47,7 @@ export default function PostPreview(props: {
                         })
                         
                     }}>
-                    <i class='material-icons' id={"likes-icon-" + props.postId} style={props.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result?._id) ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
+                    <i class='material-icons' id={"likes-icon-" + props.postId} style={props.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id) ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
                     <span id={"likes-" + props.postId}>{props.likes.length}</span>
                 </button>
                 <form action={"/forum/post/" + props.postId}>
@@ -66,6 +66,8 @@ export default function PostPreview(props: {
         return data + String.fromCharCode(byte);
     }, ''))}`
 
+    console.log(props.data.likes)
+
    return(
     <>
     <div class={styles.post} id={props.data._id}>
@@ -81,7 +83,7 @@ export default function PostPreview(props: {
             <h2>{props.data.title}</h2>
             <p>{props.data.content}</p> 
         </a>
-        <PostStatitics date={props.data.createdAt} likes={props.data.likes} comments={props.data.comments.length} postId={props.data._id}/>
+        <PostStatitics date={props.data.createdAt} likes={props.data.likes} comments={props.data.comments.length} postId={props.data._id} />
     </div>
     </>
    )
