@@ -8,7 +8,7 @@ import cors from 'cors'
 import { loginUser, registerUser } from "./controllers/user.js"
 import { checkUserLoginTimeout, Authorize } from "./middleware/user.js"
 import { GetUserList, SetUserRole } from './controllers/admin.js'
-import { GetPost, GetPosts, NewComment } from './controllers/post.js'
+import { GetPost, GetPosts, LikePost, NewComment } from './controllers/post.js'
 
 app.use(express.json())
 // app.get('/', (req, res) => res.send('Hello World!'))
@@ -31,21 +31,20 @@ async function connect() {
 connect()
 
 
+// * User functions
 app.post('/user/login', loginUser)
-
 app.post('/user/register', registerUser)
 
-// app.post('/user/checkToken', Authorize(0), (req, res) => res.status(200).send(true))
-// app.post('/user/decodeToken', Authorize(0), (req, res) => res.status(200).send(req.decoded))
-// app.post('/user/checkAuthLevel', Authorize(0), (req, res) => res.status(200).send())
-
+// * Admin functions
 app.get('/admin/getUserList', Authorize(10), GetUserList)
 app.post('/admin/setUserRole', Authorize(10), SetUserRole)
 
-app.get('/posts/getPinnedPosts', GetPosts(true))
-app.get('/posts/getAllPosts', GetPosts(false))
+// * Posts functions
+app.get('/posts/getPinnedPosts/:sort', GetPosts(true))
+app.get('/posts/getAllPosts/:sort', GetPosts(false))
 
 app.get('/posts/getPost/:id', GetPost)
 app.post('/posts/newComment/:id', Authorize(0), NewComment)
+app.post('/posts/likePost/:id', Authorize(0), LikePost)
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

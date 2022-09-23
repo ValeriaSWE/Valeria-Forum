@@ -8,14 +8,14 @@
 	border-radius: var(--border-radius);
 	display: grid;
 	margin-top: 1rem;
-	grid-template-areas: 
-	'postCreatorImg postTitle postTitle postTitle postStatitics'
-	'postCreatorImg postTitle postTitle postTitle postStatitics';
+	grid-template-areas:
+		"postCreatorImg postTitle postTitle postTitle postStatitics"
+		"postCreatorImg postTitle postTitle postTitle postStatitics";
 	grid-template-rows: 60% 1fr;
 	grid-template-columns: 12rem 1fr 1fr 1fr 18rem;
 }
 
-.post .postCreatorImg{
+.post .postCreatorImg {
 	display: grid;
 	align-content: center;
 	grid-area: postCreatorImg;
@@ -25,13 +25,13 @@
 	align-items: center;
 	gap: 5px;
 }
-.creatorName{
+.creatorName {
 	font-size: large;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-.post .postCreatorImg .profileImg{
+.post .postCreatorImg .profileImg {
 	width: 2.5rem;
 	aspect-ratio: 1/1;
 	border-radius: 50%;
@@ -47,36 +47,35 @@
 	color: var(--color-blue-m);
 	z-index: 9;
 	border-radius: 50%;
-	border: 1px solid #fff;
-	background-color: #fff;
+	border: 1px solid #f0f2f5;
+	background-color: #f0f2f5;
 }
 
-
-.post .postCreator{
+.post .postCreator {
 	display: grid;
 	grid-area: postCreator;
 
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	gap: .5rem;
+	gap: 0.5rem;
 	font-size: small;
 }
-.post .postCreator .creatorName{
+.post .postCreator .creatorName {
 	font-size: medium;
 }
 .post .postCreator .creatorName:hover {
 	text-decoration: underline;
 }
 
-.post .postCreator .postDate{
+.post .postCreator .postDate {
 	height: 100%;
 	display: flex;
 	align-items: center;
 	color: gray;
 }
 
-.post .postTitle{
+.post .postTitle {
 	display: grid;
 	align-content: flex-start;
 	max-width: 1fr;
@@ -88,7 +87,7 @@
 	font-size: 1.2rem;
 }
 
-.post .postTitle > p{
+.post .postTitle > p {
 	font-size: 0.85rem;
 	color: #000;
 	font-weight: normal;
@@ -98,13 +97,12 @@
 }
 
 .pinicon {
-	font-size:1.3rem;
+	font-size: 1.3rem;
 	color: red;
 	transform: rotate(22.5deg);
 }
 
-
-.post .postStatitics{
+.post .postStatitics {
 	display: grid;
 	grid-area: postStatitics;
 
@@ -114,7 +112,7 @@
 	align-items: center;
 	gap: 5px;
 }
-.post .postStatitics button{
+.post .postStatitics button {
 	display: flex;
 	flex-direction: row;
 	border-radius: var(--border-radius);

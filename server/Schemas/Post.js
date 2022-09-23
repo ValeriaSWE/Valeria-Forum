@@ -10,6 +10,7 @@ const postSchema = new mongoose.Schema({
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     pinned: { type: Boolean, default: false },
+    tags: [{type: mongoose.Schema.Types.ObjectId, ref: "Tags"}]
 })
 
 const Post = mongoose.model('Post', postSchema);

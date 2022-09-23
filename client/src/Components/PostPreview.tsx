@@ -1,6 +1,9 @@
 import { Show } from 'solid-js';
+import { LikePost } from '../api/posts';
 import styles from './StylingModules/PostPreview.module.css';
 import roleBadge from './StylingModules/RoleBadge.module.css'
+
+import $ from 'jquery';
 
 export default function PostPreview(props: {
     minimal: boolean;
@@ -23,23 +26,37 @@ export default function PostPreview(props: {
     
     const PostStatitics = (props: {
         date: string;
-        likes: number;
+        likes: [string];
         comments: number;
+        postId: string;
     }) => {
-        const date = timeSince(new Date(props.date).getTime())
-
         return (
             <>
-           <div class={styles.postStatitics}>
-                <p class={styles.postDate}>{ timeSince(new Date(props.date).getTime())} Sedan</p>
-                <button>
-                <i class='material-icons'>thumb_up</i>
-                {props.likes}</button>  
-                <button>
-                <i class='material-icons'>comment</i>
-                {props.comments}</button>
-                <button>
-                <i class='material-icons'>more_horiz</i></button>  
+            <div class={styles.postStatitics}>
+                <p class={styles.postDate}>{ timeSince(new Date(props.date).getTime()) } Sedan</p>
+                <button onClick={() => {
+                    // console.log(JSON.parse(localStorage.getItem('profile')).token)
+                        LikePost(props.postId, JSON.parse(localStorage.getItem('profile')).token).then((res) => {
+                            const { data } = res
+                            $('#likes-' + props.postId).html(data.likes.length)
+                            if (data.likes.includes(JSON.parse(localStorage.getItem('profile')).result._id)) {
+                                $('#likes-icon-' + props.postId).css('color', 'var(--color-blue-l)')
+                            } else {
+                                $('#likes-icon-' + props.postId).css('color', 'inherit')
+                            }
+                        })
+                        
+                    }}>
+                    <i class='material-icons' id={"likes-icon-" + props.postId} style={props.likes.includes(JSON.parse(localStorage.getItem('profile')).result._id) ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
+                    <span id={"likes-" + props.postId}>{props.likes.length}</span>
+                </button>
+                <form action={"/forum/post/" + props.postId}>
+                    <button>
+                        <i class='material-icons'>comment</i>
+                        {props.comments}
+                    </button>
+                </form>  
+                <button><i class='material-icons'>more_horiz</i></button>  
             </div>
             </>
         )
@@ -51,21 +68,21 @@ export default function PostPreview(props: {
 
    return(
     <>
-    <a class={styles.post} id={props.data._id} href={`/forum/post/${props.data._id}`} style="text-decoration: none;">
+    <div class={styles.post} id={props.data._id}>
         <div class={styles.postCreatorImg}>
             <img class={styles.profileImg} src={profilePicture} alt="" />
+            <h2 class={styles.creatorName}>{props.data.creator.username}</h2>
             <Show when={props.data.creator.roleRank >= 5}>
                 <ShowRoleInPost role={props.data.creator.role}/>
             </Show>
-            <h2 class={styles.creatorName}>{props.data.creator.username}</h2>
             {props.data.pinned ? <i class={styles.pinicon + " material-icons"}>push_pin</i> : <></>}
         </div>
-        <div class={styles.postTitle}>
+        <a class={styles.postTitle} href={`/forum/post/${props.data._id}`} style="text-decoration: none;">
             <h2>{props.data.title}</h2>
             <p>{props.data.content}</p> 
-        </div>
-        <PostStatitics date={props.data.createdAt} likes={props.data.likes.length} comments={props.data.comments.length}/>
-    </a>
+        </a>
+        <PostStatitics date={props.data.createdAt} likes={props.data.likes} comments={props.data.comments.length} postId={props.data._id}/>
+    </div>
     </>
    )
 }

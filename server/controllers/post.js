@@ -31,7 +31,33 @@ export const createNewPostTMP = async () => {
 
 export const GetPosts = (pinned) => {
     return async (req, res) => {
-        let posts = await Post.where("pinned").equals(pinned).populate('creator').limit(20)
+        let { sort } = req.params
+
+        if (sort.includes('-inverse')) {
+            sort = [[sort.split('-')[0], -1]]
+        } else {
+            sort = [[sort, 1]]
+        }
+
+        // * needs fixing to be both likes and comments combined
+        if (sort[0][0] == "hot") {
+            sort = [['likes', sort[0][1]]]
+            let testPosts = await Post.aggregate([
+                {
+                    $match: { pinned: pinned }
+                },
+                {
+                    $addFields: { likeCount: {$size: { "$ifNull": [ "$likes", [] ] } }, commentCount: {$size: { "$ifNull": [ "$comments", [] ] } } }
+                },
+                {
+                    $sort: { likeCount: 1, commentCount: 1 }
+                }
+            ])
+        }
+
+        console.log(sort)
+
+        let posts = await Post.where("pinned").equals(pinned).populate('likes').sort(sort).populate('creator').limit(20)
 
         // console.log(posts)
         // console.log(pinned)
@@ -61,6 +87,23 @@ export const NewComment = async (req, res) => {
     const comment = await Comment.create({ content, creator: userId })
 
     post.comments.push(comment._id)
+
+    post.save()
+
+    res.status(200).send(post)
+}
+
+export const LikePost = async (req, res) => {
+    const { id } = req.params
+    const { userId } = req
+
+    const post = await Post.findById(id)
+
+    if (post.likes.includes(userId)) {
+        post.likes.remove(userId)
+    } else {
+        post.likes.push(userId)
+    }
 
     post.save()
 

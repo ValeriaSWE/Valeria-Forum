@@ -52,8 +52,6 @@ async function newComment() {
 
     const token = JSON.parse(localStorage.getItem('profile')).token
 
-    console.log(content)
-
     await NewComment(postId, content, token)
 
     window.location.reload()

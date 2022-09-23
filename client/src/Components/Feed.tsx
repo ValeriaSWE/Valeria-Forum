@@ -6,6 +6,8 @@ import $ from "jquery"
 
 export default function Feed() {
   
+  let prevSort = "createdAt"
+
   function FeedContainer(props: {children: any}) {
     return(
     <>
@@ -20,18 +22,36 @@ export default function Feed() {
     <>
     <div class={styles.editFeed}>
       <div>
-          <div class={styles.editFeedIconButton}>
+          {/* <div class={styles.editFeedIconButton}>
             <i class='material-icons'>group</i>
             <p>Följer</p>
-          </div>
-          <div class={styles.editFeedIconButton}>        
+          </div> */}
+          <button class={styles.editFeedIconButton} onClick={() => {
+            let sort = "hot"
+            if (prevSort == "hot") {
+              sort = "hot-inverse"
+            }
+
+            prevSort = sort
+
+            sortPosts(sort)
+          }}>        
             <i class='material-icons'>whatshot</i>
             <p>Populärt</p>
-          </div>
-          <div class={styles.editFeedIconButton}>        
+          </button>
+          <button class={styles.editFeedIconButton} onClick={() => {
+            let sort = "createdAt"
+            if (prevSort == "createdAt") {
+              sort = "createdAt-inverse"
+            }
+
+            prevSort = sort
+
+            sortPosts(sort)
+          }}>        
             <i class='material-icons'>sync</i>
             <p>Senaste</p>
-          </div>
+          </button>
         </div>
         <div class={styles.searchFeed}>        
             <i class='material-icons'>search</i>
@@ -45,11 +65,12 @@ export default function Feed() {
 
   function PinnedPosts() {
 
-  GetPinnedPosts().then((PinnedPosts) => {
-    PinnedPosts.data.forEach(post => {
-      $("#pinned-posts").append((<PostPreview data={post} />))
-    });
-  })
+    GetPinnedPosts().then((PinnedPosts) => {
+      $("#pinned-posts").empty()
+      PinnedPosts.data.forEach(post => {
+        $("#pinned-posts").append(<PostPreview data={post} />)
+      });
+    })
 
 
     return (
@@ -61,11 +82,12 @@ export default function Feed() {
 
   function AllPosts() {
 
-  GetAllPosts().then((AllPosts) => {
-    AllPosts.data.forEach(post => {
-      $("#all-posts").append((<PostPreview data={post} />))
-    });
-  })
+    GetAllPosts('createdAt').then((AllPosts) => {
+      $("#all-posts").empty()
+      AllPosts.data.forEach(post => {
+        $("#all-posts").append((<PostPreview data={post} />))
+      });
+    })
 
 
     return (
@@ -84,7 +106,17 @@ export default function Feed() {
       </FeedContainer>
     </>
     )
+    
+    function sortPosts(sort: string) {
+      GetAllPosts(sort).then((AllPosts) => {
+        $("#all-posts").empty()
+        AllPosts.data.forEach(post => {
+          $("#all-posts").append((<PostPreview data={post} />))
+        });
+      })
+    }
 }
+
 
 // async function updatePosts() {
 //   $("#pinned-posts").empty()
