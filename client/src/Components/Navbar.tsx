@@ -159,7 +159,7 @@ export default function Navbar() {
 
       function DropdownItem(props: { 
         leftIcon: string;
-        rightIcon: string | null;
+        rightIcon: [string, number] | null;
         action: any;
         label: string;
         href: string;
@@ -181,8 +181,8 @@ export default function Navbar() {
               }
             </span>
             {props.label}
-            <span class={styles.iconright  + " material-icons"}  id="nav-item">
-              {props.rightIcon}
+            <span class={styles.iconright  + " material-icons"}  id="nav-item" style={"font-size: " + (props.rightIcon ? props.rightIcon[1] : null) + "rem; color: var(--color-white-l);"}>
+              {props.rightIcon ? props.rightIcon[0] : null }
             </span>
           </a>
         );
@@ -195,7 +195,7 @@ export default function Navbar() {
           return(
             <>          
               <DropdownItem label={userData?.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={null}/>
-              <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={"arrow_forward_ios"} action={SetMainDrop(!mainDrop())}/>
+              <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={["arrow_forward_ios", 1.5]} action={SetMainDrop(!mainDrop())}/>
               <Show when={userData?.roleRank >= 10}>
                 <DropdownItem label={"Admin Panel"} leftIcon={"admin_panel_settings"} rightIcon={null} action={null} href={"/admin"}/>
               </Show>
@@ -220,13 +220,21 @@ export default function Navbar() {
         }
       }
 
+      function toggleDarkmode() {
+        let lightModeOn = localStorage.getItem('lightmode') || "off"
+        
+        localStorage.setItem('lightmode', (lightModeOn == "off" ? "on": "off"))
+
+        location.reload()
+      }
+
       const DropDownSettings = () => {
         return(
           <>
           <DropdownItem label={"Gå Tillbaka"} leftIcon={"arrow_back"} rightIcon={null} action={SetMainDrop(!mainDrop())} />
-          <DropdownItem label={"Inställning 1 "} leftIcon={"light_mode"} rightIcon={null} action={null} />
-          <DropdownItem label={"Inställning 2 "} leftIcon={"light_mode"} rightIcon={null} action={null} />
-          <DropdownItem label={"Inställning 3... "} leftIcon={"light_mode"} rightIcon={null} action={null} />
+          <DropdownItem label={"Mörkt läge"} leftIcon={"light_mode"} rightIcon={[(localStorage.getItem('lightmode') == "on" ? 'toggle_off': "toggle_on"), 3]} action={toggleDarkmode()}/>
+          <DropdownItem label={"Inställning 2 "} leftIcon={"settings"} rightIcon={null} action={null} />
+          <DropdownItem label={"Inställning 3... "} leftIcon={"settings"} rightIcon={null} action={null} />
           </>
         )
       }

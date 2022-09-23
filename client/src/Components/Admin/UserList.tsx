@@ -84,11 +84,11 @@ const RoleElement = (props: {
     )
 }
 
-$(async function() {
-    const {data} = await GetUserList(JSON.parse(localStorage.getItem("profile"))?.token)
-    // console.log(data)
-    data.forEach(user => {
-        $('#list').append(<UserElement user={user} />)
-    });
-})
+// $(async function() {
+//     const {data} = await GetUserList(JSON.parse(localStorage.getItem("profile"))?.token)
+//     // console.log(data)
+//     data.forEach(user => {
+//         $('#list').append(<UserElement user={user} />)
+//     });
+// })
 

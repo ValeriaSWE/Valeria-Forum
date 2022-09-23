@@ -180,7 +180,7 @@
 	padding: 0;
 	width: 30px;
 	height: 2px;
-	background-color: #fff;
+	background-color: var(--color-white-l);
 	display: block;
 	border-radius: 4px;
 	transition: all 0.4s ease-in-out;

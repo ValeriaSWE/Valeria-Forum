@@ -6,7 +6,7 @@
     height: 100vh;
     width: 100vw;
     overflow: hidden;
-    color: var(--color-white);
+    color: white;
     background-color: var(--color-blue-d);
     font-size: large;
     display: flex;
@@ -55,7 +55,7 @@
 }
 
 .btn:nth-child(1) {
-    background-color: #7289DA;
+    background-color:  #7289DA;
 }
 
 .btn:nth-child(2) {

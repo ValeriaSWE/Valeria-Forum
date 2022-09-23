@@ -16,6 +16,7 @@ import { CheckAuthLevel } from "./functions/user";
 import NotAuthed from "./Pages/NotAuthed";
 import Admin from "./Pages/Admin";
 import Post from "./Components/Post";
+import $ from "jquery";
 
 function delay(ms: number) {
   return new Promise<void>((res) => {
@@ -105,6 +106,17 @@ const App = () => {
     </Router>
   );
 };
+
+$(function () {
+  const lightModeOn = localStorage.getItem('lightmode') || "on"
+
+  console.log(lightModeOn)
+
+  if (lightModeOn == "off") {
+    $(':root').css('--color-white-l', "#000")
+    $(':root').css('--color-white-m', "#555")
+  }
+})
 
 /* Rendering the App component to the root element. */
 render(() => <App></App>, document.getElementById('root') as HTMLElement);
