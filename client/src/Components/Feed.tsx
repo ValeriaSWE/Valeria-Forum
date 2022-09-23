@@ -27,10 +27,10 @@ export default function Feed() {
             <p>Följer</p>
           </div> */}
           <button id='sort-hot' class={styles.editFeedIconButton} onClick={() => {
-            let sort = "hot"
+            let sort = "interactionCount"
             $('#current-sort-icon').remove()
-            if (prevSort == "hot") {
-              sort = "hot-inverse"
+            if (prevSort == "interactionCount") {
+              sort = "interactionCount-inverse"
               $('#sort-hot').append("<i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_up</i>")
             } else {
               $('#sort-hot').append("<i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_down</i>")

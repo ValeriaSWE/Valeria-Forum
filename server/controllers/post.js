@@ -31,20 +31,15 @@ export const createNewPostTMP = async () => {
 
 // createNewPostTMP()
 
+/**
+ * It gets all the posts from the database, sorts them by the sort parameter, and then returns them to
+ * the frontend
+ * @param pinned - boolean
+ * @returns list with posts
+ */
 export const GetPosts = (pinned) => {
     return async (req, res) => {
         let { sort } = req.params
-
-        // if (sort.split('-')[0] == "hot") {
-        //     let dir = 1
-
-        //     if (sort.split('-')[1] == "inverse") {
-        //         dir = -1
-        //     }
-
-        //     sort = { likeCount: dir, commentCount: dir }
-
-        // } else {
             
         let sortPort = {}
         let dir = -1
@@ -53,12 +48,7 @@ export const GetPosts = (pinned) => {
             sort = sort.split('-')[0]
         }
 
-        if (sort == "hot") {
-            sortPort = { likeCount: dir, commentCount: dir }
-        } else {
-            sortPort[sort] = dir
-        }
-        // }
+        sortPort[sort] = dir
 
         console.log(sort)
 
@@ -67,19 +57,18 @@ export const GetPosts = (pinned) => {
                 $match: { pinned: pinned }
             },
             {
-                $addFields: { likeCount: {$size: { "$ifNull": [ "$likes", [] ] } }, commentCount: {$size: { "$ifNull": [ "$comments", [] ] } } }
+                $addFields: { interactionCount: { $add: [{$size: { "$ifNull": [ "$comments", [] ] } }, {$size: { "$ifNull": [ "$likes", [] ] } }]} }
             },
             {
                 $sort: sortPort
             },
         ])
+        
 
         for (var k in posts) {
             posts[k]['creator'] = await User.findById(posts[k]['creator'])
+            console.log(posts[k]['interactionCount'])
         }
-
-        // console.log(posts)
-        // console.log(pinned)
 
         res.status(200).json(posts)
     }
