@@ -47,7 +47,7 @@ export default function PostPreview(props: {
                         })
                         
                     }}>
-                    <i class='material-icons' id={"likes-icon-" + props.postId} style={props.likes.includes(JSON.parse(localStorage.getItem('profile')).result._id) ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
+                    <i class='material-icons' id={"likes-icon-" + props.postId} style={props.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result?._id) ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
                     <span id={"likes-" + props.postId}>{props.likes.length}</span>
                 </button>
                 <form action={"/forum/post/" + props.postId}>
