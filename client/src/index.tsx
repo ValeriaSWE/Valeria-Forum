@@ -57,7 +57,7 @@ const ProtectedRoute = (authLevel: number) => {
   return () => {
     
     return (
-      <Show when={localStorage.getItem('profile') && CheckAuthLevel(JSON.parse(localStorage.getItem('profile')).token, authLevel)} fallback={<NotAuthed />}>
+      <Show when={localStorage.getItem('profile') && CheckAuthLevel(JSON.parse(localStorage.getItem('profile'))?.token, authLevel)} fallback={<NotAuthed />}>
         <Outlet />
       </Show>
     );

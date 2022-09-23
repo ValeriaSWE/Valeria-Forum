@@ -50,7 +50,7 @@ async function newComment() {
 
     const content = $("#new-comment").val()
 
-    const token = JSON.parse(localStorage.getItem('profile')).token
+    const token = JSON.parse(localStorage.getItem('profile'))?.token
 
     await NewComment(postId, content, token)
 

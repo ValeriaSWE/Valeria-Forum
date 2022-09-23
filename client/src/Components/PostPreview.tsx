@@ -35,11 +35,11 @@ export default function PostPreview(props: {
             <div class={styles.postStatitics}>
                 <p class={styles.postDate}>{ timeSince(new Date(props.date).getTime()) } Sedan</p>
                 <button onClick={() => {
-                    // console.log(JSON.parse(localStorage.getItem('profile')).token)
-                        LikePost(props.postId, JSON.parse(localStorage.getItem('profile')).token).then((res) => {
+                    // console.log(JSON.parse(localStorage.getItem('profile'))?.token)
+                        LikePost(props.postId, JSON.parse(localStorage.getItem('profile'))?.token).then((res) => {
                             const { data } = res
                             $('#likes-' + props.postId).html(data.likes.length)
-                            if (data.likes.includes(JSON.parse(localStorage.getItem('profile')).result._id)) {
+                            if (data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id)) {
                                 $('#likes-icon-' + props.postId).css('color', 'var(--color-blue-l)')
                             } else {
                                 $('#likes-icon-' + props.postId).css('color', 'inherit')

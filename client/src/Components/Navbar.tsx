@@ -12,13 +12,13 @@ export default function Navbar() {
   const [showRegister, setShowRegister] = createSignal(false);
   const [showLogin, setShowLogin] = createSignal(false);
 
-  // const checkToken = CheckAuthLevel(JSON.parse(localStorage.getItem('profile')).token, 0)
+  // const checkToken = CheckAuthLevel(JSON.parse(localStorage.getItem('profile'))?.token, 0)
 
   let userData = {}
   let loggedIn = false
   let profilePicture = ''
-  if (localStorage.getItem('profile') && CheckAuthLevel(JSON.parse(localStorage.getItem('profile')).token, 0)) {
-    userData = JSON.parse(localStorage.getItem('profile')).result
+  if (localStorage.getItem('profile') && CheckAuthLevel(JSON.parse(localStorage.getItem('profile'))?.token, 0)) {
+    userData = JSON.parse(localStorage.getItem('profile'))?.result
     profilePicture = `data:image/png;base64,${btoa(new Uint8Array(userData.profilePicture.data.data).reduce(function (data, byte) {
       return data + String.fromCharCode(byte);
     }, ''))}`
@@ -190,7 +190,7 @@ export default function Navbar() {
 
 
       const DropDownMain = () => {
-        // console.log(JSON.parse(localStorage.getItem('profile')).result.username)
+        // console.log(JSON.parse(localStorage.getItem('profile'))?.result.username)
         if (loggedIn) {
           return(
             <>          
