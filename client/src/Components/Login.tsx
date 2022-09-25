@@ -1,4 +1,3 @@
-import axios from "axios"
 import $ from "jquery"
 import { LoginUserServerPost } from "../api/user.jsx"
 import { Auth } from "../functions/user.js"

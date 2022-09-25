@@ -4,7 +4,7 @@ import dotenv from "dotenv"
 import fs from "fs"
 
 import User from "../Schemas/User.js"
-import { IncorrectPassword, PasswordDontMatch, SomethingWrong, UserDoesntExists, UsernameTaken } from "../errorMessages.js"
+import { IncorrectPassword, PasswordDontMatch, PasswordToShort, SomethingWrong, UserDoesntExists, UsernameTaken } from "../errorMessages.js"
 
 dotenv.config()
 
@@ -54,11 +54,13 @@ export const registerUser = async (req, res) => {
 
         if(existingUser) return res.status(400).json({ message: UsernameTaken })
 
+        if(password.length < 8) return res.status(400).json({ message: PasswordToShort })
+
         if(password !== passwordConfirm) return res.status(400).json({ message: PasswordDontMatch })
 
         const hashedPassword = await bcrypt.hash(password, 12)
 
-        const profilePicture = fs.readFileSync("./controllers/default_pfp.png")
+        const profilePicture = fs.readFileSync("./controllers/default_pfp_250px.png")
 
         const result = await User.create({ username: username, password: hashedPassword, email: email, profilePicture: { data: profilePicture, contentType: "image/png" } })
 

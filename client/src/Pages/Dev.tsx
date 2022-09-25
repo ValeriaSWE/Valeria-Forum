@@ -1,6 +1,7 @@
 import Navbar from "../Components/Navbar";
 import $ from "jquery"
-import Post from "../Components/Post";
+import NewPost from "../Components/NewPost";
+
 
 export default function Dev() {
   document.title = "Valeria Roleplay | Dev";
@@ -10,7 +11,7 @@ export default function Dev() {
   <>
     <Navbar />
     <h2>DEV</h2>
-    <Post />
+    <NewPost />
   </>)
 }
 

@@ -57,7 +57,7 @@ export default function Feed() {
 
             sortPosts(sort)
           }}>        
-            <i class='material-icons'>sync</i>
+            <i class='material-icons'>update</i>
             <p>Senaste</p>
             <i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_down</i>
           </button>

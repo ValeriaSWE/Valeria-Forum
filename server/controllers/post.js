@@ -1,4 +1,5 @@
 import dotenv from "dotenv"
+import fs from "fs"
 
 import Post from "../Schemas/Post.js"
 import Comment from "../Schemas/Comment.js"
@@ -6,13 +7,31 @@ import Comment from "../Schemas/Comment.js"
 import { SomethingWrong } from "../errorMessages.js"
 import User from "../Schemas/User.js"
 
+import multer from 'multer'
+
 dotenv.config()
 
-export const createNewPost = async (req, res) => {
-    const { title, content, creator, images } = req.body
+export const CreatePost = async (req, res) => {
+    console.log(req)
+    const { title, content } = req.body
+    // const imagesTmp = req.body.images
+
+    const creator = req.userId
+
+    // let images = []
+    // imagesTmp.forEach(image => {
+    //     console.log(fs.readFileSync("./controllers/default_pfp_250px.png"))
+
+    //     console.log("image:")
+    //     console.log(image)
+    //     // images.push(fs.readFileSync(image))
+    // });
+
+    res.send('yes')
 
     try {
-        
+
+        await Post.create({ title, creator, content })
     } catch (error) {
         return res.status(500).send({ message: SomethingWrong, error })
     }
@@ -25,11 +44,11 @@ export const createNewPostTMP = async () => {
     try {
         await Post.create({ title, creator, content, images})
     } catch (error) {
-        console.error(error)
+        return res.status(500).send({ message: SomethingWrong, error })
     }
 }
 
-// createNewPostTMP()
+// createTagTMP("")
 
 /**
  * It gets all the posts from the database, sorts them by the sort parameter, and then returns them to
@@ -50,27 +69,38 @@ export const GetPosts = (pinned) => {
 
         sortPort[sort] = dir
 
-        console.log(sort)
+        try {
 
-        let posts = await Post.aggregate([
-            {
-                $match: { pinned: pinned }
-            },
-            {
-                $addFields: { interactionCount: { $add: [{$size: { "$ifNull": [ "$comments", [] ] } }, {$size: { "$ifNull": [ "$likes", [] ] } }]} }
-            },
-            {
-                $sort: sortPort
-            },
-        ])
-        
+            let posts = await Post.aggregate([
+                {
+                    $match: { pinned: pinned }
+                },
+                {
+                    $addFields: { interactionCount: { $add: [{$size: { "$ifNull": [ "$comments", [] ] } }, {$size: { "$ifNull": [ "$likes", [] ] } }]} }
+                },
+                {
+                    $sort: sortPort
+                },
+                {
+                    $lookup: {
+                        from: 'tags',
+                        localField: 'tags',
+                        foreignField: '_id',
+                        as: 'tags'
+                    }
+                }
+            ])
+            
 
-        for (var k in posts) {
-            posts[k]['creator'] = await User.findById(posts[k]['creator'])
-            console.log(posts[k]['interactionCount'])
+            for (var k in posts) {
+                posts[k]['creator'] = await User.findById(posts[k]['creator'])
+            }
+            
+
+            return res.status(200).json(posts)
+        } catch (error) {
+            return res.status(500).send({ message: SomethingWrong, error })
         }
-
-        res.status(200).json(posts)
     }
 }
 

@@ -10,8 +10,11 @@ const postSchema = new mongoose.Schema({
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     pinned: { type: Boolean, default: false },
-    tags: [{type: mongoose.Schema.Types.ObjectId, ref: "Tags"}]
+    tags: [{type: mongoose.Schema.Types.ObjectId, ref: "Tag"}]
 })
+
+// * Uplading Images:
+// * https://www.youtube.com/watch?v=GyzC-30Bqfc&t=648s
 
 const Post = mongoose.model('Post', postSchema);
 

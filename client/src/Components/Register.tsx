@@ -33,17 +33,24 @@ export default function Register(props) {
 
                     <div class={styles.input}>
                         <p>Email:</p>
-                        <input type="email" name="email" id="register-email" />
+                        <input type="email" name="email" id="register-email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
                     </div>
 
                     <div class={styles.input}>
                         <p>Lösenord:</p>
-                        <input type="password" name="password" id="register-password"/>
+                        <input type="password" name="password" id="register-password" pattern=".{8,}" />
+                        <p class={styles.sublabel}>Minst åtta tecken.</p>
                     </div>
 
                     <div class={styles.input}>
                         <p>Upprepa lösenord:</p>
-                        <input type="password" name="password-confirm" id="register-password-confirm"/>
+                        <input type="password" name="password-confirm" id="register-password-confirm" onKeyUp={() => {
+                            if ($('#register-password').val() == $('#register-password-confirm').val()) {
+                                $('#register-password-confirm').removeClass(styles.incorrect)
+                            } else {
+                                $('#register-password-confirm').addClass(styles.incorrect)
+                            }
+                        }}/>
                     </div>
 
                     <div class={styles.forgotPassword}>

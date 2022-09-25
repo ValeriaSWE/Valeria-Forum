@@ -6,6 +6,8 @@ export const UserDoesntExists = "Användaren finns inte."
 
 export const PasswordDontMatch = "Lösenorden matchar inte."
 
+export const PasswordToShort = "Lösenorden måste vara minst åtta tecken långt."
+
 export const IncorrectPassword = "Ogiltligt användarnamn eller lösenord."
 
 export const InvalidToken = "Autentiseringsfel. Försök igen."

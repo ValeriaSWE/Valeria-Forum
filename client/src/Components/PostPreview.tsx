@@ -1,4 +1,4 @@
-import { Show } from 'solid-js';
+import { For, Show } from 'solid-js';
 import { LikePost } from '../api/posts';
 import styles from './StylingModules/PostPreview.module.css';
 import roleBadge from './StylingModules/RoleBadge.module.css'
@@ -29,11 +29,17 @@ export default function PostPreview(props: {
         likes: [string];
         comments: number;
         postId: string;
+        tags: [any]
     }) => {
         return (
             <>
             <div class={styles.postStatitics}>
-                <p class={styles.postDate}>{ timeSince(new Date(props.date).getTime()) } Sedan</p>
+                <For each={props.tags}>
+                    {(tag, i) => 
+                        <p class={styles.tag} style={"background-color: " + tag.color + ";"}>{tag.name}</p>
+                    }
+                </For>
+                <p class={styles.postDate}>{ timeSince(new Date(props.date).getTime()) } sedan</p>
                 <button onClick={() => {
                     // console.log(JSON.parse(localStorage.getItem('profile'))?.token)
                         LikePost(props.postId, JSON.parse(localStorage.getItem('profile'))?.token).then((res) => {
@@ -66,7 +72,7 @@ export default function PostPreview(props: {
         return data + String.fromCharCode(byte);
     }, ''))}`
 
-    console.log(props.data.likes)
+    console.log(props.data.tags)
 
    return(
     <>
@@ -83,7 +89,7 @@ export default function PostPreview(props: {
             <h2>{props.data.title}</h2>
             <p>{props.data.content}</p> 
         </a>
-        <PostStatitics date={props.data.createdAt} likes={props.data.likes} comments={props.data.comments.length} postId={props.data._id} />
+        <PostStatitics date={props.data.createdAt} likes={props.data.likes} comments={props.data.comments.length} postId={props.data._id} tags={props.data.tags}/>
     </div>
     </>
    )
