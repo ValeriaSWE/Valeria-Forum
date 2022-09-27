@@ -5,6 +5,7 @@ import { CheckAuthLevel } from "../functions/user";
 import Login from "./Login";
 import Register from "./Register";
 import styles from './StylingModules/Navbar.module.css';
+import $ from 'jquery';
 
 export default function Navbar() {
   const [toggleResponsNav, setToggleResponsNav] = createSignal(false);
@@ -35,6 +36,24 @@ export default function Navbar() {
     window.location.reload();
   }
 
+
+  // JavaScript Functionality 
+  var lastScrollTop = 0;
+  window.addEventListener('scroll', function() {
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    if(scrollTop > lastScrollTop) {
+      $(".navbar").css("top", "-65px");
+    } else {
+      $(".navbar").css("top", "0");
+    }
+
+    
+    lastScrollTop = scrollTop;
+  })
+
+
+
   window.onclick = function(e) {
     if(open()) {
       if(e.target.id == "dropdown" || e.target.id ==  "menu-item"|| e.target.id == "nav-item" || e.target.id == "profile") {
@@ -62,7 +81,7 @@ export default function Navbar() {
   }){
     return (
       <>
-        <nav class={styles.navbar}>
+        <nav class={styles.navbar + " " + "navbar"}>
           <ul class={styles.navbarNav}>{ props.children}</ul>
         </nav>
       </>
@@ -256,11 +275,14 @@ export default function Navbar() {
     return(
       <>
         <ul class={styles.navbaricons}>
+          <div>
           <NavItem action={null} icon={"chat"} children={null} />
           <NavItem action={null} icon={"notifications"} children={null}/>
           <NavItem action={"profile"} icon={"profilePicture"}>
             <DropdwonMenu></DropdwonMenu>
           </NavItem>
+          </div>
+         
         </ul>
       </>
     );

@@ -16,6 +16,9 @@
 }
 
 .navbar {
+	position: fixed;
+	top: 0;
+	transition: 0.6s;
 	height: var(--navbar-size);
 	background-color: var(--color-blue-d);
 	color: #fff;
@@ -24,7 +27,7 @@
 	backdrop-filter: saturate(180%) blur(20px);
 	/* z-index: 999; */
 	user-select: none;
-	position: relative;
+	width: 100vw;
 	z-index: 999999;
 }
 
@@ -121,7 +124,10 @@
 	justify-content: center;
 	transition: filter 300ms;
 }
-.navbaricons {
+.navbaricons > div{
+	display: flex;
+	margin-right: 2.75rem;
+
 	/* z-index: 1; */
 }
 
@@ -216,7 +222,7 @@
 	bottom: 10px;
 }
 
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: 982px) {
 	.navbarlinks,
 	.linkbutton {
 		display: none;
