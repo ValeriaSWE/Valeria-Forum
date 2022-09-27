@@ -8,6 +8,7 @@ import { SomethingWrong } from "../errorMessages.js"
 import User from "../Schemas/User.js"
 
 import multer from 'multer'
+import Tag from "../Schemas/Tag.js"
 
 dotenv.config()
 
@@ -48,7 +49,11 @@ export const createNewPostTMP = async () => {
     }
 }
 
-// createTagTMP("")
+async function createTagTMP(name) {
+    await Tag.create({name})
+}
+
+// createTagTMP("General")
 
 /**
  * It gets all the posts from the database, sorts them by the sort parameter, and then returns them to
@@ -58,8 +63,8 @@ export const createNewPostTMP = async () => {
  */
 export const GetPosts = (pinned) => {
     return async (req, res) => {
-        let { sort } = req.params
-            
+        let { sort, startIndex } = req.query
+        
         let sortPort = {}
         let dir = -1
         if (sort.includes('-inverse')) {
@@ -80,6 +85,12 @@ export const GetPosts = (pinned) => {
                 },
                 {
                     $sort: sortPort
+                },
+                {
+                    $skip: Number(startIndex)
+                },
+                {
+                    $limit: 10
                 },
                 {
                     $lookup: {

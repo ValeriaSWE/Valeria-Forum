@@ -26,6 +26,8 @@ body {
 
 	--border-radius: 8px;
 
+	/* font-size: 1.5vh; */
+
 	background-color: var(--color-white-l);
 }
 

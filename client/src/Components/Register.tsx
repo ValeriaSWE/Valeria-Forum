@@ -28,7 +28,8 @@ export default function Register(props) {
 
                     <div class={styles.input}>
                         <p>Anändarnamn:</p>
-                        <input type="text" name="username" id="register-username" />
+                        <input type="text" name="username" id="register-username" pattern=".{4,}[a-z0-9._%+-]"/>
+                        {/* <p class={styles.sublabel}>Minst fyra tecken. Inga specialtecken.</p> */}
                     </div>
 
                     <div class={styles.input}>

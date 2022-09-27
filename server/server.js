@@ -40,8 +40,8 @@ app.get('/admin/getUserList', Authorize(10), GetUserList)
 app.post('/admin/setUserRole', Authorize(10), SetUserRole)
 
 // * Posts functions
-app.get('/posts/getPinnedPosts/:sort', GetPosts(true))
-app.get('/posts/getAllPosts/:sort', GetPosts(false))
+app.get('/posts/getPinnedPosts/', GetPosts(true))
+app.get('/posts/getAllPosts/', GetPosts(false))
 app.get('/posts/getPost/:id', GetPost)
 
 app.post('/posts/newComment/:id', Authorize(0), NewComment)

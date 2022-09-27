@@ -91,7 +91,7 @@ export default function Feed() {
 
   function AllPosts() {
 
-    GetAllPosts('createdAt').then((AllPosts) => {
+    GetAllPosts('createdAt', 0).then((AllPosts) => {
       $("#all-posts").empty()
       AllPosts.data.forEach(post => {
         $("#all-posts").append((<PostPreview data={post} />))
@@ -117,7 +117,7 @@ export default function Feed() {
     )
     
     function sortPosts(sort: string) {
-      GetAllPosts(sort).then((AllPosts) => {
+      GetAllPosts(sort, 0).then((AllPosts) => {
         $("#all-posts").empty()
         AllPosts.data.forEach(post => {
           $("#all-posts").append((<PostPreview data={post} />))

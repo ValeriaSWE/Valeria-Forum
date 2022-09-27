@@ -72,7 +72,7 @@ export default function PostPreview(props: {
         return data + String.fromCharCode(byte);
     }, ''))}`
 
-    console.log(props.data.tags)
+    // console.log(props.data.tags)
 
    return(
     <>
