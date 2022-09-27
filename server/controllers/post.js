@@ -1,5 +1,6 @@
 import dotenv from "dotenv"
 import fs from "fs"
+import FileReader from "FileReader"
 
 import Post from "../Schemas/Post.js"
 import Comment from "../Schemas/Comment.js"
@@ -7,33 +8,38 @@ import Comment from "../Schemas/Comment.js"
 import { SomethingWrong } from "../errorMessages.js"
 import User from "../Schemas/User.js"
 
-import multer from 'multer'
 import Tag from "../Schemas/Tag.js"
 
 dotenv.config()
 
 export const CreatePost = async (req, res) => {
-    console.log(req)
     const { title, content } = req.body
-    // const imagesTmp = req.body.images
-
     const creator = req.userId
 
-    // let images = []
-    // imagesTmp.forEach(image => {
-    //     console.log(fs.readFileSync("./controllers/default_pfp_250px.png"))
+    console.log(req.files)
 
-    //     console.log("image:")
-    //     console.log(image)
-    //     // images.push(fs.readFileSync(image))
-    // });
+    let images = []
 
-    res.send('yes')
+    if (req.files) {
+
+        req.files.forEach(image => {
+            images.push({ 
+                data: image.buffer, 
+                contentType: image.mimetype
+            })
+            console.log(image)
+            console.log(images)
+        });
+
+    }
+
+    // createNewPostTMP()
 
     try {
-
-        await Post.create({ title, creator, content })
+        await Post.create({ title, creator, content, images })
+        return res.status(200).send("Post created succesfully")
     } catch (error) {
+        console.error(error)
         return res.status(500).send({ message: SomethingWrong, error })
     }
 
@@ -43,8 +49,9 @@ export const createNewPostTMP = async () => {
     const { title, content, creator, images } = { title: "test", content: "testing testing", creator: "632639574179187c3a527f95", images: [] }
 
     try {
-        await Post.create({ title, creator, content, images})
+        await Post.create({ title, creator, content, images })
     } catch (error) {
+        console.error(error)
         return res.status(500).send({ message: SomethingWrong, error })
     }
 }

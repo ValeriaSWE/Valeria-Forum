@@ -28,24 +28,24 @@ export default function Register(props) {
 
                     <div class={styles.input}>
                         <p>Anändarnamn:</p>
-                        <input type="text" name="username" id="register-username" pattern=".{4,}[a-z0-9._%+-]"/>
+                        <input title="Must be atleast 4 characters." type="text" name="username" id="register-username" pattern="[a-zA-Z0-9._-]{4,}" required />
                         {/* <p class={styles.sublabel}>Minst fyra tecken. Inga specialtecken.</p> */}
                     </div>
 
                     <div class={styles.input}>
                         <p>Email:</p>
-                        <input type="email" name="email" id="register-email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
+                        <input type="email" name="email" id="register-email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required/>
                     </div>
 
                     <div class={styles.input}>
                         <p>Lösenord:</p>
-                        <input type="password" name="password" id="register-password" pattern=".{8,}" />
+                        <input title="Must be atleast 8 characters of: a-z, 0-9 and !@#$%^&*+_£-" type="password" name="password" id="register-password" pattern="[a-zA-Z0-9!@#$%^&*+_£-]{8,}" required/>
                         <p class={styles.sublabel}>Minst åtta tecken.</p>
                     </div>
 
                     <div class={styles.input}>
                         <p>Upprepa lösenord:</p>
-                        <input type="password" name="password-confirm" id="register-password-confirm" onKeyUp={() => {
+                        <input type="password" name="password-confirm" required id="register-password-confirm" onKeyUp={() => {
                             if ($('#register-password').val() == $('#register-password-confirm').val()) {
                                 $('#register-password-confirm').removeClass(styles.incorrect)
                             } else {

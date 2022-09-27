@@ -15,8 +15,9 @@ export const LikePost = async (postId: String, token: String) => axios.post(`${U
         'Authorization': `Bearer ${token}`
     }
 })
-export const CreatePost = (title: String, content: String, images: [any], token: String) => axios.post(`${URL}/posts/createPost`, { title, content, images }, {
+export const CreatePost = (formData: FormData, token: String) => axios.post(`${URL}/posts/createPost`, formData, {
     headers: {
+        // 'content-type': 'multipart/form-data',
         'Authorization': `Bearer ${token}`
     }
 })

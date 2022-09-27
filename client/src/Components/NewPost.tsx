@@ -12,37 +12,32 @@ export default function NewPost() {
 
     return (
         <>
-            <form action="" id="create-post-form" enctype="multipart/form-data" onSubmit={e => {
+            <form action="" id="create-post-form" onSubmit={async e => {
+                    // * https://stackoverflow.com/questions/51586812/multer-react-nodejs-axios-request
                     e.preventDefault()
-
+                    
                     const data = $('#create-post-form').serialize()
-
-                    console.log(data)
+                    
                     const title = $('#create-post-title').val()
                     const content = $('#create-post-content').val()
-                    // const img = $('#create-post-img').prop('files')[0]
+                    const images = Array.from($('#create-post-img').prop('files'))
+                    
+                    
+                    let formData = new FormData()
 
-                    // console.log(img)
-
-                    // * Read file on client:
-                    // * https://stackoverflow.com/questions/750032/reading-file-contents-on-the-client-side-in-javascript-in-various-browsers
-
-                    // const reader = new FileReader()
-                    // reader.readAsArrayBuffer(img)
-                    // reader.onload = function (evt) {
-                    //     console.log(new Uint8Array(evt.target?.result))
-                        
-                    CreatePost(title, content, [], JSON.parse(localStorage.getItem('profile'))?.token)
-                    // }
-                    // reader.onerror = function (evt) {
-                    //     console.error('Error loading file')
-                    // }
-
+                    images.forEach(image => {
+                        formData.append('images', image)
+                    })
+                    
+                    formData.append('title', title)
+                    formData.append('content', content)
+                    
+                    console.log(await CreatePost(formData, JSON.parse(localStorage.getItem('profile'))?.token))
                 }}>
                 
-                <input type="text" placeholder="Titel" id="create-post-title"/>
-                <textarea name="" id="create-post-content" cols="30" rows="10"></textarea>
-                {/* <input type="file" name="" id="create-post-img" /> */}
+                <input type="text" placeholder="Titel" id="create-post-title" name="title"/>
+                <textarea name="content" id="create-post-content" cols="30" rows="10"></textarea>
+                <input type="file" name="image" id="create-post-img" multiple accept="image/png, image/jpeg"/>
                 <button type="submit" id="create-post-btn">Skapa</button>
             </form>
         </>

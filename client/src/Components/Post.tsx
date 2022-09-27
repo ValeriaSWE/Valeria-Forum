@@ -2,7 +2,7 @@ import { GetPost, NewComment } from "../api/posts"
 import $ from "jquery"
 import roleBadge from './StylingModules/RoleBadge.module.css'
 import styles from './StylingModules/PostPreview.module.css'
-import { Show } from "solid-js"
+import { For, Show } from "solid-js"
 
 export default function Post(props: {
     post: string
@@ -82,7 +82,7 @@ function Image(props: {
     }, ''))}`
     return (
         <>
-            <img src={image} alt="" />
+            <img src={image} alt="" style="max-width: 300px;"/>
         </>
     )
 }
