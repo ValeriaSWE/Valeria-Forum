@@ -47,7 +47,7 @@ jobs:
       #   run: cd ../server
 
       - name: Configure NPM
-        working-directory: client
+        working-directory: server
         run: |
           echo "//npm.pkg.github.com/:_authToken=\${NODE_AUTH_TOKEN}" >> .npmrc
           echo "always-auth: true" >> .npmrc
