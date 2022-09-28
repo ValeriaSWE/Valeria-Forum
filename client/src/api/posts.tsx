@@ -5,6 +5,7 @@ export const GetPinnedPosts = () => axios.get(`${URL}/posts/getPinnedPosts/?sort
 export const GetAllPosts = (sort, startIndex) => axios.get(`${URL}/posts/getAllPosts/?sort=${sort}&startIndex=${startIndex}`)
 
 export const GetPost = (postId: String) => axios.get(`${URL}/posts/getPost/${postId}`)
+export const GetImage = (imageId: String) => axios.get(`${URL}/posts/getImage/${imageId}`)
 export const NewComment = async (postId: String, content: String, token: String) => axios.post(`${URL}/posts/newComment/${postId}`, { content }, {
     headers: {
         'Authorization': `Bearer ${token}`

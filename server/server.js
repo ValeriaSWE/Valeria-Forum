@@ -8,7 +8,7 @@ import cors from 'cors'
 import { loginUser, registerUser } from "./controllers/user.js"
 import { checkUserLoginTimeout, Authorize } from "./middleware/user.js"
 import { GetUserList, SetUserRole } from './controllers/admin.js'
-import { CreatePost, GetPost, GetPosts, LikePost, NewComment } from './controllers/post.js'
+import { CreatePost, GetImage, GetPost, GetPosts, LikePost, NewComment } from './controllers/post.js'
 import { FileUpload } from './middleware/posts.js'
 
 app.use(express.json())
@@ -44,6 +44,7 @@ app.post('/admin/setUserRole', Authorize(10), SetUserRole)
 app.get('/posts/getPinnedPosts/', GetPosts(true))
 app.get('/posts/getAllPosts/', GetPosts(false))
 app.get('/posts/getPost/:id', GetPost)
+app.get('/posts/getImage/:id', GetImage)
 
 app.post('/posts/newComment/:id', Authorize(0), NewComment)
 app.post('/posts/likePost/:id', Authorize(0), LikePost)

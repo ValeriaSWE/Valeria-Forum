@@ -1,4 +1,4 @@
-import { GetPost, NewComment } from "../api/posts"
+import { GetImage, GetPost, NewComment } from "../api/posts"
 import $ from "jquery"
 import roleBadge from './StylingModules/RoleBadge.module.css'
 import styles from './StylingModules/PostPreview.module.css'
@@ -20,8 +20,10 @@ export default function Post(props: {
         $("#post-content").html(post.content)
         $("#post-likes").html(post.likes.length)
         $("#post-creator").append(<Creator profilePicture={profilePicture} creator={post.creator}/>)
-        post.images.forEach(image => {
-            $("#post-image-container").append(<Image imageData={image} />)
+        post.images.forEach(async imageId => {
+            const image = await GetImage(imageId)
+            console.log(image)
+            $("#post-image-container").append(<Image imageData={image.data} />)
         });
         post.comments.forEach(comment => {
             $("#post-comments").append(<Comment comment={comment} />)

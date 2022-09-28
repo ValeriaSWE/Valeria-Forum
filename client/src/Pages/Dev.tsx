@@ -9,9 +9,11 @@ export default function Dev() {
   const admin = false;
   return (
   <>
-    <Navbar />
-    <h2>DEV</h2>
-    <NewPost />
+    <div class="dev" style="margin-top: 5rem;">
+      <Navbar />
+      <h2>DEV</h2>
+      <NewPost />
+    </div>
   </>)
 }
 

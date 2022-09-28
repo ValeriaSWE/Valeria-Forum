@@ -9,6 +9,7 @@ import { SomethingWrong } from "../errorMessages.js"
 import User from "../Schemas/User.js"
 
 import Tag from "../Schemas/Tag.js"
+import Image from "../Schemas/Image.js"
 
 dotenv.config()
 
@@ -21,20 +22,35 @@ export const CreatePost = async (req, res) => {
     let images = []
 
     if (req.files) {
-
-        req.files.forEach(image => {
-            images.push({ 
-                data: image.buffer, 
-                contentType: image.mimetype
-            })
-            console.log(image)
-            console.log(images)
+        
+        const promises = req.files.map(async image => {
+            // images.push({ 
+            //     data: image.buffer, 
+            //     contentType: image.mimetype
+            // })
+            // console.log(image)
+            // console.log(images)
+            try {
+                
+                const imgId = (await Image.create({ 
+                        data: image.buffer, 
+                        contentType: image.mimetype
+                    }))._id
+                    
+                console.log(imgId)
+                return imgId
+            } catch (error) {
+                console.error(error)
+                return
+            }
         });
 
+        images = await Promise.all(promises)
+        
     }
-
+    
     // createNewPostTMP()
-
+    
     try {
         await Post.create({ title, creator, content, images })
         return res.status(200).send("Post created succesfully")
@@ -131,6 +147,14 @@ export const GetPost = async (req, res) => {
     })
 
     res.status(200).send(post)
+}
+
+export const GetImage = async (req, res) => {
+    const { id } = req.params
+
+    const image = await Image.findById(id)
+
+    res.status(200).send(image)
 }
 
 export const NewComment = async (req, res) => {
