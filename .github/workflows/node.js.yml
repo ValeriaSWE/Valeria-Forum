@@ -24,6 +24,12 @@ jobs:
       - name: Goto client
         run: cd client
 
+      - name: Configure NPM
+        working-directory: client
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=\${NODE_AUTH_TOKEN}" >> .npmrc
+          echo "always-auth: true" >> .npmrc
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -37,6 +43,12 @@ jobs:
 
       - name: Goto cerver
         run: cd ../server
+
+      - name: Configure NPM
+        working-directory: client
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=\${NODE_AUTH_TOKEN}" >> .npmrc
+          echo "always-auth: true" >> .npmrc
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
