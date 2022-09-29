@@ -1,4 +1,4 @@
-import { For, Show } from 'solid-js';
+import { createSignal, For, Show } from 'solid-js';
 import { LikePost } from '../api/posts';
 import styles from './StylingModules/PostPreview.module.css';
 import roleBadge from './StylingModules/RoleBadge.module.css'
@@ -10,6 +10,9 @@ export default function PostPreview(props: {
     data: any;
     // FÅR FIXAS SENARE :))
 }) {
+    const [likedByUser, setLikedByUser] = createSignal(props.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
+    const [likeCount, setLikeCount] = createSignal(props.data.likes.length)
+
     const ShowRoleInPost = (props: {
         role: string;
     }) => {
@@ -43,18 +46,20 @@ export default function PostPreview(props: {
                 <button onClick={() => {
                     // console.log(JSON.parse(localStorage.getItem('profile'))?.token)
                         LikePost(props.postId, JSON.parse(localStorage.getItem('profile'))?.token).then((res) => {
-                            const { data } = res
-                            $('#likes-' + props.postId).html(data.likes.length)
-                            if (data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id)) {
-                                $('#likes-icon-' + props.postId).css('color', 'var(--color-blue-l)')
-                            } else {
-                                $('#likes-icon-' + props.postId).css('color', 'inherit')
-                            }
+                            setLikeCount(res.data.likes.length)
+                            setLikedByUser(res.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
+                            // const { data } = res
+                            // $('#likes-' + props.postId).html(data.likes.length)
+                            // if (data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id)) {
+                            //     $('#likes-icon-' + props.postId).css('color', 'var(--color-blue-l)')
+                            // } else {
+                            //     $('#likes-icon-' + props.postId).css('color', 'inherit')
+                            // }
                         })
                         
                     }}>
-                    <i class='material-icons' id={"likes-icon-" + props.postId} style={props.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id) ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
-                    <span id={"likes-" + props.postId}>{props.likes.length}</span>
+                    <i class='material-icons' id={"likes-icon-" + props.postId} style={likedByUser() ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
+                    <span id={"likes-" + props.postId}>{likeCount()}</span>
                 </button>
                 <form action={"/forum/post/" + props.postId}>
                     <button>
