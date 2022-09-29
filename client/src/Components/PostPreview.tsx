@@ -7,9 +7,44 @@ import $ from 'jquery';
 
 export default function PostPreview(props: {
     minimal: boolean;
-    data: any;
+    data: {
+        _id: string,
+        title: string,
+        creator: {
+            _id: string,
+            nicknames: [string],
+            username: string,
+            email: string,
+            role: string,
+            profilePicture: {
+                _id: string,
+                data: {
+                    type: string,
+                    data: [any]
+                },
+                contentType: string,
+                __v: 0
+            },
+            joinedAt: "2022-09-17T21:17:11.403Z",
+            __v: 0,
+            roleRank: 10
+        },
+        "content": "testing again",
+        "images": [
+            "6334976fb333f38d7c9f0942"
+        ],
+        "comments": [],
+        "likes": [],
+        "pinned": false,
+        "tags": [],
+        "createdAt": "2022-09-28T18:50:23.373Z",
+        "lastEditedAt": "2022-09-28T18:50:23.373Z",
+        "__v": 6,
+        "interactionCount": 0
+    };
     // FÅR FIXAS SENARE :))
 }) {
+    console.log(props.data)
     const [likedByUser, setLikedByUser] = createSignal(props.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
     const [likeCount, setLikeCount] = createSignal(props.data.likes.length)
 
@@ -44,17 +79,9 @@ export default function PostPreview(props: {
                 </For>
                 <p class={styles.postDate}>{ timeSince(new Date(props.date).getTime()) } sedan</p>
                 <button onClick={() => {
-                    // console.log(JSON.parse(localStorage.getItem('profile'))?.token)
                         LikePost(props.postId, JSON.parse(localStorage.getItem('profile'))?.token).then((res) => {
                             setLikeCount(res.data.likes.length)
                             setLikedByUser(res.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
-                            // const { data } = res
-                            // $('#likes-' + props.postId).html(data.likes.length)
-                            // if (data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id)) {
-                            //     $('#likes-icon-' + props.postId).css('color', 'var(--color-blue-l)')
-                            // } else {
-                            //     $('#likes-icon-' + props.postId).css('color', 'inherit')
-                            // }
                         })
                         
                     }}>
@@ -73,12 +100,9 @@ export default function PostPreview(props: {
         )
     };
 
-    // const profilePicture = 'none'
     const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(props.data.creator.profilePicture.data.data).reduce(function (data, byte) {
         return data + String.fromCharCode(byte);
     }, ''))}`
-
-    // console.log(props.data.tags)
 
    return(
     <>
@@ -126,7 +150,4 @@ function timeSince(date) {
       return Math.floor(interval) + " minuter";
     }
     return Math.floor(seconds) + " sekunder";
-  }
-//   var aDay = 24*60*60*1000;
-//   console.log(timeSince(new Date(Date.now()-aDay)));
-//   console.log(timeSince(new Date(Date.now()-aDay*2)));
+}

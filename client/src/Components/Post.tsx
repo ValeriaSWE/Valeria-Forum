@@ -1,77 +1,100 @@
-import { GetImage, GetPost, NewComment } from "../api/posts"
+import { GetImage, GetPost, LikePost, NewComment } from "../api/posts"
 import $ from "jquery"
 import roleBadge from './StylingModules/RoleBadge.module.css'
-import styles from './StylingModules/PostPreview.module.css'
-import { For, Show } from "solid-js"
+import styles from './StylingModules/Post.module.css'
+import { createSignal, For, Show } from "solid-js"
 
 export default function Post(props: {
     post: string
 }) {
-    GetPost(props.post).then(res => {
-        const post = res.data
-        console.log(post)
+    const [title, setTitle] = createSignal('title')
+    const [content, setContent] = createSignal('content')
+    const [creator, setCreator] = createSignal({username: "username", role: "role"})
+    const [images, setImages] = createSignal([])
+    const [comments, setComments] = createSignal([])
+    // const [tags, setTags] = createSignal([])
+    const [likeCount, setLikeCount] = createSignal(0)
+    const [likedByUser, setLikedByUser] = createSignal(false)
+    const [creatorPfp, setCreatorPfp] = createSignal('')
 
-        const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(post.creator.profilePicture.data.data).reduce(function (data, byte) {
+/* A function that is called when the component is mounted. It is fetching data from an API and then
+setting the data to the state. */
+    GetPost(props.post).then(res => {
+        const { data } = res
+        
+        setTitle(data.title)
+        setCreator(data.creator)
+        setContent(data.content)
+
+        const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(data.creator.profilePicture.data.data).reduce(function (data, byte) {
             return data + String.fromCharCode(byte);
         }, ''))}`
-
-        $("#post-container").data("post-id", post._id)
-        $("#post-title").html(post.title)
-        $("#post-content").html(post.content)
-        $("#post-likes").html(post.likes.length)
-        $("#post-creator").append(<Creator profilePicture={profilePicture} creator={post.creator}/>)
-        post.images.forEach(async imageId => {
-            const image = await GetImage(imageId)
-            console.log(image)
-            $("#post-image-container").append(<Image imageData={image.data} />)
-        });
-        post.comments.forEach(comment => {
-            $("#post-comments").append(<Comment comment={comment} />)
-        });
+        setCreatorPfp(profilePicture)
+        setImages(data.images)
+        setLikeCount(data.likes.length)
+        setLikedByUser(data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
+        setComments(data.comments)
     })
+
+    /**
+     * Send create new comment axios Post to server and recieve updated comment list
+     */
+    async function newComment() {
+        const postId = props.post
+    
+        const content = $("#new-comment").val()
+    
+        const token = JSON.parse(localStorage.getItem('profile'))?.token
+    
+        const { data } = await NewComment(postId, content, token)
+    
+        setComments(data.comments)
+    }
+
+    function Creator() {
+        return (
+            <>
+                <img class={styles.creatorImg} src={creatorPfp()} alt="" />
+                <span class={styles.showRole}>
+                <i class={'material-icons ' + styles.verified} data={creator().role}>verified</i>
+                <i class={roleBadge.role} data={creator().role}>{creator().role}</i>
+                </span>
+                <h2 class={styles.creatorName}>{creator().username}</h2>
+            </>
+        )
+    }
+
     return (
         <>
             <div class="post" id="post-container">
-                <h1 class="title" id="post-title"></h1>
-                <div class={styles.postCreator} id="post-creator" ></div>
-                <p class="content" id="post-content"></p>
-                <div class="image-container" id="post-image-container"></div>
-                <span class="likes" id="post-likes"></span>
-                <div class="comments" id="post-comments"></div>
+                <h1 class="title" id="post-title">{title()}</h1>
+                <div class={styles.postCreator} id="post-creator" ><Creator creator={creator()}/></div>
+                <p class="content" id="post-content">{content}</p>
+                <div class="image-container" id="post-image-container">
+                    <For each={images()}>{image =>
+                        <Image imageData={image} />
+                    }</For>
+                </div>
+                <button onClick={() => {
+                        LikePost(props.post, JSON.parse(localStorage.getItem('profile'))?.token).then((res) => {
+                            setLikeCount(res.data.likes.length)
+                            setLikedByUser(res.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
+                        })
+                        
+                    }}>
+                    <i class='material-icons' id={"likes-icon-" + props.post} style={likedByUser() ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
+                    <span id={"likes-" + props.post}>{likeCount()}</span>
+                </button>
                 <form class="new-comment" onSubmit={e => e.preventDefault()} >
                     <input type="text" id="new-comment"/>
                     <button onClick={newComment}>Skicka</button>
                 </form>
+                <div class="comments" id="post-comments">
+                    <For each={comments()}>{comment =>
+                        <Comment comment={comment} />
+                    }</For>
+                </div>
             </div>
-        </>
-    )
-}
-
-async function newComment() {
-    const postId = $("#post-container").data("post-id")
-
-    const content = $("#new-comment").val()
-
-    const token = JSON.parse(localStorage.getItem('profile'))?.token
-
-    await NewComment(postId, content, token)
-
-    window.location.reload()
-}
-
-function Creator(props: {
-    profilePicture: any;
-    creator: any;
-}) {
-    return (
-        <>
-            <img class={styles.creatorImg} src={props.profilePicture} alt="" />
-            <span class={styles.showRole}>
-            {/* {props.roleRank >= 5 ? <i class='material-icons'>verified</i> : <></>} */}
-            <i class={'material-icons ' + styles.verified} data={props.creator.role}>verified</i>
-            <i class={roleBadge.role} data={props.creator.role}>{props.creator.role}</i>
-            </span>
-            <h2 class={styles.creatorName}>{props.creator.username}</h2>
         </>
     )
 }
@@ -79,12 +102,17 @@ function Creator(props: {
 function Image(props: {
     imageData: any
 }) {
-    const image = `data:image/png;base64,${btoa(new Uint8Array(props.imageData.data.data).reduce(function (data, byte) {
-        return data + String.fromCharCode(byte);
-    }, ''))}`
+    const [image, setImage] = createSignal('')
+
+    GetImage(props.imageData).then(img => {
+        setImage(`data:image/png;base64,${btoa(new Uint8Array(img.data.data.data).reduce(function (data, byte) {
+            return data + String.fromCharCode(byte);
+        }, ''))}`)
+    })
+
     return (
         <>
-            <img src={image} alt="" style="max-width: 300px;"/>
+            <img src={image()} alt="" style="max-width: 300px;"/>
         </>
     )
 }
@@ -92,6 +120,7 @@ function Image(props: {
 function Comment(props: {
     comment: any;
 }) {
+    console.log(props.comment)
     const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(props.comment.creator.profilePicture.data.data).reduce(function (data, byte) {
         return data + String.fromCharCode(byte);
     }, ''))}`
@@ -111,7 +140,6 @@ function Comment(props: {
                 </div>
                 <PostStatitics date={props.comment.createdAt} />
             </div>
-            {/* <p>{props.comment.content}</p> */}
         </>
     )
 }
@@ -122,7 +150,6 @@ const ShowRoleInPost = (props: {
     return(
         <>
         <span class={styles.showRole}>
-        {/* {props.roleRank >= 5 ? <i class='material-icons'>verified</i> : <></>} */}
         <i class={'material-icons ' + styles.verified} data={props.role}>verified</i>
         <i class={roleBadge.role} data={props.role}>{props.role}</i>
         </span>
@@ -146,6 +173,11 @@ const PostStatitics = (props: {
    
 };
 
+ /**
+  * Converts a date object to human readable time since string. eg. "3 timmar sedan"
+  * @param date - date object to convert
+  * @returns - human readable time since date
+  */
 function timeSince(date) {
 
     var seconds = Math.floor((new Date() - date) / 1000);
@@ -172,4 +204,4 @@ function timeSince(date) {
       return Math.floor(interval) + " minuter";
     }
     return Math.floor(seconds) + " sekunder";
-  }
+}

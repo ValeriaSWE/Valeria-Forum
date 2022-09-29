@@ -146,7 +146,10 @@ export const GetPost = async (req, res) => {
         populate: { path: "profilePicture"}
     }).populate({
         path: 'comments',
-        populate: { path: 'creator' }
+        populate: { 
+            path: 'creator',
+            populate: { path: "profilePicture"}
+        }
     })
 
     res.status(200).send(post)
@@ -165,7 +168,13 @@ export const NewComment = async (req, res) => {
     const { content } = req.body
     const { userId } = req
 
-    const post = await Post.findById(id).populate('creator').populate('comments')
+    const post = await Post.findById(id).populate('creator').populate({
+        path: 'comments',
+        populate: {
+            path: 'creator',
+            populate: {path: 'profilePicture'}
+        }
+    })
 
     const comment = await Comment.create({ content, creator: userId })
 
