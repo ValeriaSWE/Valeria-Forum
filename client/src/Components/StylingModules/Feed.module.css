@@ -107,6 +107,10 @@
 	border: none;
 	cursor: pointer;
 }
+.editFeedIconButton > i,
+.editFeedIconButton > p {
+	color: var(--color-blue-d)
+}
 
 .searchFeed {
 	position: absolute;
@@ -125,4 +129,7 @@
 	width: 100%;
 	border: none;
 	outline: none;
+
+	background-color: var(--color-white-l);
+	color: var(--color-blue-d)
 }
