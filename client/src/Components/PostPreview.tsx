@@ -68,6 +68,7 @@ export default function PostPreview(props: {
         )
     };
 
+    // const profilePicture = 'none'
     const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(props.data.creator.profilePicture.data.data).reduce(function (data, byte) {
         return data + String.fromCharCode(byte);
     }, ''))}`

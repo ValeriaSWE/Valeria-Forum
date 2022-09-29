@@ -5,6 +5,7 @@ import fs from "fs"
 
 import User from "../Schemas/User.js"
 import { IncorrectPassword, PasswordDontMatch, PasswordToShort, SomethingWrong, UserDoesntExists, UsernameTaken } from "../errorMessages.js"
+import Image from "../Schemas/Image.js"
 
 dotenv.config()
 
@@ -17,9 +18,9 @@ export const loginUser = async (req, res) => {
         let existingUser
         
         if (usernameIsEmail) {
-            existingUser = await User.findOne({ email: username })
+            existingUser = await User.findOne({ email: username }).populate('profilePicture')
         } else {
-            existingUser = await User.findOne({ username: username })
+            existingUser = await User.findOne({ username: username }).populate('profilePicture')
         }
 
         if(!existingUser) return res.status(404).json({ message: UserDoesntExists })
@@ -60,9 +61,11 @@ export const registerUser = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 12)
 
-        const profilePicture = fs.readFileSync("./controllers/default_pfp_250px.png")
+        // const profilePicture = fs.readFileSync("./controllers/default_pfp_250px.png")
 
-        const result = await User.create({ username: username, password: hashedPassword, email: email, profilePicture: { data: profilePicture, contentType: "image/png" } })
+        let result = await User.create({ username: username, password: hashedPassword, email: email })
+
+        result.profilePicture = await Image.findById(result.profilePicture)
 
         const token = jwt.sign({ username: result.username, roleRank: result.roleRank, id: result._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_TIMEOUT})
 
@@ -72,6 +75,24 @@ export const registerUser = async (req, res) => {
         return res.status(500).send({ message: SomethingWrong, error })
     }
 }
+
+// async function tmp() {
+//     console.log(await Image.findOne({ data: fs.readFileSync("./controllers/default_pfp_250px.png")}))
+// }
+
+// tmp()
+
+// async function tmp() {
+//     await User.updateMany({}, {
+//         $set: {
+//             profilePicture: "6335abe12ff7b5bff877f976"
+//         }
+//     })
+// }
+
+// tmp()
+
+// tmp()
 
 // export const checkUserLoginTimeout = async (req, res) => {
 //     const { token } = req.body

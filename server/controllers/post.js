@@ -127,7 +127,7 @@ export const GetPosts = (pinned) => {
             
 
             for (var k in posts) {
-                posts[k]['creator'] = await User.findById(posts[k]['creator'])
+                posts[k]['creator'] = await User.findById(posts[k]['creator']).populate('profilePicture')
             }
             
 
@@ -141,7 +141,10 @@ export const GetPosts = (pinned) => {
 export const GetPost = async (req, res) => {
     const { id } = req.params
 
-    const post = await Post.findById(id).populate('creator').populate({
+    const post = await Post.findById(id).populate({
+        path: 'creator',
+        populate: { path: "profilePicture"}
+    }).populate({
         path: 'comments',
         populate: { path: 'creator' }
     })
