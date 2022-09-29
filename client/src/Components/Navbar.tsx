@@ -200,7 +200,7 @@ export default function Navbar() {
               }
             </span>
             {props.label}
-            <span class={styles.iconright  + " material-icons"}  id="nav-item" style={"font-size: " + (props.rightIcon ? props.rightIcon[1] : null) + "rem; color: var(--color-white-l);"}>
+            <span class={styles.iconright  + " material-icons"}  id="nav-item" style={"font-size: " + (props.rightIcon ? props.rightIcon[1] : null) + "rem; color: white;"}>
               {props.rightIcon ? props.rightIcon[0] : null }
             </span>
           </a>
@@ -239,19 +239,24 @@ export default function Navbar() {
         }
       }
 
-      function toggleDarkmode() {
-        let lightModeOn = localStorage.getItem('lightmode') || "off"
-        
-        localStorage.setItem('lightmode', (lightModeOn == "off" ? "on": "off"))
+      const [darkModeIcon, setDarkModeIcon] = createSignal("toggle_off");
 
-        location.reload()
+      function toggleDarkmode() {
+        let lightModeOn = localStorage.getItem('lightmode') == "off" ? "on" : "off" || "on"
+        
+        localStorage.setItem('lightmode', lightModeOn)
+
+        $(':root').attr('data-dark-mode', (lightModeOn == "off" ? "true": "false") )
+
+        setDarkModeIcon((lightModeOn == "off" ? "toggle_on": "toggle_off"))
+        // location.reload()
       }
 
       const DropDownSettings = () => {
         return(
           <>
           <DropdownItem label={"Gå Tillbaka"} leftIcon={"arrow_back"} rightIcon={null} action={SetMainDrop(!mainDrop())} />
-          <DropdownItem label={"Mörkt läge"} leftIcon={"light_mode"} rightIcon={[(localStorage.getItem('lightmode') == "on" ? 'toggle_off': "toggle_on"), 3]} action={toggleDarkmode()}/>
+          <DropdownItem label={"Mörkt läge"} leftIcon={"light_mode"} rightIcon={[darkModeIcon, 3]} action={toggleDarkmode()}/>
           <DropdownItem label={"Inställning 2 "} leftIcon={"settings"} rightIcon={null} action={null} />
           <DropdownItem label={"Inställning 3... "} leftIcon={"settings"} rightIcon={null} action={null} />
           </>

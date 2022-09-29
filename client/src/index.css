@@ -31,6 +31,14 @@ body {
 	background-color: var(--color-white-l);
 }
 
+:root[data-dark-mode="true"] {
+	--color-white-l: #090d29; /* --color-blue-d */
+	--color-white-m: #0e1440;
+	--color-blue-l: hsl(216, 48%, 53%); /* --color-blue-d */
+	--color-blue-m: hsl(216, 48%, 73%); /* --color-blue-d */
+	--color-blue-d: white;
+}
+
 * {
 	margin: 0;
 	padding: 0;
