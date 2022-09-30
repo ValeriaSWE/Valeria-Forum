@@ -7,6 +7,7 @@ const postSchema = new mongoose.Schema({
     images: [{ type: mongoose.Schema.Types.ObjectId, ref: "Image" }],
     createdAt: {type: Date, default: () => Date.now(), immutible: true},
     lastEditedAt: {type: Date, default: () => Date.now(), immutible: false},
+    isEdited: {type: Boolean, default: false},
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     pinned: { type: Boolean, default: false },

@@ -16,6 +16,8 @@ export default function Post(props: {
     const [likeCount, setLikeCount] = createSignal(0)
     const [likedByUser, setLikedByUser] = createSignal(false)
     const [creatorPfp, setCreatorPfp] = createSignal('')
+    const [editedDate, setEditedDate] = createSignal("time")
+    const [isEdited, setIsEdited] = createSignal(false)
 
 /* A function that is called when the component is mounted. It is fetching data from an API and then
 setting the data to the state. */
@@ -34,6 +36,9 @@ setting the data to the state. */
         setLikeCount(data.likes.length)
         setLikedByUser(data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
         setComments(data.comments)
+
+        setEditedDate(data.lastEditedAt)
+        setIsEdited(data.isEdited)
     })
 
     /**
@@ -64,10 +69,18 @@ setting the data to the state. */
         )
     }
 
+    // console.log(JSON.parse(localStorage.getItem('profile'))?.result._id)
+
     return (
         <>
             <div class="post" id="post-container">
+                <Show when={creator()._id == JSON.parse(localStorage.getItem('profile'))?.result._id}>
+                    <button class={styles.editBtn}>Edit</button>
+                </Show>
                 <h1 class="title" id="post-title">{title()}</h1>
+                <Show when={isEdited()}>
+                    <span class={styles.editedBadge}>Redigerad</span>
+                </Show>
                 <div class={styles.postCreator} id="post-creator" ><Creator creator={creator()}/></div>
                 <p class="content" id="post-content">{content}</p>
                 <div class="image-container" id="post-image-container">
@@ -89,7 +102,7 @@ setting the data to the state. */
                     <input type="text" id="new-comment"/>
                     <button onClick={newComment}>Skicka</button>
                 </form>
-                <div class="comments" id="post-comments">
+                <div class="comments" id="comments">
                     <For each={comments()}>{comment =>
                         <Comment comment={comment} />
                     }</For>
@@ -120,7 +133,7 @@ function Image(props: {
 function Comment(props: {
     comment: any;
 }) {
-    console.log(props.comment)
+    // console.log(props.comment)
     const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(props.comment.creator.profilePicture.data.data).reduce(function (data, byte) {
         return data + String.fromCharCode(byte);
     }, ''))}`

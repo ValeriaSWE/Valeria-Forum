@@ -23,24 +23,19 @@ export default function PostPreview(props: {
                     data: [any]
                 },
                 contentType: string,
-                __v: 0
             },
-            joinedAt: "2022-09-17T21:17:11.403Z",
-            __v: 0,
             roleRank: 10
         },
-        "content": "testing again",
-        "images": [
-            "6334976fb333f38d7c9f0942"
-        ],
-        "comments": [],
-        "likes": [],
-        "pinned": false,
-        "tags": [],
-        "createdAt": "2022-09-28T18:50:23.373Z",
-        "lastEditedAt": "2022-09-28T18:50:23.373Z",
-        "__v": 6,
-        "interactionCount": 0
+        content: string,
+        images: [string],
+        comments: [string],
+        likes: [string],
+        pinned: boolean,
+        tags: [any],
+        createdAt: string,
+        lastEditedAt: string,
+        interactionCount: number,
+        isEdited: boolean,
     };
     // FÅR FIXAS SENARE :))
 }) {
@@ -67,7 +62,7 @@ export default function PostPreview(props: {
         likes: [string];
         comments: number;
         postId: string;
-        tags: [any]
+        tags: [any];
     }) => {
         return (
             <>
@@ -107,19 +102,19 @@ export default function PostPreview(props: {
    return(
     <>
     <div class={styles.post} id={props.data._id}>
-        <div class={styles.postCreatorImg}>
+        <a href={"/forum/user/" + props.data.creator._id} class={styles.postCreatorImg}>
             <img class={styles.profileImg} src={profilePicture} alt="" />
             <h2 class={styles.creatorName}>{props.data.creator.username}</h2>
             <Show when={props.data.creator.roleRank >= 5}>
                 <ShowRoleInPost role={props.data.creator.role}/>
             </Show>
             {props.data.pinned ? <i class={styles.pinicon + " material-icons"}>push_pin</i> : <></>}
-        </div>
+        </a>
         <a class={styles.postTitle} href={`/forum/post/${props.data._id}`} style="text-decoration: none;">
             <h2>{props.data.title}</h2>
             <p>{props.data.content}</p> 
         </a>
-        <PostStatitics date={props.data.createdAt} likes={props.data.likes} comments={props.data.comments.length} postId={props.data._id} tags={props.data.tags}/>
+        <PostStatitics date={props.data.createdAt} likes={props.data.likes} comments={props.data.comments.length} postId={props.data._id} tags={props.data.tags} />
     </div>
     </>
    )
