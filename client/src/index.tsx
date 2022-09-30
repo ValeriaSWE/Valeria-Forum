@@ -17,6 +17,7 @@ import NotAuthed from "./Pages/NotAuthed";
 import Admin from "./Pages/Admin";
 import Post from "./Components/Post";
 import $ from "jquery";
+import UserInfoPage from "./Pages/UserInfo";
 
 function delay(ms: number) {
   return new Promise<void>((res) => {
@@ -31,21 +32,21 @@ async function fetchSubTabData(id: string) {
   };
 }
 
-function SubTab() {
-  const params = useParams();
-  const [data] = createResource(() => params.id, fetchSubTabData);
-  if(params.id === "feed") {
-    return  <Show when={data()}>
-    <Feed></Feed>
-  </Show>
-  }
-  return (
-    <Show when={data()}>
-      <h2>{data()!.name}</h2>
-      <p>This content is loaded asynchronously</p>
-    </Show>
-  );
-}
+// function SubTab() {
+//   const params = useParams();
+//   const [data] = createResource(() => params.id, fetchSubTabData);
+//   if(params.id === "feed") {
+//     return  <Show when={data()}>
+//     <Feed></Feed>
+//   </Show>
+//   }
+//   return (
+//     <Show when={data()}>
+//       <h2>{data()!.name}</h2>
+//       <p>This content is loaded asynchronously</p>
+//     </Show>
+//   );
+// }
 
 function Loader() {
   const isRouting = useIsRouting();
@@ -83,7 +84,9 @@ const Root = () => {
       <Route path="/forum" component={Forum}>
         <Route path="/" element={<Navigate href="feed" />} />
         <Route path="/post/:id" element={OnePost} />
-        <Route path=":id" component={SubTab} />
+        <Route path="/user/:id" element={UserInfoPage} />
+        <Route path="/feed" element={Feed} />
+        {/* <Route path=":id" component={SubTab} /> */}
       </Route>
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />

@@ -24,6 +24,8 @@
 	flex-direction: row;
 	align-items: center;
 	gap: 5px;
+	cursor: pointer;
+	text-decoration: none;
 }
 
 .creatorName {
@@ -53,7 +55,7 @@
 	border: 1px solid var(--color-white-m);
 	background-color: var(--color-white-m);
 }
-
+/* 
 .post .postCreator {
 	display: grid;
 	grid-area: postCreator;
@@ -78,7 +80,7 @@
 	display: flex;
 	align-items: center;
 	color: var(--color-blue-d);
-}
+} */
 
 .post .postTitle {
 	display: grid;
@@ -91,7 +93,6 @@
 .post .postTitle > h2 {
 	font-size: 1.2rem;
 	color: var(--color-blue-d);
-
 }
 
 .post .postTitle > p {
@@ -140,6 +141,10 @@
 .post .postStatitics button:hover > * {
 	color: var(--color-blue-m);
 	background-color: var(--color-white-l);
+}
+
+.post .postStatitics .postDate {
+	color: var(--color-blue-l);
 }
 
 .post .postStatitics .tag {

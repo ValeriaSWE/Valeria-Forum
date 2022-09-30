@@ -5,7 +5,7 @@ const port = 8000
 import mongoose from 'mongoose'
 import cors from 'cors'
 
-import { loginUser, registerUser } from "./controllers/user.js"
+import { GetUserInfo, GetUserPosts, loginUser, registerUser } from "./controllers/user.js"
 import { checkUserLoginTimeout, Authorize } from "./middleware/user.js"
 import { GetUserList, SetUserRole } from './controllers/admin.js'
 import { CreatePost, GetImage, GetPost, GetPosts, LikePost, NewComment } from './controllers/post.js'
@@ -35,6 +35,9 @@ connect()
 // * User functions
 app.post('/user/login', loginUser)
 app.post('/user/register', registerUser)
+
+app.get('/user/getUserInfo/:id', GetUserInfo)
+app.get('/user/getUserPosts/:id', GetUserPosts)
 
 // * Admin functions
 app.get('/admin/getUserList', Authorize(10), GetUserList)
