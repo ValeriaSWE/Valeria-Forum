@@ -59,12 +59,14 @@ setting the data to the state. */
     function Creator() {
         return (
             <>
-                <img class={styles.creatorImg} src={creatorPfp()} alt="" />
-                <span class={styles.showRole}>
-                <i class={'material-icons ' + styles.verified} data={creator().role}>verified</i>
-                <i class={roleBadge.role} data={creator().role}>{creator().role}</i>
-                </span>
+            <div class={styles.creatorContainer}>
+                <div class={styles.creatorImg}>
+                    <img src={creatorPfp()} alt="" />
+                    <i class={'material-icons ' + styles.verified} data={creator().role}>verified</i>
+                </div>
                 <h2 class={styles.creatorName}>{creator().username}</h2>
+                <i class={roleBadge.role} data={creator().role}>{creator().role}</i>
+                </div>
             </>
         )
     }
@@ -73,41 +75,64 @@ setting the data to the state. */
 
     return (
         <>
-            <div class="post" id="post-container">
-                <Show when={creator()._id == JSON.parse(localStorage.getItem('profile'))?.result._id}>
-                    <button class={styles.editBtn}>Edit</button>
-                </Show>
-                <h1 class="title" id="post-title">{title()}</h1>
-                <Show when={isEdited()}>
-                    <span class={styles.editedBadge}>Redigerad</span>
-                </Show>
-                <div class={styles.postCreator} id="post-creator" ><Creator creator={creator()}/></div>
-                <p class="content" id="post-content">{content}</p>
-                <div class="image-container" id="post-image-container">
-                    <For each={images()}>{image =>
-                        <Image imageData={image} />
-                    }</For>
+                <div class={styles.inheritPost}>
+                    <div class={styles.postCreator} id="post-creator">
+                        <Creator creator={creator()}/>
+                        <Show when={creator()._id == JSON.parse(localStorage.getItem('profile'))?.result._id}>
+                            <button class={styles.editBtn}>Ändra</button>
+                        </Show>
+                        {/* POST  */}
+                        <p class={styles.postDate}> Publicerad för 1 dag sedan</p>
+                        <Show when={isEdited()}>
+                            <span class={styles.editedBadge}>(Redigerad)</span>
+                        </Show>
+                    </div>
+                    <div class={styles.postContent}>
+                        <h1 class={styles.title} id="post-title">{title()}</h1>
+                        <p class={styles.content} id="post-content">{content}</p>
+                        <div class={styles.imageContainer} id="post-image-container">
+                            <For each={images()}>{image =>
+                                <Image imageData={image} />
+                            }</For>
+                        </div>
+                    </div>
+                    
+                    <div class={styles.postStatistics}>
+                        <button class={styles.postLikeButton} onClick={() => {
+                                LikePost(props.post, JSON.parse(localStorage.getItem('profile'))?.token).then((res) => {
+                                    setLikeCount(res.data.likes.length)
+                                    setLikedByUser(res.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
+                                })
+
+                            }}>
+                            <i class='material-icons' id={"likes-icon-" + props.post} style={likedByUser() ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
+                            <span id={"likes-" + props.post}>{likeCount()} Likes</span>
+                        </button>
+                        <button>
+                        <i class='material-icons'>comment</i>
+                        <span>Kommentarer</span>
+                        </button>
+                        <button>
+                        <i class='material-icons'>comment</i>
+                        <span>dela</span>
+                        </button>
+
+                    </div>
                 </div>
-                <button onClick={() => {
-                        LikePost(props.post, JSON.parse(localStorage.getItem('profile'))?.token).then((res) => {
-                            setLikeCount(res.data.likes.length)
-                            setLikedByUser(res.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
-                        })
-                        
-                    }}>
-                    <i class='material-icons' id={"likes-icon-" + props.post} style={likedByUser() ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
-                    <span id={"likes-" + props.post}>{likeCount()}</span>
-                </button>
-                <form class="new-comment" onSubmit={e => e.preventDefault()} >
-                    <input type="text" id="new-comment"/>
-                    <button onClick={newComment}>Skicka</button>
+                
+                <form class={styles.newCommentForm} onSubmit={e => e.preventDefault()} >
+                    <input type="text" class={styles.newCommentInput} id="new-comment" autocomplete="off" placeholder="Skriv en kommentar"/>
+                    <button class={styles.postCommentButton} onClick={newComment}>
+                        <h4>Pulicera</h4>
+                        <i class="material-icons">send</i>
+                    </button>
                 </form>
-                <div class="comments" id="comments">
+               
+                <div class={styles.comments} id="comments">
                     <For each={comments()}>{comment =>
                         <Comment comment={comment} />
                     }</For>
                 </div>
-            </div>
         </>
     )
 }
@@ -140,18 +165,40 @@ function Comment(props: {
 
     return(
         <>
-            <div class={styles.post}>
-                <div class={styles.postCreator}> 
-                    <img class={styles.creatorImg} src={profilePicture} alt="" />
-                    <Show when={props.comment.creator.roleRank >= 5}>
-                        <ShowRoleInPost role={props.comment.creator.role}/>
+            <div class={styles.postComment}>
+                
+              
+                <div class={styles.CommentCreator}> 
+                    <div class={styles.creatorImg}>
+                     <img class={styles.creatorImg} src={profilePicture} alt="" />
+                     <Show when={props.comment.creator.roleRank >= 5}>
+                         <i class={'material-icons ' + styles.verified} data={props.comment.creator.role}>verified</i>
                     </Show>
+                    </div>
                     <h2 class={styles.creatorName}>{props.comment.creator.username}</h2>
+                    <Show when={props.comment.creator.roleRank >= 5}>
+                        <i class={roleBadge.role} data={props.comment.creator.role}>{props.comment.creator.role}</i>
+                    </Show>
                 </div>
+            
+
+                
                 <div class={styles.feedTitle}>
                     <p>{props.comment.content}</p> 
                 </div>
-                <PostStatitics date={props.comment.createdAt} />
+                
+                <div class={styles.commentStatitics}>
+                    <PostStatitics date={props.comment.createdAt} />
+                    <button class={styles.postLikeButton}>
+                        <i class='material-icons' id={"likes-icon-" + props.post}>thumb_up</i>
+                        <span>Likea</span>
+                    </button>
+                    <button class={styles.postLikeButton}>
+                        <i class='material-icons' id={"likes-icon-" + props.post}>comment</i>
+                        <span>Svara</span>
+                    </button>
+                </div>
+
             </div>
         </>
     )
