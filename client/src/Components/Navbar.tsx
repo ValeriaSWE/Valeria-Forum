@@ -184,7 +184,7 @@ export default function Navbar() {
         href: string;
       }){
         return(
-          <a href={props.href || "#"} class={styles.menuitem} id="menu-item" onclick={(e) => {
+          <a href={props.href || "#"} class={styles.menuitem} id="menu-item" onclick={() => {
            try{
             props.action;
            } catch (err) {
@@ -197,11 +197,10 @@ export default function Navbar() {
                   <img src={profilePicture} class={styles.profilePicture}></img>
                 :
                   props.leftIcon 
-                  
               }
             </span>
             {props.label}
-            <span class={styles.iconright  + " material-icons"}  id="nav-item" style={"font-size: " + (props.rightIcon ? props.rightIcon[1] : null) + "rem; color: white;"}>
+            <span class={styles.iconright + " material-icons"}  id="nav-item" style={"font-size: " + (props.rightIcon ? props.rightIcon[1] : null) + "rem; color: white;"}>
               {props.rightIcon ? props.rightIcon[0] : null }
             </span>
           </a>
@@ -234,7 +233,7 @@ export default function Navbar() {
           return(
             <>
               <DropdownItem label={"Registrera Konto"} leftIcon={"person_add"} rightIcon={null} action={register()} />
-              <DropdownItem  label={"Logga in"} leftIcon={"login"} rightIcon={null} action={login()} />
+              <DropdownItem label={"Logga in"} leftIcon={"login"} rightIcon={null} action={login()} />
             </>
           );
         }
