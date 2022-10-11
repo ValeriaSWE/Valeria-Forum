@@ -184,7 +184,7 @@ export default function Navbar() {
         href: string;
       }){
         return(
-          <a href={props.href || "#"} class={styles.menuitem} id="menu-item" onclick={() => {
+          <a href={props.href || "#"} class={styles.menuitem} id="menu-item" onclick={(e) => {
            try{
             props.action;
            } catch (err) {
@@ -196,7 +196,8 @@ export default function Navbar() {
                 props.leftIcon === "profilePicture" ?
                   <img src={profilePicture} class={styles.profilePicture}></img>
                 :
-                  props.leftIcon
+                  props.leftIcon 
+                  
               }
             </span>
             {props.label}
@@ -233,30 +234,46 @@ export default function Navbar() {
           return(
             <>
               <DropdownItem label={"Registrera Konto"} leftIcon={"person_add"} rightIcon={null} action={register()} />
-              <DropdownItem label={"Logga in"} leftIcon={"login"} rightIcon={null} action={login()} />
+              <DropdownItem  label={"Logga in"} leftIcon={"login"} rightIcon={null} action={login()} />
             </>
           );
         }
       }
 
-      const [darkModeIcon, setDarkModeIcon] = createSignal("toggle_off");
+      const [darkModeToggleIcon, setDarkToggleModeIcon] = createSignal("toggle_off");
+      const [darkModeIcon, setDarkModeIcon] = createSignal("light_mode");
+      const [darkModeLabel, setdarkModeLabel] = createSignal("Ljust läge");
+
+  
 
       function toggleDarkmode() {
         let lightModeOn = localStorage.getItem('lightmode') == "off" ? "on" : "off" || "on"
         
         localStorage.setItem('lightmode', lightModeOn)
+        // UpdateIcon 
+        
 
         $(':root').attr('data-dark-mode', (lightModeOn == "off" ? "true": "false") )
 
-        setDarkModeIcon((lightModeOn == "off" ? "toggle_on": "toggle_off"))
+        setDarkToggleModeIcon((lightModeOn == "off" ? "toggle_on": "toggle_off"))
+        setDarkModeIcon((lightModeOn == "off" ? "dark_mode": "light_mode"))
+        setdarkModeLabel((lightModeOn == "off" ? "Mörkt läge": "Ljust läge"))
         // location.reload()
       }
 
       const DropDownSettings = () => {
+
+        // Set to darkmode if darkmode is toggled in localstorage
+        if(localStorage.getItem('lightmode') == "off") {
+          setDarkToggleModeIcon("toggle_on");
+          setDarkModeIcon("dark_mode");
+          setdarkModeLabel("Mörkt läge");
+        }
+
         return(
           <>
           <DropdownItem label={"Gå Tillbaka"} leftIcon={"arrow_back"} rightIcon={null} action={SetMainDrop(!mainDrop())} />
-          <DropdownItem label={"Mörkt läge"} leftIcon={"light_mode"} rightIcon={[darkModeIcon, 3]} action={toggleDarkmode()}/>
+          <DropdownItem label={darkModeLabel()} leftIcon={darkModeIcon()} rightIcon={[darkModeToggleIcon(), 3]} action={toggleDarkmode()}/>
           <DropdownItem label={"Inställning 2 "} leftIcon={"settings"} rightIcon={null} action={null} />
           <DropdownItem label={"Inställning 3... "} leftIcon={"settings"} rightIcon={null} action={null} />
           </>
