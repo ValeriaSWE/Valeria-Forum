@@ -1,6 +1,7 @@
 import dotenv from "dotenv"
 import fs from "fs"
 import FileReader from "FileReader"
+import im from "imagemagick"
 
 import Post from "../Schemas/Post.js"
 import Comment from "../Schemas/Comment.js"
@@ -28,7 +29,31 @@ export const CreatePost = async (req, res) => {
             //     data: image.buffer, 
             //     contentType: image.mimetype
             // })
-            // console.log(image)
+            console.log(image.buffer)
+            // console.log(fs.readFileSync('.png'))
+
+            // console.log(image.mimetype)
+
+            // try {
+            //     im.resize({
+            //         srcPath: image.mimetype.split('/')[1] + ":-",
+            //         srcDst: "-",
+            //         format: image.mimetype.split('/')[1],
+            //         srcData: image.buffer,
+            //         width:   10
+            //       }, function(err, stdout, stderr){
+            //         if (err) {
+            //             throw err
+            //         }
+            //         console.log(stdout)
+            //         // fs.writeFileSync('kittens-resized.jpg', stdout, 'binary');
+            //         // console.log('resized kittens.jpg to fit within 256x256px')
+            //       });
+                
+            // } catch (error) {
+            //     console.error(error)                
+            // }
+
             // console.log(images)
             try {
                 
@@ -168,15 +193,21 @@ export const NewComment = async (req, res) => {
     const { content } = req.body
     const { userId } = req
 
-    const post = await Post.findById(id).populate('creator').populate({
+    const post = await Post.findById(id).populate({
+        path: 'creator',
+        populate: { path: "profilePicture"}
+    }).populate({
         path: 'comments',
-        populate: {
+        populate: { 
             path: 'creator',
-            populate: {path: 'profilePicture'}
+            populate: { path: "profilePicture"}
         }
     })
 
-    const comment = await Comment.create({ content, creator: userId })
+    const comment = await (await Comment.create({ content, creator: userId })).populate({ 
+        path: 'creator',
+        populate: { path: "profilePicture"}
+    })
 
     post.comments.push(comment._id)
 

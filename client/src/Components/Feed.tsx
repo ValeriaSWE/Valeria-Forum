@@ -108,7 +108,7 @@ export default function Feed() {
     // })
     
     GetPinnedPosts().then((PinnedPosts) => {
-      setPinnedPosts(PinnedPosts)
+      setPinnedPosts(PinnedPosts.data)
     })
 
     return (

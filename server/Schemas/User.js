@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     joinedAt: {type: Date, default: () => Date.now(), immutible: true},
     role: {type: String, default: "pleb"},
     roleRank: {type: Number, default: 0},
-    profilePicture: {type: mongoose.Schema.Types.ObjectId, ref: "Image", default: "6334956ea862a981159bfda0"}// { data: Buffer, contentType: String }
+    profilePicture: {type: mongoose.Schema.Types.ObjectId, ref: "Image", default: "6335abe12ff7b5bff877f976"}// { data: Buffer, contentType: String }
 })
 
 var User = mongoose.model('User', userSchema);
