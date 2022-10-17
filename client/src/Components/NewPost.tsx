@@ -1,13 +1,35 @@
 import $ from "jquery"
 import { CreatePost } from "../api/posts"
-import fs from "fs"
 
 
 export default function NewPost() {
 
-    $('#create-post-btn').on('click', function() {
-        console.log('test')
-        console.log($('#create-post-img').val())
+    // $('#create-post-btn').on('click', function() {
+    //     console.log('test')
+    //     console.log($('#create-post-img').val())
+    // })
+
+    $(function() {
+
+        $('#create-post-img').on('change', function(e) {
+            const images = Array.from($(this).prop('files'))
+            
+            for (const i in images) {
+                console.log(images[i])
+                const size = parseFloat(((images[i].size/1024)/1024).toFixed(4)) // filesize in MB
+
+                if (size > 5) {
+                    $(this).val("")
+
+                    alert('File ' + images[i].name + ' is to big!')
+                    break
+                }
+            }
+
+            console.log("thsi")
+            console.log(images)
+            console.log(((images[0]?.size/1024)/1024).toFixed(4))
+        })
     })
 
     return (
