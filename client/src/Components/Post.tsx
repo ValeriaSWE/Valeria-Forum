@@ -36,8 +36,7 @@ setting the data to the state. */
         setLikeCount(data.likes.length)
         setLikedByUser(data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
         setComments(data.comments)
-
-        setEditedDate(data.lastEditedAt)
+        setEditedDate(timeSince(new Date(data.lastEditedAt).getTime()))
         setIsEdited(data.isEdited)
     })
 
@@ -49,11 +48,17 @@ setting the data to the state. */
     
         const content = $("#new-comment").val()
     
+        $("#new-comment").val("")
+
         const token = JSON.parse(localStorage.getItem('profile'))?.token
     
         const { data } = await NewComment(postId, content, token)
     
+        console.log(data)
+
         setComments(data.comments)
+
+        $('html, body').scrollTop($('#' + data.comments[data.comments.length - 1]._id).offset()?.top)
     }
 
     function Creator() {
@@ -82,7 +87,7 @@ setting the data to the state. */
                             <button class={styles.editBtn}>Ändra</button>
                         </Show>
                         {/* POST  */}
-                        <p class={styles.postDate}> Publicerad för 1 dag sedan</p>
+                        <p class={styles.postDate}>{editedDate} sedan</p>
                         <Show when={isEdited()}>
                             <span class={styles.editedBadge}>(Redigerad)</span>
                         </Show>
@@ -165,7 +170,7 @@ function Comment(props: {
 
     return(
         <>
-            <div class={styles.postComment}>
+            <div class={styles.postComment} id={props.comment._id}>
                 
               
                 <div class={styles.CommentCreator}> 

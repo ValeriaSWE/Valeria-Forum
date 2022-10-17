@@ -211,9 +211,20 @@ export const NewComment = async (req, res) => {
 
     post.comments.push(comment._id)
 
-    post.save()
+    await post.save()
 
-    res.status(200).send(post)
+    const updatedPost = await Post.findById(post._id).populate({
+        path: 'creator',
+        populate: { path: "profilePicture"}
+    }).populate({
+        path: 'comments',
+        populate: { 
+            path: 'creator',
+            populate: { path: "profilePicture"}
+        }
+    }) 
+
+    return res.status(200).send(updatedPost)
 }
 
 export const LikePost = async (req, res) => {
