@@ -1,3 +1,8 @@
+a {
+	text-decoration: none;
+	color: unset;
+}
+
 .inheritPost {
 	--post-width: 70rem;
 	--profile-picture: 3rem;
@@ -130,6 +135,10 @@
 }
 
 .newCommentForm {
+	position: relative;
+}
+
+.newCommentForm form {
 	width: 100%;
 	display: flex;
 	flex-direction: row;
@@ -147,6 +156,7 @@
 	background-color: var(--color-white-m);
 	font-size: 1rem;
 	color: var(--color-blue-d);
+	outline: none;
 }
 
 .newCommentForm .postCommentButton {
@@ -161,6 +171,8 @@
 	gap: 0.75rem;
 	align-items: center;
 	justify-content: center;
+
+	cursor: pointer;
 }
 .newCommentForm .postCommentButton h4 {
 	font-size: 1rem;
@@ -185,6 +197,8 @@
 	/* align-items: center; */
 	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
 	padding-block: 0.5rem;
+	position: relative;
+	scale: 100%;
 }
 
 .postComment .feedTitle p {
@@ -261,4 +275,51 @@
 	cursor: pointer;
 	background-color: var(--color-white-l);
 	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+}
+
+.respondsTo {
+	position: absolute;
+	top: -0.75rem;
+	left: 5rem;
+	font-style: italic;
+	color: var(--color-blue-l);
+	background-color: var(--color-white-l);
+	border-radius: var(--border-radius);
+	padding: 0.25rem 0.75rem;
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+	font-size: 0.85rem;
+	max-width: 25rem;
+	cursor: pointer;
+	display: flex;
+}
+
+.respondsTo p {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.respondsTo i {
+	font-size: inherit;
+	color: inherit;
+	margin-right: 0.5ch;
+}
+
+.newCommentForm .respondsTo {
+	left: 1rem;
+}
+
+.newCommentForm .cancelResponse {
+	position: absolute;
+	right: -0.4rem;
+	top: -0.4rem;
+	background-color: var(--color-blue-d);
+	border: none;
+	color: var(--color-white-l);
+	width: 1.5em;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	font-weight: 900;
+	font-size: 0.75rem;
+	cursor: pointer;
 }

@@ -1,4 +1,4 @@
-import { GetImage, GetPost, LikePost, NewComment } from "../api/posts"
+import { GetImage, GetPost, LikeComment, LikePost, NewComment } from "../api/posts"
 import $ from "jquery"
 import roleBadge from './StylingModules/RoleBadge.module.css'
 import styles from './StylingModules/Post.module.css'
@@ -18,6 +18,8 @@ export default function Post(props: {
     const [creatorPfp, setCreatorPfp] = createSignal('')
     const [editedDate, setEditedDate] = createSignal("time")
     const [isEdited, setIsEdited] = createSignal(false)
+
+    const [newCommentRespondsTo, setNewCommentRespondsTo] = createSignal(null)
 
 /* A function that is called when the component is mounted. It is fetching data from an API and then
 setting the data to the state. */
@@ -47,12 +49,16 @@ setting the data to the state. */
         const postId = props.post
     
         const content = $("#new-comment").val()
+
+        const respondsTo = newCommentRespondsTo()?._id
     
+        setNewCommentRespondsTo(null)
+
         $("#new-comment").val("")
 
         const token = JSON.parse(localStorage.getItem('profile'))?.token
     
-        const { data } = await NewComment(postId, content, token)
+        const { data } = await NewComment(postId, content, respondsTo, token)
     
         console.log(data)
 
@@ -76,12 +82,72 @@ setting the data to the state. */
         )
     }
 
+    function Comment(props: {
+        comment: any;
+    }) {
+        const [likedByUser, setLikedByUser] = createSignal(props.comment.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
+        const [likeCount, setLikeCount] = createSignal(props.comment.likes.length)
+
+        const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(props.comment.creator.profilePicture.data.data).reduce(function (data, byte) {
+            return data + String.fromCharCode(byte);
+        }, ''))}`
+    
+        return(
+            <>
+                <div class={styles.postComment} id={props.comment._id}>
+                    <Show when={props.comment.respondsTo}>
+                        <a onClick={() => highlightPost(props.comment.respondsTo._id)} class={styles.respondsTo}>
+                            <i class="material-icons">reply</i><p>@{props.comment.respondsTo.creator.username} {props.comment.respondsTo.content}</p>
+                        </a>
+                    </Show>
+                  
+                    <a class={styles.CommentCreator} href={"/forum/user/" + props.comment.creator._id}> 
+                        <div class={styles.creatorImg}>
+                         <img class={styles.creatorImg} src={profilePicture} alt="" />
+                         <Show when={props.comment.creator.roleRank >= 5}>
+                             <i class={'material-icons ' + styles.verified} data={props.comment.creator.role}>verified</i>
+                        </Show>
+                        </div>
+                        <h2 class={styles.creatorName}>{props.comment.creator.username}</h2>
+                        <Show when={props.comment.creator.roleRank >= 5}>
+                            <i class={roleBadge.role} data={props.comment.creator.role}>{props.comment.creator.role}</i>
+                        </Show>
+                    </a>
+                
+    
+                    
+                    <div class={styles.feedTitle}>
+                        <p>{props.comment.content}</p> 
+                    </div>
+                    
+                    <div class={styles.commentStatitics}>
+                        <PostStatitics date={props.comment.createdAt} />
+                        <button class={styles.postLikeButton} onClick={() => {
+                            LikeComment(props.comment._id, JSON.parse(localStorage.getItem('profile'))?.token).then((res) => {
+                                console.log(res.data)
+                                setLikeCount(res.data.likes.length)
+                                setLikedByUser(res.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
+                            })
+                        }}>
+                            <i class='material-icons' style={likedByUser() ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
+                            <span>{likeCount()}</span>
+                        </button>
+                        <button class={styles.postLikeButton} onClick={() => setNewCommentRespondsTo(props.comment)}>
+                            <i class='material-icons'>comment</i>
+                            <span>Svara</span>
+                        </button>
+                    </div>
+    
+                </div>
+            </>
+        )
+    }
     // console.log(JSON.parse(localStorage.getItem('profile'))?.result._id)
 
     return (
         <>
                 <div class={styles.inheritPost}>
-                    <div class={styles.postCreator} id="post-creator">
+                    <a class={styles.postCreator} id="post-creator" href={"/forum/user/" + creator()._id}>
                         <Creator creator={creator()}/>
                         <Show when={creator()._id == JSON.parse(localStorage.getItem('profile'))?.result._id}>
                             <button class={styles.editBtn}>Ändra</button>
@@ -91,7 +157,7 @@ setting the data to the state. */
                         <Show when={isEdited()}>
                             <span class={styles.editedBadge}>(Redigerad)</span>
                         </Show>
-                    </div>
+                    </a>
                     <div class={styles.postContent}>
                         <h1 class={styles.title} id="post-title">{title()}</h1>
                         <p class={styles.content} id="post-content">{content}</p>
@@ -125,13 +191,22 @@ setting the data to the state. */
                     </div>
                 </div>
                 
-                <form class={styles.newCommentForm} onSubmit={e => e.preventDefault()} >
-                    <input type="text" class={styles.newCommentInput} id="new-comment" autocomplete="off" placeholder="Skriv en kommentar"/>
-                    <button class={styles.postCommentButton} onClick={newComment}>
-                        <h4>Pulicera</h4>
-                        <i class="material-icons">send</i>
-                    </button>
-                </form>
+                <div class={styles.newCommentForm}>
+                    <Show when={newCommentRespondsTo()}>
+                        <a onClick={() => highlightPost(newCommentRespondsTo()?._id)} class={styles.respondsTo}>
+                            <i class="material-icons">reply</i><p>@{newCommentRespondsTo().creator.username} {newCommentRespondsTo().content}</p>
+                            <button class={styles.cancelResponse} onClick={() => {console.log('cancel pressed'); setNewCommentRespondsTo(null)}}>X</button>
+                        </a>
+                    </Show>
+                    <form onSubmit={e => e.preventDefault()} >
+                        <input type="text" class={styles.newCommentInput} id="new-comment" autocomplete="off" placeholder="Skriv en kommentar"/>
+                        <button class={styles.postCommentButton} onClick={newComment}>
+                            <h4>Pulicera</h4>
+                            <i class="material-icons">send</i>
+                        </button>
+                    </form>
+                </div>
+
                
                 <div class={styles.comments} id="comments">
                     <For each={comments()}>{comment =>
@@ -160,67 +235,18 @@ function Image(props: {
     )
 }
 
-function Comment(props: {
-    comment: any;
-}) {
-    // console.log(props.comment)
-    const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(props.comment.creator.profilePicture.data.data).reduce(function (data, byte) {
-        return data + String.fromCharCode(byte);
-    }, ''))}`
-
-    return(
-        <>
-            <div class={styles.postComment} id={props.comment._id}>
-                
-              
-                <div class={styles.CommentCreator}> 
-                    <div class={styles.creatorImg}>
-                     <img class={styles.creatorImg} src={profilePicture} alt="" />
-                     <Show when={props.comment.creator.roleRank >= 5}>
-                         <i class={'material-icons ' + styles.verified} data={props.comment.creator.role}>verified</i>
-                    </Show>
-                    </div>
-                    <h2 class={styles.creatorName}>{props.comment.creator.username}</h2>
-                    <Show when={props.comment.creator.roleRank >= 5}>
-                        <i class={roleBadge.role} data={props.comment.creator.role}>{props.comment.creator.role}</i>
-                    </Show>
-                </div>
-            
-
-                
-                <div class={styles.feedTitle}>
-                    <p>{props.comment.content}</p> 
-                </div>
-                
-                <div class={styles.commentStatitics}>
-                    <PostStatitics date={props.comment.createdAt} />
-                    <button class={styles.postLikeButton}>
-                        <i class='material-icons' id={"likes-icon-" + props.post}>thumb_up</i>
-                        <span>Likea</span>
-                    </button>
-                    <button class={styles.postLikeButton}>
-                        <i class='material-icons' id={"likes-icon-" + props.post}>comment</i>
-                        <span>Svara</span>
-                    </button>
-                </div>
-
-            </div>
-        </>
-    )
-}
-
-const ShowRoleInPost = (props: {
-    role: string;
-}) => {
-    return(
-        <>
-        <span class={styles.showRole}>
-        <i class={'material-icons ' + styles.verified} data={props.role}>verified</i>
-        <i class={roleBadge.role} data={props.role}>{props.role}</i>
-        </span>
-        </>
-    )
-}
+// const ShowRoleInPost = (props: {
+//     role: string;
+// }) => {
+//     return(
+//         <>
+//         <span class={styles.showRole}>
+//         <i class={'material-icons ' + styles.verified} data={props.role}>verified</i>
+//         <i class={roleBadge.role} data={props.role}>{props.role}</i>
+//         </span>
+//         </>
+//     )
+// }
 
 const PostStatitics = (props: {
     date: string;
@@ -269,4 +295,14 @@ function timeSince(date) {
       return Math.floor(interval) + " minuter";
     }
     return Math.floor(seconds) + " sekunder";
+}
+
+function highlightPost(post: string) {
+    $('html, body').scrollTop($('#' + post).offset()?.top - $( window ).height()/2)
+    setTimeout(function() {
+
+        $('#' + post).animate({scale: '103%'}, 250)
+        $('#' + post).animate({scale: '100%'}, 250)
+    }, 500)
+
 }

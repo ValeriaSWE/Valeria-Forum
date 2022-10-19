@@ -29,6 +29,7 @@ body {
 	/* font-size: 1.5vh; */
 
 	background-color: var(--color-white-l);
+	scroll-behavior: smooth;
 }
 
 :root[data-dark-mode="true"] {

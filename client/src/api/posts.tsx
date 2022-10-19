@@ -6,7 +6,7 @@ export const GetAllPosts = (sort, startIndex) => axios.get(`${URL}/posts/getAllP
 
 export const GetPost = (postId: String) => axios.get(`${URL}/posts/getPost/${postId}`)
 export const GetImage = (imageId: String) => axios.get(`${URL}/posts/getImage/${imageId}`)
-export const NewComment = async (postId: String, content: String, token: String) => axios.post(`${URL}/posts/newComment/${postId}`, { content }, {
+export const NewComment = async (postId: String, content: String, respondsTo: String | null, token: String) => axios.post(`${URL}/posts/newComment/${postId}`, { content, respondsTo }, {
     headers: {
         'Authorization': `Bearer ${token}`
     }
@@ -19,6 +19,11 @@ export const LikePost = async (postId: String, token: String) => axios.post(`${U
 export const CreatePost = (formData: FormData, token: String) => axios.post(`${URL}/posts/createPost`, formData, {
     headers: {
         // 'content-type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`
+    }
+})
+export const LikeComment = async (commentId: String, token: String) => axios.post(`${URL}/posts/likeComment/${commentId}`, {}, {
+    headers: {
         'Authorization': `Bearer ${token}`
     }
 })

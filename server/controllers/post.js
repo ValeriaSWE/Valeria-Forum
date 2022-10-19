@@ -171,11 +171,14 @@ export const GetPost = async (req, res) => {
         populate: { path: "profilePicture"}
     }).populate({
         path: 'comments',
-        populate: { 
+        populate: [{ 
             path: 'creator',
-            populate: { path: "profilePicture"}
-        }
+            populate: { path: "profilePicture"},
+        }, { path: "respondsTo", populate: { path: "creator" } }],
+        // populate: { path: "respondsTo" },
     })
+
+    // console.log(post)
 
     res.status(200).send(post)
 }
@@ -190,8 +193,10 @@ export const GetImage = async (req, res) => {
 
 export const NewComment = async (req, res) => {
     const { id } = req.params
-    const { content } = req.body
+    const { content, respondsTo } = req.body
     const { userId } = req
+
+    console.log(respondsTo)
 
     const post = await Post.findById(id).populate({
         path: 'creator',
@@ -204,7 +209,7 @@ export const NewComment = async (req, res) => {
         }
     })
 
-    const comment = await (await Comment.create({ content, creator: userId })).populate({ 
+    const comment = await (await Comment.create({ content, creator: userId, respondsTo })).populate({ 
         path: 'creator',
         populate: { path: "profilePicture"}
     })
@@ -218,10 +223,10 @@ export const NewComment = async (req, res) => {
         populate: { path: "profilePicture"}
     }).populate({
         path: 'comments',
-        populate: { 
+        populate: [{ 
             path: 'creator',
-            populate: { path: "profilePicture"}
-        }
+            populate: { path: "profilePicture"},
+        }, { path: "respondsTo", populate: { path: "creator" } }]
     }) 
 
     return res.status(200).send(updatedPost)
@@ -242,6 +247,23 @@ export const LikePost = async (req, res) => {
     post.save()
 
     res.status(200).send(post)
+}
+
+export const LikeComment = async (req, res) => {
+    const { id } = req.params
+    const { userId } = req
+
+    const comment = await Comment.findById(id)
+
+    if (comment.likes.includes(userId)) {
+        comment.likes.remove(userId)
+    } else {
+        comment.likes.push(userId)
+    }
+
+    comment.save()
+
+    res.status(200).send(comment)
 }
 
 // title: { type: String, required: true },
