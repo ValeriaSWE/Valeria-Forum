@@ -97,6 +97,12 @@ a {
 	font-size: 1.2rem;
 }
 
+.inheritPost .postContent .content a {
+	text-decoration: underline;
+	color: var(--color-blue-d);
+	font-weight: 700;
+}
+
 .inheritPost .postContent .imageContainer {
 	display: flex;
 	flex-direction: column;

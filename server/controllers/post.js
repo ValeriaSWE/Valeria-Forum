@@ -90,6 +90,9 @@ export const GetPosts = (pinned) => {
 
         sortPort[sort] = dir
 
+        console.log(Number(page) * Number(limit))
+        console.log(pinned)
+
         try {
 
             let posts = await Post.aggregate([
@@ -127,6 +130,7 @@ export const GetPosts = (pinned) => {
 
             return res.status(200).json({ posts, pages })
         } catch (error) {
+            console.error(error)
             return res.status(500).send({ message: SomethingWrong, error })
         }
     }
@@ -151,7 +155,7 @@ export const GetPost = async (req, res) => {
     const commentPages = Math.ceil(post.comments.length / Number(commentLimit))
 
     if (commentSort.split('-')[0] == 'createdAt') {
-        post.comments.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : -1)
+        post.comments.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
     } else if (commentSort.split('-')[0] == 'interactionCount') {
         post.comments.sort((a, b) => (a.likes.length < b.likes.length) ? 1 : -1)
     }

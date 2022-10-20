@@ -2,6 +2,7 @@ import { createSignal, For, Show } from 'solid-js';
 import { LikePost } from '../api/posts';
 import styles from './StylingModules/PostPreview.module.css';
 import roleBadge from './StylingModules/RoleBadge.module.css'
+import SolidMarkdown from 'solid-markdown'
 
 import $ from 'jquery';
 
@@ -112,7 +113,9 @@ export default function PostPreview(props: {
         </a>
         <a class={styles.postTitle} href={`/forum/post/${props.data._id}`} style="text-decoration: none;">
             <h2>{props.data.title}</h2>
-            <p>{props.data.content}</p> 
+            <p>
+                <SolidMarkdown>{props.data.content}</SolidMarkdown>
+            </p> 
         </a>
         <PostStatitics date={props.data.createdAt} likes={props.data.likes} comments={props.data.comments.length} postId={props.data._id} tags={props.data.tags} />
     </div>

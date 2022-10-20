@@ -88,8 +88,13 @@ export const registerUser = async (req, res) => {
 export const GetUserInfo = async (req, res) => {
     const { id } = req.params
     
+    console.log(id.length)
+
     try {
-        const user = await User.findById(id).populate('profilePicture')
+        let user
+        if (id.length == 24) user = await User.findById(id).populate('profilePicture')
+
+        if (!user) user = await User.findOne({ username: id }).populate('profilePicture')
 
         if (!user) return res.status(404).send({ message: UserDoesntExists })
 

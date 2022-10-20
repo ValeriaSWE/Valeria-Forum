@@ -30,7 +30,7 @@ export default function UserInfo() {
             return data + String.fromCharCode(byte);
         }, ''))}`)
         
-        GetUserPosts(id).then(res => {
+        GetUserPosts(data._id).then(res => {
             const { data } = res
     
             for(let k in data) {

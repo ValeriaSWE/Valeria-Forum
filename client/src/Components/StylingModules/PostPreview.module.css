@@ -104,6 +104,12 @@
 	text-overflow: ellipsis;
 }
 
+.post .postTitle > p a {
+	text-decoration: underline;
+	color: var(--color-blue-d);
+	font-weight: 700;
+}
+
 .pinicon {
 	font-size: 1.3rem;
 	color: red;
