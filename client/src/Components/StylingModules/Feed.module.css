@@ -65,7 +65,8 @@
 	cursor: pointer;
 }
 
-.editFeed {
+.editFeed,
+.pageControls {
 	position: relative;
 	width: 80rem;
 	height: calc(50px - 10px);
@@ -109,7 +110,7 @@
 }
 .editFeedIconButton > i,
 .editFeedIconButton > p {
-	color: var(--color-blue-d)
+	color: var(--color-blue-d);
 }
 
 .searchFeed {
@@ -131,5 +132,5 @@
 	outline: none;
 
 	background-color: var(--color-white-l);
-	color: var(--color-blue-d)
+	color: var(--color-blue-d);
 }

@@ -25,36 +25,6 @@ export const CreatePost = async (req, res) => {
     if (req.files) {
         
         const promises = req.files.map(async image => {
-            // images.push({ 
-            //     data: image.buffer, 
-            //     contentType: image.mimetype
-            // })
-            console.log(image.buffer)
-            // console.log(fs.readFileSync('.png'))
-
-            // console.log(image.mimetype)
-
-            // try {
-            //     im.resize({
-            //         srcPath: image.mimetype.split('/')[1] + ":-",
-            //         srcDst: "-",
-            //         format: image.mimetype.split('/')[1],
-            //         srcData: image.buffer,
-            //         width:   10
-            //       }, function(err, stdout, stderr){
-            //         if (err) {
-            //             throw err
-            //         }
-            //         console.log(stdout)
-            //         // fs.writeFileSync('kittens-resized.jpg', stdout, 'binary');
-            //         // console.log('resized kittens.jpg to fit within 256x256px')
-            //       });
-                
-            // } catch (error) {
-            //     console.error(error)                
-            // }
-
-            // console.log(images)
             try {
                 
                 const imgId = (await Image.create({ 
@@ -73,9 +43,7 @@ export const CreatePost = async (req, res) => {
         images = await Promise.all(promises)
         
     }
-    
-    // createNewPostTMP()
-    
+        
     try {
         await Post.create({ title, creator, content, images })
         return res.status(200).send("Post created succesfully")
@@ -111,7 +79,7 @@ async function createTagTMP(name) {
  */
 export const GetPosts = (pinned) => {
     return async (req, res) => {
-        let { sort, startIndex } = req.query
+        let { sort, page, limit } = req.query
         
         let sortPort = {}
         let dir = -1
@@ -135,10 +103,10 @@ export const GetPosts = (pinned) => {
                     $sort: sortPort
                 },
                 {
-                    $skip: Number(startIndex)
+                    $skip: Number(page) * Number(limit)
                 },
                 {
-                    $limit: 10
+                    $limit: Number(limit)
                 },
                 {
                     $lookup: {
@@ -150,13 +118,14 @@ export const GetPosts = (pinned) => {
                 }
             ])
             
+            const pages = Math.ceil((await Post.count()) / Number(limit))
 
             for (var k in posts) {
                 posts[k]['creator'] = await User.findById(posts[k]['creator']).populate('profilePicture')
             }
             
 
-            return res.status(200).json(posts)
+            return res.status(200).json({ posts, pages })
         } catch (error) {
             return res.status(500).send({ message: SomethingWrong, error })
         }
@@ -165,6 +134,8 @@ export const GetPosts = (pinned) => {
 
 export const GetPost = async (req, res) => {
     const { id } = req.params
+    let { commentSort, commentPage, commentLimit } = req.query
+
 
     const post = await Post.findById(id).populate({
         path: 'creator',
@@ -175,12 +146,38 @@ export const GetPost = async (req, res) => {
             path: 'creator',
             populate: { path: "profilePicture"},
         }, { path: "respondsTo", populate: { path: "creator" } }],
-        // populate: { path: "respondsTo" },
     })
 
-    // console.log(post)
+    const commentPages = Math.ceil(post.comments.length / Number(commentLimit))
 
-    res.status(200).send(post)
+    if (commentSort.split('-')[0] == 'createdAt') {
+        post.comments.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : -1)
+    } else if (commentSort.split('-')[0] == 'interactionCount') {
+        post.comments.sort((a, b) => (a.likes.length < b.likes.length) ? 1 : -1)
+    }
+
+    if (commentSort.split('-')[1] == 'inverse') {
+        post.comments.reverse()
+    }
+
+    for (let i = 0; i < post.comments.length; i++) {
+        if (post.comments[i].respondsTo) {
+            var index = 0
+            for (var j = 0; j < post.comments.length; j++) {
+                if (String(post.comments[j]._id) == String(post.comments[i].respondsTo._id)) {
+                    index = j
+                    break
+                }
+            }
+            post.comments[i].respondsTo.__v = Math.ceil((index + 1) / commentLimit)
+        }
+        
+    }
+    
+    post.comments = post.comments.slice(Number(commentPage) * Number(commentLimit), Number(commentPage) * Number(commentLimit) + Number(commentLimit))
+    
+
+    res.status(200).send({ post, commentPages})
 }
 
 export const GetImage = async (req, res) => {
@@ -265,11 +262,3 @@ export const LikeComment = async (req, res) => {
 
     res.status(200).send(comment)
 }
-
-// title: { type: String, required: true },
-// creator: { type: mongoose.Schema.Types.ObjectId, required: true },
-// content: { type: String, required: true },
-// images: [{ data: Buffer, contentType: String }],
-// createdAt: {type: Date, default: () => Date.now(), immutible: true},
-// lastEditedAt: {type: Date, default: () => Date.now(), immutible: false},
-// comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }]
