@@ -94,7 +94,7 @@ export default function Feed() {
   function PinnedPosts() {
     
     GetPinnedPosts().then((PinnedPosts) => {
-      setPinnedPosts(PinnedPosts.data)
+      setPinnedPosts(PinnedPosts.data.posts)
     })
 
     return (

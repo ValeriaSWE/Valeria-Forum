@@ -1,7 +1,7 @@
 import axios from "axios";
 import { URL } from "./common";
 
-export const GetPinnedPosts = () => axios.get(`${URL}/posts/getPinnedPosts/?sort=createdAt&startIndex=0&limit=5`)
+export const GetPinnedPosts = () => axios.get(`${URL}/posts/getPinnedPosts/?sort=createdAt&page=0&limit=5`)
 export const GetAllPosts = (sort: string, page: number, limit: number) => axios.get(`${URL}/posts/getAllPosts/?sort=${sort}&page=${page}&limit=${limit}`)
 
 export const GetPost = (postId: string, commentSort: string, commentPage: number, commentLimit: number) => axios.get(`${URL}/posts/getPost/${postId}/?commentSort=${commentSort}&commentPage=${commentPage}&commentLimit=${commentLimit}`)
