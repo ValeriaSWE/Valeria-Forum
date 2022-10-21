@@ -15,7 +15,7 @@ export default function NewPost() {
             const images = Array.from($(this).prop('files'))
             
             for (const i in images) {
-                console.log(images[i])
+                // console.log(images[i])
                 const size = parseFloat(((images[i].size/1024)/1024).toFixed(4)) // filesize in MB
 
                 if (size > 5) {
@@ -26,9 +26,9 @@ export default function NewPost() {
                 }
             }
 
-            console.log("thsi")
-            console.log(images)
-            console.log(((images[0]?.size/1024)/1024).toFixed(4))
+            // console.log("thsi")
+            // console.log(images)
+            // console.log(((images[0]?.size/1024)/1024).toFixed(4))
         })
     })
 
@@ -57,7 +57,7 @@ export default function NewPost() {
                         formData.append('content', content)
                         
                         const post = await CreatePost(formData, JSON.parse(localStorage.getItem('profile'))?.token)
-                        console.log(post)
+                        // console.log(post)
 
                         $('#create-post-title').val('')
                         $('#create-post-content').val('')
@@ -79,7 +79,7 @@ export default function NewPost() {
 function urlify(text: string) {
     var urlRegex = /(?<!\]\()(http:\/\/|https:\/\/)[a-zA-Z0-9._+-]+\.[a-z]+[a-zA-Z0-9\/._+-]+/g;
     return (text.replace(urlRegex, function(url: string) {
-            console.log(url.split('/')[2])
+            // console.log(url.split('/')[2])
             return ( `[${url.split('/')[2]}](${url})` )
         }))
     // or alternatively

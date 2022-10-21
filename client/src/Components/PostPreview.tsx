@@ -40,7 +40,7 @@ export default function PostPreview(props: {
     };
     // FÅR FIXAS SENARE :))
 }) {
-    console.log(props.data)
+    // console.log(props.data)
     const [likedByUser, setLikedByUser] = createSignal(props.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
     const [likeCount, setLikeCount] = createSignal(props.data.likes.length)
 

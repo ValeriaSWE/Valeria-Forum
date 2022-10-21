@@ -88,7 +88,7 @@ export const registerUser = async (req, res) => {
 export const GetUserInfo = async (req, res) => {
     const { id } = req.params
     
-    console.log(id.length)
+    // console.log(id.length)
 
     try {
         let user

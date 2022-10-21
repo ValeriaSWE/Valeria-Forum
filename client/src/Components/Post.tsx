@@ -82,7 +82,7 @@ setting the data to the state. */
 
         const { data } = await NewComment(postId, content, respondsTo, token)
 
-        console.log(data)
+        // console.log(data)
 
         setComments(data.comments)
         setCommentsAmount(data.comments.length)
@@ -147,7 +147,7 @@ setting the data to the state. */
                         <PostStatitics date={props.comment.createdAt} />
                         <button class={styles.postLikeButton} onClick={() => {
                             LikeComment(props.comment._id, JSON.parse(localStorage.getItem('profile'))?.token).then((res) => {
-                                console.log(res.data)
+                                // console.log(res.data)
                                 setLikeCount(res.data.likes.length)
                                 setLikedByUser(res.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
                             })
@@ -246,7 +246,7 @@ setting the data to the state. */
                                 // setContent($('#editContent').val()?.toString())
                                 const newPostData = await EditPost(props.post, $('#editContent').val()?.toString(), JSON.parse(localStorage.getItem('profile'))?.token)
 
-                                console.log(newPostData)
+                                // console.log(newPostData)
 
                                 setContent(newPostData.data.content)
                                 setIsEdited(newPostData.data.isEdited)
@@ -309,7 +309,7 @@ setting the data to the state. */
                 <Show when={newCommentRespondsTo()}>
                     <a onClick={() => highlightPost(newCommentRespondsTo()?._id, null)} class={styles.respondsTo}>
                         <i class="material-icons">reply</i><p>@{newCommentRespondsTo().creator.username} {newCommentRespondsTo().content}</p>
-                        <button class={styles.cancelResponse} onClick={() => {console.log('cancel pressed'); setNewCommentRespondsTo(null)}}>X</button>
+                        <button class={styles.cancelResponse} onClick={() => {setNewCommentRespondsTo(null)}}>X</button>
                     </a>
                 </Show>
                 <form onSubmit={e => e.preventDefault()} >
@@ -525,7 +525,7 @@ function timeSince(date) {
 function urlify(text: string) {
     var urlRegex = /(?<!\]\()(http:\/\/|https:\/\/)[a-zA-Z0-9._+-]+\.[a-z]+[a-zA-Z0-9\/._+-]+/g;
     return (text.replace(urlRegex, function(url: string) {
-            console.log(url.split('/')[2])
+            // console.log(url.split('/')[2])
             return ( `[${url.split('/')[2]}](${url})` )
         }))
     // or alternatively
