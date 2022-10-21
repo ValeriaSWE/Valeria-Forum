@@ -1,4 +1,4 @@
-import { GetImage, GetPost, LikeComment, LikePost, NewComment } from "../api/posts"
+import { EditPost, GetImage, GetPost, LikeComment, LikePost, NewComment } from "../api/posts"
 import $ from "jquery"
 import roleBadge from './StylingModules/RoleBadge.module.css'
 import styles from './StylingModules/Post.module.css'
@@ -12,6 +12,8 @@ export default function Post(props: {
     const search = useLocation().search
     const searchParams = new URLSearchParams(search)
 
+    const [isEditing, setIsEditing] = createSignal(false)
+
     // main post signals:
     const [title, setTitle] = createSignal('title')
     const [content, setContent] = createSignal('')
@@ -20,7 +22,7 @@ export default function Post(props: {
     const [likeCount, setLikeCount] = createSignal(0)
     const [likedByUser, setLikedByUser] = createSignal(false)
     const [creatorPfp, setCreatorPfp] = createSignal('')
-    const [editedDate, setEditedDate] = createSignal("time")
+    const [createdDate, setCreatedDate] = createSignal("time")
     const [isEdited, setIsEdited] = createSignal(false)
 
     const [newCommentRespondsTo, setNewCommentRespondsTo] = createSignal(null)
@@ -53,7 +55,7 @@ setting the data to the state. */
         setLikedByUser(post.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
         setComments(post.comments)
         setCommentsAmount(post.comments.length)
-        setEditedDate(timeSince(new Date(post.lastEditedAt).getTime()))
+        setCreatedDate(timeSince(new Date(post.createdAt).getTime()))
         setIsEdited(post.isEdited)
     })
 
@@ -63,7 +65,12 @@ setting the data to the state. */
     async function newComment() {
         const postId = props.post
 
-        const content = $("#new-comment").val()
+        if (!$("#new-comment").val()) return
+
+        // console.log(urlify($("#new-comment").val()?.toString()))
+
+        const content = urlify($("#new-comment").val()?.toString())
+        // const content = $("#new-comment").val()
 
         const respondsTo = newCommentRespondsTo()?._id
 
@@ -85,16 +92,14 @@ setting the data to the state. */
 
     function Creator() {
         return (
-            <>
-            <div class={styles.creatorContainer}>
+            <a class={styles.creatorContainer} href={"/forum/user/" + creator()._id}>
                 <div class={styles.creatorImg}>
                     <img src={creatorPfp()} alt="" />
                     <i class={'material-icons ' + styles.verified} data={creator().role}>verified</i>
                 </div>
                 <h2 class={styles.creatorName}>{creator().username}</h2>
                 <i class={roleBadge.role} data={creator().role}>{creator().role}</i>
-                </div>
-            </>
+            </a>
         )
     }
 
@@ -135,7 +140,7 @@ setting the data to the state. */
 
 
                     <div class={styles.feedTitle}>
-                        <p>{props.comment.content}</p>
+                        <SolidMarkdown>{props.comment.content}</SolidMarkdown>
                     </div>
 
                     <div class={styles.commentStatitics}>
@@ -233,31 +238,54 @@ setting the data to the state. */
     return (
         <>
             <div class={styles.inheritPost}>
-                <a class={styles.postCreator} id="post-creator" href={"/forum/user/" + creator()._id}>
+                <div class={styles.postCreator} id="post-creator">
                     <Creator/>
                     <Show when={creator()._id == JSON.parse(localStorage.getItem('profile'))?.result._id}>
-                        <button class={styles.editBtn}>Ändra</button>
+                        <button class={styles.editBtn} onClick={async () => {
+                            if (isEditing()) {
+                                // setContent($('#editContent').val()?.toString())
+                                const newPostData = await EditPost(props.post, $('#editContent').val()?.toString(), JSON.parse(localStorage.getItem('profile'))?.token)
+
+                                console.log(newPostData)
+
+                                setContent(newPostData.data.content)
+                                setIsEdited(newPostData.data.isEdited)
+                            }
+
+                            setIsEditing(!isEditing())
+                        }}>{isEditing() ? "Spara" : "Ändra"}</button>
                     </Show>
                     {/* POST  */}
-                    <p class={styles.postDate}>{editedDate} sedan</p>
+                    <p class={styles.postDate}>{createdDate()} sedan</p>
                     <Show when={isEdited()}>
                         <span class={styles.editedBadge}>(Redigerad)</span>
                     </Show>
-                </a>
-                <div class={styles.postContent}>
-                    <h1 class={styles.title} id="post-title">{title()}</h1>
-                    <p class={styles.content} id="post-content">
-                        <Show when={content()}>
-                            <SolidMarkdown>{content()}</SolidMarkdown>
-                        </Show>
-                    </p>
-                    <div class={styles.imageContainer} id="post-image-container">
-                        <For each={images()}>{image =>
-                            <Image imageData={image} />
-                        }</For>
-                    </div>
                 </div>
-
+                <Show when={isEditing()} fallback={
+                    <div class={styles.postContent}>
+                        <h1 class={styles.title} id="post-title">{title()}</h1>
+                        <p class={styles.content} id="post-content">
+                            <Show when={content()}>
+                                <SolidMarkdown>{content()}</SolidMarkdown>
+                            </Show>
+                        </p>
+                        <div class={styles.imageContainer} id="post-image-container">
+                            <For each={images()}>{image =>
+                                <Image imageData={image} />
+                            }</For>
+                        </div>
+                    </div>
+                }>
+                    <div class={styles.postContent}>
+                        <h1 class={styles.title} id="post-title">{title()}</h1>
+                        <textarea class={styles.contentEditing} value={content()} style="min-height: 30rem;" id="editContent"></textarea>
+                        <div class={styles.imageContainer} id="post-image-container">
+                            <For each={images()}>{image =>
+                                <Image imageData={image} />
+                            }</For>
+                        </div>
+                    </div>
+                </Show>
                 <div class={styles.postStatistics}>
                     <button class={styles.postLikeButton} onClick={() => {
                             LikePost(props.post, JSON.parse(localStorage.getItem('profile'))?.token).then((res) => {
@@ -270,11 +298,7 @@ setting the data to the state. */
                         <span id={"likes-" + props.post}>{likeCount()} Likes</span>
                     </button>
                     <button>
-                    <i class='material-icons'>comment</i>
-                    <span>Kommentarer</span>
-                    </button>
-                    <button>
-                    <i class='material-icons'>comment</i>
+                    <i class='material-icons'>share</i>
                     <span>dela</span>
                     </button>
 
@@ -497,13 +521,13 @@ function timeSince(date) {
 }
 
 // https://stackoverflow.com/questions/1500260/detect-urls-in-text-with-javascript
+// https://regexr.com/
 function urlify(text: string) {
-    var urlRegex = /(([a-z]+:\/\/)?(([a-z0-9\-]+\.)+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel|local|internal))(:[0-9]{1,5})?(\/[a-z0-9_\-\.~]+)*(\/([a-z0-9_\-\.]*)(\?[a-z0-9+_\-\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@/?]*)?)(\s+|$)/gi;
-    return (<>
-        {text.replace(urlRegex, function(url: string) {
-            return ( '<a href={url}>{url}</a>' )
-        })}
-    </>)
+    var urlRegex = /(?<!\]\()(http:\/\/|https:\/\/)[a-zA-Z0-9._+-]+\.[a-z]+[a-zA-Z0-9\/._+-]+/g;
+    return (text.replace(urlRegex, function(url: string) {
+            console.log(url.split('/')[2])
+            return ( `[${url.split('/')[2]}](${url})` )
+        }))
     // or alternatively
     // return text.replace(urlRegex, '<a href="$1">$1</a>')
 }

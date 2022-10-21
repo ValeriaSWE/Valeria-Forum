@@ -8,7 +8,7 @@ import cors from 'cors'
 import { GetUserInfo, GetUserPosts, loginUser, registerUser } from "./controllers/user.js"
 import { checkUserLoginTimeout, Authorize } from "./middleware/user.js"
 import { GetUserList, SetUserRole } from './controllers/admin.js'
-import { CreatePost, GetImage, GetPost, GetPosts, LikeComment, LikePost, NewComment } from './controllers/post.js'
+import { CreatePost, EditPost, GetImage, GetPost, GetPosts, LikeComment, LikePost, NewComment } from './controllers/post.js'
 import { FileUpload } from './middleware/posts.js'
 
 app.use(express.json())
@@ -53,5 +53,6 @@ app.post('/posts/newComment/:id', Authorize(0), NewComment)
 app.post('/posts/likeComment/:id', Authorize(0), LikeComment)
 app.post('/posts/likePost/:id', Authorize(0), LikePost)
 app.post('/posts/createPost/', Authorize(0), FileUpload.array("images", 5), CreatePost)
+app.post('/posts/editPost/', Authorize(0), EditPost)
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

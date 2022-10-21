@@ -104,6 +104,10 @@
 	text-overflow: ellipsis;
 }
 
+.post .postTitle > p * {
+	font-size: inherit;
+}
+
 .post .postTitle > p a {
 	text-decoration: underline;
 	color: var(--color-blue-d);

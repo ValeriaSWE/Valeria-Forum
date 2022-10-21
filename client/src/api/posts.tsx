@@ -27,3 +27,9 @@ export const LikeComment = async (commentId: string, token: string) => axios.pos
         'Authorization': `Bearer ${token}`
     }
 })
+export const EditPost = (postId: string, content: string, token: string) => axios.post(`${URL}/posts/editPost`, {postId, content}, {
+    headers: {
+        // 'content-type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`
+    }
+})

@@ -6,7 +6,7 @@ import im from "imagemagick"
 import Post from "../Schemas/Post.js"
 import Comment from "../Schemas/Comment.js"
 
-import { SomethingWrong } from "../errorMessages.js"
+import { NotYourPost, PostDoesntExists, SomethingWrong } from "../errorMessages.js"
 import User from "../Schemas/User.js"
 
 import Tag from "../Schemas/Tag.js"
@@ -18,7 +18,7 @@ export const CreatePost = async (req, res) => {
     const { title, content } = req.body
     const creator = req.userId
 
-    console.log(req.files)
+    // console.log(req.files)
 
     let images = []
 
@@ -45,8 +45,8 @@ export const CreatePost = async (req, res) => {
     }
         
     try {
-        await Post.create({ title, creator, content, images })
-        return res.status(200).send("Post created succesfully")
+        const post = await Post.create({ title, creator, content, images })
+        return res.status(200).send(post._id)
     } catch (error) {
         console.error(error)
         return res.status(500).send({ message: SomethingWrong, error })
@@ -54,19 +54,31 @@ export const CreatePost = async (req, res) => {
 
 }
 
-export const createNewPostTMP = async () => {
-    const { title, content, creator, images } = { title: "test", content: "testing testing", creator: "632639574179187c3a527f95", images: [] }
+export const EditPost = async (req, res) => {
+    const { postId, content } = req.body
+    const creator = req.userId
 
     try {
-        await Post.create({ title, creator, content, images })
+        const post = await Post.findById(postId)
+
+        console.log(post)
+
+        if (!post) return res.status(500).send(PostDoesntExists)
+
+        if (post.creator != creator) return res.status(500).send(NotYourPost)
+
+        post.content = content
+
+        post.lastEditedAt = Date.now()
+        post.isEdited = true
+
+        await post.save()
+
+        return res.status(200).send(post)
     } catch (error) {
         console.error(error)
         return res.status(500).send({ message: SomethingWrong, error })
     }
-}
-
-async function createTagTMP(name) {
-    await Tag.create({name})
 }
 
 // createTagTMP("General")

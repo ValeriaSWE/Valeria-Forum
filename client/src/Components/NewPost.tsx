@@ -34,27 +34,35 @@ export default function NewPost() {
 
     return (
         <>
+            <a href="https://www.markdownguide.org/basic-syntax/">Markdown</a>
             <form action="" id="create-post-form" onSubmit={async e => {
                     // * https://stackoverflow.com/questions/51586812/multer-react-nodejs-axios-request
                     e.preventDefault()
                     
                     const data = $('#create-post-form').serialize()
                     
-                    const title = $('#create-post-title').val()
-                    const content = $('#create-post-content').val()
+                    const title = $('#create-post-title').val()?.toString()
+                    const content = urlify($('#create-post-content').val()?.toString() || "")
                     const images = Array.from($('#create-post-img').prop('files'))
                     
+                    if (title && content){
                     
-                    let formData = new FormData()
+                        let formData = new FormData()
 
-                    images.forEach(image => {
-                        formData.append('images', image)
-                    })
-                    
-                    formData.append('title', title)
-                    formData.append('content', content)
-                    
-                    console.log(await CreatePost(formData, JSON.parse(localStorage.getItem('profile'))?.token))
+                        images.forEach(image => {
+                            formData.append('images', image)
+                        })
+                        
+                        formData.append('title', title)
+                        formData.append('content', content)
+                        
+                        const post = await CreatePost(formData, JSON.parse(localStorage.getItem('profile'))?.token)
+                        console.log(post)
+
+                        $('#create-post-title').val('')
+                        $('#create-post-content').val('')
+                        $('#create-post-img').val()
+                    }
                 }}>
                 
                 <input type="text" placeholder="Titel" id="create-post-title" name="title"/>
@@ -64,4 +72,16 @@ export default function NewPost() {
             </form>
         </>
     )
+}
+
+// https://stackoverflow.com/questions/1500260/detect-urls-in-text-with-javascript
+// https://regexr.com/
+function urlify(text: string) {
+    var urlRegex = /(?<!\]\()(http:\/\/|https:\/\/)[a-zA-Z0-9._+-]+\.[a-z]+[a-zA-Z0-9\/._+-]+/g;
+    return (text.replace(urlRegex, function(url: string) {
+            console.log(url.split('/')[2])
+            return ( `[${url.split('/')[2]}](${url})` )
+        }))
+    // or alternatively
+    // return text.replace(urlRegex, '<a href="$1">$1</a>')
 }
