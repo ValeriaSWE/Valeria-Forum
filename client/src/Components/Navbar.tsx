@@ -137,7 +137,7 @@ export default function Navbar() {
           <NavLink icon="Medlemmar" href="#"></NavLink>
           <NavLink icon="Trådar" href="#"></NavLink>
           <NavLink icon="Tickets" href="#"></NavLink>
-          <Show when={userData?.roleRank >= 10}>¨
+          <Show when={userData?.roleRank >= 10}>
             <NavLink icon="DEV" href="/dev"></NavLink>
           </Show>
         </ul>
@@ -253,6 +253,8 @@ export default function Navbar() {
         
 
         $(':root').attr('data-dark-mode', (lightModeOn == "off" ? "true": "false") )
+        $('#dark-code-styling').attr('disabled', (lightModeOn == "on"))
+        $('#light-code-styling').attr('disabled', (lightModeOn == "off"))
 
         setDarkToggleModeIcon((lightModeOn == "off" ? "toggle_on": "toggle_off"))
         setDarkModeIcon((lightModeOn == "off" ? "dark_mode": "light_mode"))

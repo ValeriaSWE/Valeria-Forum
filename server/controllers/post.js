@@ -32,7 +32,7 @@ export const CreatePost = async (req, res) => {
                         contentType: image.mimetype
                     }))._id
                     
-                console.log(imgId)
+                // console.log(imgId)
                 return imgId
             } catch (error) {
                 console.error(error)
@@ -61,7 +61,7 @@ export const EditPost = async (req, res) => {
     try {
         const post = await Post.findById(postId)
 
-        console.log(post)
+        // console.log(post)
 
         if (!post) return res.status(500).send(PostDoesntExists)
 
@@ -102,8 +102,8 @@ export const GetPosts = (pinned) => {
 
         sortPort[sort] = dir
 
-        console.log(Number(page) * Number(limit))
-        console.log(pinned)
+        // console.log(Number(page) * Number(limit))
+        // console.log(pinned)
 
         try {
 
@@ -209,7 +209,7 @@ export const NewComment = async (req, res) => {
     const { content, respondsTo } = req.body
     const { userId } = req
 
-    console.log(respondsTo)
+    // console.log(respondsTo)
 
     const post = await Post.findById(id).populate({
         path: 'creator',

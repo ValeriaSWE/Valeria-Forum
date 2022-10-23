@@ -113,16 +113,10 @@ const App = () => {
 $(function () {
   const lightModeOn = localStorage.getItem('lightmode') || "on"
 
-  // console.log(lightModeOn)
-
   if (lightModeOn == "off") {
-    // $(':root').css('--color-white-l', "#0e1440") 
-    // $(':root').css('--color-white-m', "#090d29") /* --color-blue-d */
-    // $(':root').css('--color-blue-l', "hsl(216, 48%, 53%)") /* --color-blue-d */
-    // $(':root').css('--color-blue-m', "hsl(216, 48%, 73%)") /* --color-blue-d */
-    // $(':root').css('--color-blue-d', "white") /* --color-blue-d  var(--color-white-m) .navbar */
     $(':root').attr('data-dark-mode', 'true')
-    // $('.navbar').css('background-color', "#090d29") /* --color-blue-d  var(--color-white-m) .navbar */
+    $('#dark-code-styling').removeAttr('disabled')
+    $('#light-code-styling').attr('disabled', true)
   }
 })
 

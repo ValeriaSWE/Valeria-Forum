@@ -5,6 +5,12 @@ import styles from './StylingModules/Post.module.css'
 import { createSignal, For, Index, Show } from "solid-js"
 import { useLocation } from "solid-app-router"
 import SolidMarkdown from "solid-markdown"
+import Highlight from "solid-highlight"
+import { CheckAuthLevel } from "../functions/user"
+
+// import "highlight.js/styles/tokyo-night-dark.css"
+// import "highlight.js/styles/devibeans.css"
+// import "highlight.js/styles/tokyo-night-light.css"
 
 export default function Post(props: {
     post: string
@@ -235,12 +241,17 @@ setting the data to the state. */
 //         http://foufos
 //         www.mp3#.com
 //   `;
+
+    function CodeBlock() {
+        
+    }
+
     return (
         <>
             <div class={styles.inheritPost}>
                 <div class={styles.postCreator} id="post-creator">
                     <Creator/>
-                    <Show when={creator()._id == JSON.parse(localStorage.getItem('profile'))?.result._id}>
+                    <Show when={creator()._id == JSON.parse(localStorage.getItem('profile'))?.result._id && CheckAuthLevel(JSON.parse(localStorage.getItem('profile'))?.token, 0)}>
                         <button class={styles.editBtn} onClick={async () => {
                             if (isEditing()) {
                                 // setContent($('#editContent').val()?.toString())
@@ -266,7 +277,23 @@ setting the data to the state. */
                         <h1 class={styles.title} id="post-title">{title()}</h1>
                         <p class={styles.content} id="post-content">
                             <Show when={content()}>
-                                <SolidMarkdown>{content()}</SolidMarkdown>
+                                <SolidMarkdown components={{
+                                    code({node, inline, className, children, ...props}) {
+                                        const match = /language-(\w+)/.exec(className || '')
+                                        return !inline && match ? (
+                                        <Highlight
+                                            children={String(children).replace(/\n$/, '')}
+                                            language={match[1]}
+                                            autoDetect={false}
+                                            {...props}
+                                        />
+                                        ) : (
+                                        <code class={className} {...props}>
+                                            {children}
+                                        </code>
+                                        )
+                                    }}
+                                    }>{content()}</SolidMarkdown>
                             </Show>
                         </p>
                         <div class={styles.imageContainer} id="post-image-container">
