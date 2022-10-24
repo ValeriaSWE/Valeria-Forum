@@ -15,7 +15,7 @@ body {
 
 	--color-blue-l: hsl(217, 43%, 52%); /* Ljus Accent */
 	--color-blue-m: hsl(216, 39%, 37%); /* Mellan Accent */
-	--color-blue-d: hsl(218, 46%, 25%); /* Mörk Accent */
+	--color-blue-d: rgb(34, 56, 93); /* Mörk Accent */
 
 	--color-blue-l-hover: hsl(217, 43%, 47%); /* Ljus Accent Hover */
 	--color-blue-m-hover: hsl(216, 39%, 32%); /* Mellan Accent Hover*/
