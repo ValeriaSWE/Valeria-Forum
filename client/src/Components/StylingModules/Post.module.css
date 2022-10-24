@@ -85,7 +85,8 @@ a {
 }
 
 .inheritPost .postContent {
-	width: cacl(100% - cacl(2 * var(--padding)));
+	width: 100%;
+	box-sizing: border-box;
 	overflow-x: hidden;
 	padding: 0.25rem 3rem;
 

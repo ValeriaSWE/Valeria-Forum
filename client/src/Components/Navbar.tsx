@@ -213,7 +213,7 @@ export default function Navbar() {
         if (loggedIn) {
           return(
             <>          
-              <DropdownItem label={userData?.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={null}/>
+              <DropdownItem label={userData?.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={null} href={"/forum/user/" + userData?._id}/>
               <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={["arrow_forward_ios", 1.5]} action={SetMainDrop(!mainDrop())}/>
               <Show when={userData?.roleRank >= 10}>
                 <DropdownItem label={"Admin Panel"} leftIcon={"admin_panel_settings"} rightIcon={null} action={null} href={"/admin"}/>

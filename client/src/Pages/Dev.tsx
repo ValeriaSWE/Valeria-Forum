@@ -1,7 +1,7 @@
 import Navbar from "../Components/Navbar";
 import $ from "jquery"
 import NewPost from "../Components/NewPost";
-
+import styles from "./StylingModules/Dev.module.css"
 
 export default function Dev() {
   document.title = "Valeria Roleplay | Dev";
@@ -9,7 +9,7 @@ export default function Dev() {
   const admin = false;
   return (
   <>
-    <div class="dev" style="margin-top: 5rem;">
+    <div class={styles.dev} style="margin-top: 5rem;">
       <Navbar />
       <h2>DEV</h2>
       <NewPost />

@@ -1,6 +1,7 @@
 import $ from "jquery"
 import { CreatePost } from "../api/posts"
 
+import styles from './StylingModules/NewPost.module.css'
 
 export default function NewPost() {
 
@@ -33,9 +34,8 @@ export default function NewPost() {
     })
 
     return (
-        <>
-            <a href="https://www.markdownguide.org/basic-syntax/">Markdown</a>
-            <form action="" id="create-post-form" onSubmit={async e => {
+        <div class={styles.newPostContainer}>
+            <form class={styles.newPostForm} action="" id="create-post-form" onSubmit={async e => {
                     // * https://stackoverflow.com/questions/51586812/multer-react-nodejs-axios-request
                     e.preventDefault()
                     
@@ -64,13 +64,18 @@ export default function NewPost() {
                         $('#create-post-img').val()
                     }
                 }}>
+                <h1 class={styles.infoHeader}>Skapa nytt inlägg!</h1>
+                <p class={styles.infoText}>Forumet har stöd för: <a href="https://www.markdownguide.org/basic-syntax/">Markdown</a></p>
                 
-                <input type="text" placeholder="Titel" id="create-post-title" name="title"/>
-                <textarea name="content" id="create-post-content" cols="30" rows="10"></textarea>
+                <input type="text" placeholder="Titel" id="create-post-title" name="title" class={styles.title}/>
+                <div class={styles.growWrap} >
+                    <textarea class={styles.contentEditing} id="create-post-content" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
+                </div>
+                {/* <textarea name="content" id="create-post-content" cols="30" rows="10"></textarea> */}
                 <input type="file" name="image" id="create-post-img" multiple accept="image/png, image/jpeg"/>
                 <button type="submit" id="create-post-btn">Skapa</button>
             </form>
-        </>
+        </div>
     )
 }
 
