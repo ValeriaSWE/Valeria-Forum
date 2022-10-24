@@ -242,36 +242,6 @@ setting the data to the state. */
 //         www.mp3#.com
 //   `;
 
-    // $("textarea").each(function () {
-    //     console.log('area')
-    //     this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
-    // }).on("input", function () {
-    //     this.style.height = String(0);
-    //     this.style.height = (this.scrollHeight) + "px";
-    // });
-  
-    function addAutoResize() {
-        // document.querySelectorAll('[data-autoresize]').forEach(function (element) {
-        //     // console.log('resize')
-        //     element.style.boxSizing = 'border-box';
-        //     var offset = element.offsetHeight - element.clientHeight;
-        //     element.style.height = 'auto';
-        //     element.style.height = element.scrollHeight + offset + 'px';
-        //     element.addEventListener('input', function (event) {
-        //         event.target.style.height = 'auto';
-        //         event.target.style.height = event.target.scrollHeight + offset + 'px';
-        //     });
-        //     element.removeAttribute('data-autoresize');
-        // });
-
-        // $("[data-autoresize]").each(function () {
-        //     this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
-        //     this.removeAttribute('data-autoresize')
-        //   }).on("input", function () {
-        //     this.style.height = 0;
-        //     this.style.height = (this.scrollHeight) + "px";
-        //   });
-    }
 
     async function savePost() {
         const newPostData = await EditPost(props.post, $('#editContent').val()?.toString(), JSON.parse(localStorage.getItem('profile'))?.token)
@@ -292,16 +262,8 @@ setting the data to the state. */
                     <Show when={creator()._id == JSON.parse(localStorage.getItem('profile'))?.result._id && CheckAuthLevel(JSON.parse(localStorage.getItem('profile'))?.token, 0)}>
                         <button class={styles.editBtn} onClick={async () => {
                             if (isEditing()) {
-                                // setContent($('#editContent').val()?.toString())
-                                // const newPostData = await EditPost(props.post, $('#editContent').val()?.toString(), JSON.parse(localStorage.getItem('profile'))?.token)
-
-                                // // console.log(newPostData)
-
-                                // setContent(newPostData.data.content)
-                                // setIsEdited(newPostData.data.isEdited)
                                 savePost()
                             } else {
-                                setTimeout(() => addAutoResize(), 100)
                                 setIsEditing(true)
                             }
 
@@ -524,7 +486,7 @@ function Image(props: {
 
     return (
         <>
-            <img src={image()} alt="" style="max-width: 300px;"/>
+            <img src={image()} alt=""/>
         </>
     )
 }

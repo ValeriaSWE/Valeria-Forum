@@ -4,11 +4,11 @@ a {
 }
 
 .inheritPost {
-	--post-width: 70rem;
+	--post-width: 70vw;
 	--profile-picture: 3rem;
 
 	height: auto;
-	width: var(--post-width);
+	width: clamp(40rem, var(--post-width), 70rem);
 	border-radius: var(--border-radius);
 
 	display: flex;

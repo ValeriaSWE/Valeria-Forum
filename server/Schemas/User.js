@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema({
     nicknames: [String],
-    username: String,
+    username: {type: String, required: true},
     email: {type: String, required: true, lowercase: true},
     password: {type: String, required: true},
     joinedAt: {type: Date, default: () => Date.now(), immutible: true},
