@@ -254,8 +254,9 @@ setting the data to the state. */
         setIsEditing(false)
     }
       
-    return (
-        <>
+    function PostDisplay() {
+
+        return (
             <div class={styles.inheritPost}>
                 <div class={styles.postCreator} id="post-creator">
                     <Creator/>
@@ -337,7 +338,11 @@ setting the data to the state. */
 
                 </div>
             </div>
+        )
+    }
 
+    function NewCommentCreation() {
+        return (
             <div class={styles.newCommentForm}>
                 <Show when={newCommentRespondsTo()}>
                     <a onClick={() => highlightPost(newCommentRespondsTo()?._id, null)} class={styles.respondsTo}>
@@ -353,7 +358,11 @@ setting the data to the state. */
                     </button>
                 </form>
             </div>
+        )
+    }
 
+    function CommentControls() {
+        return (
             <div class={styles.commentsControls} style={comments().length == 0 ? "display: none;" : ""}>
                 <div class={styles.commentSortControl}>
                     <button id='sort-hot' class={styles.editFeedIconButton} onClick={() => {
@@ -407,14 +416,11 @@ setting the data to the state. */
                     </Show>
                 </div>
             </div>
+        )
+    }
 
-
-            <div class={styles.comments} id="comments">
-                <For each={comments()}>{comment =>
-                    <Comment comment={comment} />
-                }</For>
-            </div>
-
+    function CommentPageSelector() {
+        return (
             <div class={styles.commentsControls} style={"justify-content: center;" + (commentPages() < 2 ? "display: none;" : "")}>
                 <div class={styles.commentPageControl}>
                     <Show when={commentPage() > 1} fallback={
@@ -469,6 +475,31 @@ setting the data to the state. */
                     </Show>
                 </div>
             </div>
+        )
+    }
+
+    function CommentsList() {
+
+        return (
+            <div class={styles.comments} id="comments">
+                <For each={comments()}>{comment =>
+                    <Comment comment={comment} />
+                }</For>
+            </div>
+        )
+    }
+
+    return (
+        <>
+            <PostDisplay />
+
+            <NewCommentCreation />
+
+            <CommentControls />
+
+            <CommentsList />
+
+            <CommentPageSelector />
         </>
     )
 }
