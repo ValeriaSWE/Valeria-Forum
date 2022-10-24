@@ -64,10 +64,16 @@ export default function PostPreview(props: {
         comments: number;
         postId: string;
         tags: [any];
+        images: number;
     }) => {
         return (
             <>
             <div class={styles.postStatitics}>
+                <Show when={props.images > 0}>
+                    <span className="material-icons" class={styles.fileAttachments}>
+                        {props.images == 1 ? "photo" : "photo_library"}
+                    </span>
+                </Show>
                 <For each={props.tags}>
                     {(tag, i) => 
                         <p class={styles.tag} style={"background-color: " + tag.color + ";"}>{tag.name}</p>
@@ -117,7 +123,7 @@ export default function PostPreview(props: {
                 <SolidMarkdown>{props.data.content}</SolidMarkdown>
             </p> 
         </a>
-        <PostStatitics date={props.data.createdAt} likes={props.data.likes} comments={props.data.comments.length} postId={props.data._id} tags={props.data.tags} />
+        <PostStatitics date={props.data.createdAt} likes={props.data.likes} comments={props.data.comments.length} postId={props.data._id} tags={props.data.tags} images={props.data.images.length} />
     </div>
     </>
    )

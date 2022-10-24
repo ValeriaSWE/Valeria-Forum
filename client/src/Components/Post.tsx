@@ -242,10 +242,48 @@ setting the data to the state. */
 //         www.mp3#.com
 //   `;
 
-    function CodeBlock() {
-        
+    // $("textarea").each(function () {
+    //     console.log('area')
+    //     this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+    // }).on("input", function () {
+    //     this.style.height = String(0);
+    //     this.style.height = (this.scrollHeight) + "px";
+    // });
+  
+    function addAutoResize() {
+        // document.querySelectorAll('[data-autoresize]').forEach(function (element) {
+        //     // console.log('resize')
+        //     element.style.boxSizing = 'border-box';
+        //     var offset = element.offsetHeight - element.clientHeight;
+        //     element.style.height = 'auto';
+        //     element.style.height = element.scrollHeight + offset + 'px';
+        //     element.addEventListener('input', function (event) {
+        //         event.target.style.height = 'auto';
+        //         event.target.style.height = event.target.scrollHeight + offset + 'px';
+        //     });
+        //     element.removeAttribute('data-autoresize');
+        // });
+
+        // $("[data-autoresize]").each(function () {
+        //     this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+        //     this.removeAttribute('data-autoresize')
+        //   }).on("input", function () {
+        //     this.style.height = 0;
+        //     this.style.height = (this.scrollHeight) + "px";
+        //   });
     }
 
+    async function savePost() {
+        const newPostData = await EditPost(props.post, $('#editContent').val()?.toString(), JSON.parse(localStorage.getItem('profile'))?.token)
+
+        // console.log(newPostData)
+
+        setContent(newPostData.data.content)
+        setIsEdited(newPostData.data.isEdited)
+
+        setIsEditing(false)
+    }
+      
     return (
         <>
             <div class={styles.inheritPost}>
@@ -255,15 +293,18 @@ setting the data to the state. */
                         <button class={styles.editBtn} onClick={async () => {
                             if (isEditing()) {
                                 // setContent($('#editContent').val()?.toString())
-                                const newPostData = await EditPost(props.post, $('#editContent').val()?.toString(), JSON.parse(localStorage.getItem('profile'))?.token)
+                                // const newPostData = await EditPost(props.post, $('#editContent').val()?.toString(), JSON.parse(localStorage.getItem('profile'))?.token)
 
-                                // console.log(newPostData)
+                                // // console.log(newPostData)
 
-                                setContent(newPostData.data.content)
-                                setIsEdited(newPostData.data.isEdited)
+                                // setContent(newPostData.data.content)
+                                // setIsEdited(newPostData.data.isEdited)
+                                savePost()
+                            } else {
+                                setTimeout(() => addAutoResize(), 100)
+                                setIsEditing(true)
                             }
 
-                            setIsEditing(!isEditing())
                         }}>{isEditing() ? "Spara" : "Ändra"}</button>
                     </Show>
                     {/* POST  */}
@@ -305,7 +346,10 @@ setting the data to the state. */
                 }>
                     <div class={styles.postContent}>
                         <h1 class={styles.title} id="post-title">{title()}</h1>
-                        <textarea class={styles.contentEditing} value={content()} style="min-height: 30rem;" id="editContent"></textarea>
+                        {/* https://codepen.io/chriscoyier/pen/XWKEVLy */}
+                        <div class={styles.growWrap} data-replicated-value={content()}>
+                            <textarea class={styles.contentEditing} value={content()} id="editContent" onInput="this.parentNode.dataset.replicatedValue = this.value" onKeyDown={(e) => {if (e.ctrlKey && e.key === 's') {e.preventDefault(); savePost()}}}></textarea>
+                        </div>
                         <div class={styles.imageContainer} id="post-image-container">
                             <For each={images()}>{image =>
                                 <Image imageData={image} />

@@ -33,7 +33,7 @@
 }
 
 .title {
-	color: #23395e;
+	color: var(--color-blue-d);
 }
 
 .input {
@@ -51,6 +51,8 @@
 	border-bottom: 1px solid var(--color-blue-l);
 
 	transition: 180ms ease-in-out;
+
+	background-color: transparent;
 }
 
 .input input:focus {

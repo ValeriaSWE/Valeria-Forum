@@ -87,7 +87,7 @@ a {
 .inheritPost .postContent {
 	width: cacl(100% - cacl(2 * var(--padding)));
 	overflow-x: hidden;
-	padding: 2px 20px;
+	padding: 0.25rem 3rem;
 
 	display: flex;
 	flex-direction: column;
@@ -435,7 +435,7 @@ a {
 	height: 100%;
 }
 
-.postContent textarea {
+/* .postContent textarea {
 	background-color: var(--color-white-l);
 	outline: none;
 	border: none;
@@ -445,20 +445,43 @@ a {
 	resize: vertical;
 	font-size: 1rem;
 	scrollbar-color: var(--color-blue-l) var(--color-white-l);
+} */
+
+.growWrap {
+	display: grid;
 }
 
-.postContent textarea::-webkit-scrollbar {
-	width: 0.5rem; /* Mostly for vertical scrollbars */
-	height: 0.5rem; /* Mostly for horizontal scrollbars */
-	border-radius: var(--border-radius);
+/* https://codepen.io/chriscoyier/pen/XWKEVLy */
+.growWrap::after {
+	/* Note the weird space! Needed to preventy jumpy behavior */
+	content: attr(data-replicated-value) " ";
+
+	/* This is how textarea text behaves */
+	white-space: pre-wrap;
+
+	/* Hidden from view, clicks, and screen readers */
+	visibility: hidden;
 }
-.postContent textarea::-webkit-scrollbar-thumb {
-	border-radius: var(--border-radius);
-	/* Foreground */
-	background: var(--color-blue-l);
+.growWrap > textarea {
+	/* You could leave this, but after a user resizes, then it ruins the auto sizing */
+	resize: none;
+
+	/* Firefox shows scrollbar on growth, you can hide like this. */
+	overflow: hidden;
 }
-.postContent textarea::-webkit-scrollbar-track {
+.growWrap > textarea,
+.growWrap::after {
+	/* Identical styling required!! */
+	background-color: var(--color-white-l);
+	outline: none;
+	border: none;
+	padding: 1rem;
 	border-radius: var(--border-radius);
-	/* Background */
-	background: var(--color-white-l);
+	box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.2);
+	/* resize: vertical; */
+	font-size: 1rem;
+	/* scrollbar-color: var(--color-blue-l) var(--color-white-l); */
+
+	/* Place on top of each other */
+	grid-area: 1 / 1 / 2 / 2;
 }
