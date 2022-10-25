@@ -75,9 +75,8 @@ export default function UserInfo() {
                 "July", "August", "September",
                 "Oktober", "November", "December"
             ];
-            return(`${formatDate[0]} ${monthNames[parseInt(formatDate[1])]} ${formatDate[2]}`)
+            return(`${formatDate[0]} ${monthNames[parseInt(formatDate[1]) -1]} ${formatDate[2]}`)
         }
-
         return(
         <>  
             <div class={styles.userInfo}>
