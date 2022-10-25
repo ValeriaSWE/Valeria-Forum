@@ -1,4 +1,5 @@
 import $ from "jquery"
+import { useNavigate } from "solid-app-router"
 import { CreatePost } from "../api/posts"
 
 import styles from './StylingModules/NewPost.module.css'
@@ -9,6 +10,7 @@ export default function NewPost() {
     //     console.log('test')
     //     console.log($('#create-post-img').val())
     // })
+    const navigate = useNavigate()
 
     $(function() {
 
@@ -58,6 +60,8 @@ export default function NewPost() {
                         
                         const post = await CreatePost(formData, JSON.parse(localStorage.getItem('profile'))?.token)
                         // console.log(post)
+
+                        navigate("/forum/post/" + post.data)
 
                         $('#create-post-title').val('')
                         $('#create-post-content').val('')

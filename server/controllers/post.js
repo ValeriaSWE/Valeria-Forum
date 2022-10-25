@@ -159,53 +159,57 @@ export const GetPost = async (req, res) => {
     const { id } = req.params
     let { commentSort, commentPage, commentLimit } = req.query
 
-
-    const post = await Post.findById(id).populate({
-        path: 'creator',
-        populate: { path: "profilePicture"}
-    }).populate({
-        path: 'comments',
-        populate: [{ 
+    try {
+        
+        const post = await Post.findById(id).populate({
             path: 'creator',
-            populate: { path: "profilePicture"},
-        }, { path: "respondsTo", populate: { path: "creator" } }],
-    })
+            populate: { path: "profilePicture"}
+        }).populate({
+            path: 'comments',
+            populate: [{ 
+                path: 'creator',
+                populate: { path: "profilePicture"},
+            }, { path: "respondsTo", populate: { path: "creator" } }],
+        })
 
-    const commentPages = Math.ceil(post.comments.length / Number(commentLimit))
+        const commentPages = Math.ceil(post.comments.length / Number(commentLimit))
 
-    if (commentSort.split('-')[0] == 'createdAt') {
-        post.comments.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
-    } else if (commentSort.split('-')[0] == 'interactionCount') {
-        post.comments.sort((a, b) => (a.likes.length < b.likes.length) ? 1 : -1)
+        if (commentSort.split('-')[0] == 'createdAt') {
+            post.comments.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
+        } else if (commentSort.split('-')[0] == 'interactionCount') {
+            post.comments.sort((a, b) => (a.likes.length < b.likes.length) ? 1 : -1)
+        }
+
+        if (commentSort.split('-')[1] == 'inverse') {
+            post.comments.reverse()
+        }
+
+        // let commentPageDict = new Map()
+        let commentPageDict = {}
+
+        for (let i = 0; i < post.comments.length; i++) {
+            // if (post.comments[i].respondsTo) {
+            //     var index = 0
+            //     for (var j = 0; j < post.comments.length; j++) {
+            //         if (String(post.comments[j]._id) == String(post.comments[i].respondsTo._id)) {
+            //             index = j
+            //             break
+            //         }
+            //     }
+            //     post.comments[i].respondsTo.__v = Math.ceil((index + 1) / commentLimit)
+            // }
+            // commentPageDict.set(String(post.comments[i]._id), Math.ceil((i) / commentLimit))
+            commentPageDict[String(post.comments[i]._id)] = Math.ceil((i + 1) / commentLimit)
+        }
+
+        post.comments = post.comments.slice(Number(commentPage) * Number(commentLimit), Number(commentPage) * Number(commentLimit) + Number(commentLimit))
+        
+        
+        // console.table(commentPageDict)
+        return res.status(200).send({ post, commentPages, commentPageDict})
+    } catch (error) {
+        return res.status(500).send({message: SomethingWrong, error})
     }
-
-    if (commentSort.split('-')[1] == 'inverse') {
-        post.comments.reverse()
-    }
-
-    // let commentPageDict = new Map()
-    let commentPageDict = {}
-
-    for (let i = 0; i < post.comments.length; i++) {
-        // if (post.comments[i].respondsTo) {
-        //     var index = 0
-        //     for (var j = 0; j < post.comments.length; j++) {
-        //         if (String(post.comments[j]._id) == String(post.comments[i].respondsTo._id)) {
-        //             index = j
-        //             break
-        //         }
-        //     }
-        //     post.comments[i].respondsTo.__v = Math.ceil((index + 1) / commentLimit)
-        // }
-        // commentPageDict.set(String(post.comments[i]._id), Math.ceil((i) / commentLimit))
-        commentPageDict[String(post.comments[i]._id)] = Math.ceil((i + 1) / commentLimit)
-    }
-
-    post.comments = post.comments.slice(Number(commentPage) * Number(commentLimit), Number(commentPage) * Number(commentLimit) + Number(commentLimit))
-    
-    
-    // console.table(commentPageDict)
-    res.status(200).send({ post, commentPages, commentPageDict})
 }
 
 export const GetImage = async (req, res) => {
