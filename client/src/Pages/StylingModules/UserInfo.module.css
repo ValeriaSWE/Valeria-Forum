@@ -1,5 +1,7 @@
 @import url('../../index.css');
 
 .userInfo {
-    width: clamp(40rem, 70rem);
+    min-width: 40rem;
+    width: 70rem;
+    max-width: 70rem;
 }

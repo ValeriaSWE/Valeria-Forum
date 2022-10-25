@@ -1,7 +1,7 @@
 @import url('../../index.css');
 
 .userProfile {
-    width: 80rem;
+    width: calc(70rem - 40px);
     padding: 1rem 20px 0 20px;
     display: flex;
     flex-direction: column;
