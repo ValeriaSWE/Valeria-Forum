@@ -4,10 +4,8 @@ import styles from './StylingModules/PostPreview.module.css';
 import roleBadge from './StylingModules/RoleBadge.module.css'
 import SolidMarkdown from 'solid-markdown'
 
-import $ from 'jquery';
 
 export default function PostPreview(props: {
-    minimal: boolean;
     data: {
         _id: string,
         title: string,
@@ -96,7 +94,7 @@ export default function PostPreview(props: {
                         {props.comments}
                     </button>
                 </form>  
-                <button><i class='material-icons'>more_horiz</i></button>  
+                {/* <button><i class='material-icons'>more_horiz</i></button>   */}
             </div>
             </>
         )

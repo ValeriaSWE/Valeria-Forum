@@ -6,7 +6,7 @@ export default function UserInfoPage() {
   document.title = "Valeria Roleplay | Anvädare";
   return (
   <>
-  <div class={style.userInfo}> 
+  <div class={style.userInfoComponent}> 
     <UserInfo />
   </div>
   </>)

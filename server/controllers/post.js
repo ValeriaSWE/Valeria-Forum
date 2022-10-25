@@ -46,6 +46,13 @@ export const CreatePost = async (req, res) => {
         
     try {
         const post = await Post.create({ title, creator, content, images })
+
+        const user = await User.findById(creator)
+
+        user.numberOfPosts++
+
+        await user.save()
+
         return res.status(200).send(post._id)
     } catch (error) {
         console.error(error)
@@ -176,24 +183,29 @@ export const GetPost = async (req, res) => {
         post.comments.reverse()
     }
 
+    // let commentPageDict = new Map()
+    let commentPageDict = {}
+
     for (let i = 0; i < post.comments.length; i++) {
-        if (post.comments[i].respondsTo) {
-            var index = 0
-            for (var j = 0; j < post.comments.length; j++) {
-                if (String(post.comments[j]._id) == String(post.comments[i].respondsTo._id)) {
-                    index = j
-                    break
-                }
-            }
-            post.comments[i].respondsTo.__v = Math.ceil((index + 1) / commentLimit)
-        }
-        
+        // if (post.comments[i].respondsTo) {
+        //     var index = 0
+        //     for (var j = 0; j < post.comments.length; j++) {
+        //         if (String(post.comments[j]._id) == String(post.comments[i].respondsTo._id)) {
+        //             index = j
+        //             break
+        //         }
+        //     }
+        //     post.comments[i].respondsTo.__v = Math.ceil((index + 1) / commentLimit)
+        // }
+        // commentPageDict.set(String(post.comments[i]._id), Math.ceil((i) / commentLimit))
+        commentPageDict[String(post.comments[i]._id)] = Math.ceil((i + 1) / commentLimit)
     }
-    
+
     post.comments = post.comments.slice(Number(commentPage) * Number(commentLimit), Number(commentPage) * Number(commentLimit) + Number(commentLimit))
     
-
-    res.status(200).send({ post, commentPages})
+    
+    // console.table(commentPageDict)
+    res.status(200).send({ post, commentPages, commentPageDict})
 }
 
 export const GetImage = async (req, res) => {
@@ -222,7 +234,7 @@ export const NewComment = async (req, res) => {
         }
     })
 
-    const comment = await (await Comment.create({ content, creator: userId, respondsTo })).populate({ 
+    const comment = await (await Comment.create({ content, creator: userId, respondsTo, onPost: id })).populate({ 
         path: 'creator',
         populate: { path: "profilePicture"}
     })
@@ -241,6 +253,12 @@ export const NewComment = async (req, res) => {
             populate: { path: "profilePicture"},
         }, { path: "respondsTo", populate: { path: "creator" } }]
     }) 
+
+    const user = await User.findById(userId)
+
+    user.numberOfComments++
+
+    await user.save()
 
     return res.status(200).send(updatedPost)
 }
@@ -278,3 +296,15 @@ export const LikeComment = async (req, res) => {
 
     res.status(200).send(comment)
 }
+
+
+// const tmpRemComments = async () => {
+//     const posts = await Post.find()
+    
+//     posts.forEach(async post => {
+//         post.comments = []
+        
+//         await post.save()
+//     })
+// }
+// tmpRemComments()

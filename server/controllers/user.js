@@ -7,6 +7,7 @@ import User from "../Schemas/User.js"
 import { IncorrectPassword, PasswordDontMatch, PasswordToShort, SomethingWrong, UserDoesntExists, UsernameTaken } from "../errorMessages.js"
 import Image from "../Schemas/Image.js"
 import Post from "../Schemas/Post.js"
+import Comment from "../Schemas/Comment.js"
 import mongoose from "mongoose"
 
 dotenv.config()
@@ -106,21 +107,37 @@ export const GetUserInfo = async (req, res) => {
 }
 
 export const GetUserPosts = async (req, res) => {
+    let { sort, page, limit } = req.query
     const { id } = req.params
-    
+        
+    // console.table({id, sort, page, limit})
+
+    let sortPort = {}
+    let dir = -1
+    if (sort.includes('-inverse')) {
+        dir = 1
+        sort = sort.split('-')[0]
+    }
+
+    sortPort[sort] = dir
+
     try {
+
         const posts = await Post.aggregate([
             {
                 $match: { creator: mongoose.Types.ObjectId(id) }
             },
             {
-                $sort: { createdAt: -1 }
+                $addFields: { interactionCount: { $add: [{$size: { "$ifNull": [ "$comments", [] ] } }, {$size: { "$ifNull": [ "$likes", [] ] } }]} }
             },
             {
-                $skip: 0
+                $sort: sortPort
             },
             {
-                $limit: 10
+                $skip: Number(page) * Number(limit)
+            },
+            {
+                $limit: Number(limit)
             },
             {
                 $lookup: {
@@ -131,10 +148,79 @@ export const GetUserPosts = async (req, res) => {
                 }
             }
         ])
+        
+        
+        const pages = Math.ceil((await Post.find({creator: id}).count()) / Number(limit))
+        
+        // for (var k in posts) {
+        //     posts[k]['creator'] = await User.findById(posts[k]['creator']).populate('profilePicture')
+        // }
+        
 
-        return res.status(200).send(posts)
+        return res.status(200).json({ posts, pages })
     } catch (error) {
+        console.error(error)
         return res.status(500).send({ message: SomethingWrong, error })
     }
+}
 
+export const GetUserComments = async (req, res) => {
+    let { sort, page, limit } = req.query
+    const { id } = req.params
+        
+    // console.table({id, sort, page, limit})
+
+    let sortPort = {}
+    let dir = -1
+    if (sort.includes('-inverse')) {
+        dir = 1
+        sort = sort.split('-')[0]
+    }
+
+    sortPort[sort] = dir
+
+    try {
+
+        const comments = await Comment.aggregate([
+            {
+                $match: { creator: mongoose.Types.ObjectId(id) }
+            },
+            {
+                $addFields: { interactionCount: { $add: [ {$size: { "$ifNull": [ "$likes", [] ] } }]} }
+            },
+            {
+                $sort: sortPort
+            },
+            {
+                $skip: Number(page) * Number(limit)
+            },
+            {
+                $limit: Number(limit)
+            },
+            {
+                $lookup: {
+                    from: 'comments',
+                    localField: 'respondsTo',
+                    foreignField: '_id',
+                    as: 'respondsTo'
+                }
+            }
+        ])
+        
+        for (let i in comments) {
+            comments[i].respondsTo = comments[i].respondsTo[0]
+        }
+        
+        const pages = Math.ceil((await Comment.find({creator: id}).count()) / Number(limit))
+        
+        // for (var k in posts) {
+        //     posts[k]['creator'] = await User.findById(posts[k]['creator']).populate('profilePicture')
+        // }
+        
+
+        return res.status(200).json({ comments, pages })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ message: SomethingWrong, error })
+    }
 }

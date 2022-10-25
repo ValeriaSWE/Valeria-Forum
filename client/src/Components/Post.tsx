@@ -39,14 +39,17 @@ export default function Post(props: {
     const [commentSort, setCommentSort] = createSignal(searchParams.get('commentSort') || "createdAt")
     const [commentPage, setCommentPage] = createSignal(parseInt(searchParams.get('commentPage') || "1"))
     const [commentPages, setCommentPages] = createSignal(1)
+    const [commentPageDict, setCommentPageDict] = createSignal({})
     const [commentLimit, setCommentLimit] = createSignal(parseInt(searchParams.get('commentLimit') || "10"))
 
 /* A function that is called when the component is mounted. It is fetching data from an API and then
 setting the data to the state. */
     GetPost(props.post, commentSort(), commentPage() - 1, commentLimit()).then(res => {
-        const { post, commentPages } = res.data
+        const { post, commentPages, commentPageDict } = res.data
 
         setCommentPages(commentPages)
+        // console.log(commentPageDict)
+        setCommentPageDict(commentPageDict)
 
         setTitle(post.title)
         setCreator(post.creator)
@@ -63,6 +66,10 @@ setting the data to the state. */
         setCommentsAmount(post.comments.length)
         setCreatedDate(timeSince(new Date(post.createdAt).getTime()))
         setIsEdited(post.isEdited)
+
+        if (searchParams.get('comment')) {
+            highlightPost(searchParams.get('comment'))
+        }
     })
 
     /**
@@ -125,7 +132,7 @@ setting the data to the state. */
             <>
                 <div class={styles.postComment} id={props.comment._id}>
                     <Show when={props.comment.respondsTo}>
-                        <a onClick={() => highlightPost(props.comment.respondsTo._id, props.comment.respondsTo.__v)} class={styles.respondsTo}>
+                        <a onClick={() => highlightPost(props.comment.respondsTo._id)} class={styles.respondsTo}>
                             <i class="material-icons">reply</i><p>@{props.comment.respondsTo.creator.username} {props.comment.respondsTo.content}</p>
                         </a>
                     </Show>
@@ -196,8 +203,8 @@ setting the data to the state. */
         )
     }
 
-    async function highlightPost(post: string, page: number | null) {
-        var wait = 0
+    async function highlightPost(post: string) {
+        const page = commentPageDict()[post] || 1
 
         if (page && page != commentPage()) {
             setCommentPage(page)
@@ -207,8 +214,16 @@ setting the data to the state. */
         $('html, body').scrollTop($('#' + post).offset()?.top - $( window ).height()/2)
         setTimeout(function() {
 
-            $('#' + post).animate({scale: '103%'}, 250)
-            $('#' + post).animate({scale: '100%'}, 250)
+            
+            $('#' + post).addClass(styles.highlight)
+            // $('#' + post).css({'background-size': '0%'})
+            // $('#' + post).css({'background-repeat': 'no-repeat'})
+            // $('#' + post).css({'background-position': '50% 0'})
+            // $('#' + post).css({backgroundImage: 'radial-gradient(circle at center, transparent calc(var(--highlight) - 2%), var(--color-blue-l) var(--highlight), var(--color-blue-l) calc(var(--highlight) + 4%), transparent calc(var(--highlight) + 6%))'})
+            // $('#' + post).animate({'background-size': '120%'}, 500)
+            // $('#' + post).animate({borderWidth: '0px'}, 250)
+            // $('#' + post).animate({scale: '103%'}, 250)
+            // $('#' + post).animate({scale: '100%'}, 250)
         }, 500)
 
     }
@@ -254,8 +269,58 @@ setting the data to the state. */
         setIsEditing(false)
     }
       
-    function PostDisplay() {
+    function EditPostView() {
+        return (
+            <div class={styles.postContent}>
+                <h1 class={styles.title} id="post-title">{title()}</h1>
+                {/* https://codepen.io/chriscoyier/pen/XWKEVLy */}
+                <div class={styles.growWrap} data-replicated-value={content()}>
+                    <textarea class={styles.contentEditing} value={content()} id="editContent" onInput="this.parentNode.dataset.replicatedValue = this.value" onKeyDown={(e) => {if (e.ctrlKey && e.key === 's') {e.preventDefault(); savePost()}}}></textarea>
+                </div>
+                <div class={styles.imageContainer} id="post-image-container">
+                    <For each={images()}>{image =>
+                        <Image imageData={image} />
+                    }</For>
+                </div>
+            </div>
+        )
+    }
 
+    function PostView() {
+        return (
+            <div class={styles.postContent}>
+                <h1 class={styles.title} id="post-title">{title()}</h1>
+                <p class={styles.content} id="post-content">
+                    <Show when={content()}>
+                        <SolidMarkdown components={{
+                            code({node, inline, className, children, ...props}) {
+                                const match = /language-(\w+)/.exec(className || '')
+                                return !inline && match ? (
+                                <Highlight
+                                    children={String(children).replace(/\n$/, '')}
+                                    language={match[1]}
+                                    autoDetect={false}
+                                    {...props}
+                                />
+                                ) : (
+                                <code class={className} {...props}>
+                                    {children}
+                                </code>
+                                )
+                            }}
+                            }>{content()}</SolidMarkdown>
+                    </Show>
+                </p>
+                <div class={styles.imageContainer} id="post-image-container">
+                    <For each={images()}>{image =>
+                        <Image imageData={image} />
+                    }</For>
+                </div>
+            </div>
+        )
+    }
+
+    function PostDisplay() {
         return (
             <div class={styles.inheritPost}>
                 <div class={styles.postCreator} id="post-creator">
@@ -276,49 +341,8 @@ setting the data to the state. */
                         <span class={styles.editedBadge}>(Redigerad)</span>
                     </Show>
                 </div>
-                <Show when={isEditing()} fallback={
-                    <div class={styles.postContent}>
-                        <h1 class={styles.title} id="post-title">{title()}</h1>
-                        <p class={styles.content} id="post-content">
-                            <Show when={content()}>
-                                <SolidMarkdown components={{
-                                    code({node, inline, className, children, ...props}) {
-                                        const match = /language-(\w+)/.exec(className || '')
-                                        return !inline && match ? (
-                                        <Highlight
-                                            children={String(children).replace(/\n$/, '')}
-                                            language={match[1]}
-                                            autoDetect={false}
-                                            {...props}
-                                        />
-                                        ) : (
-                                        <code class={className} {...props}>
-                                            {children}
-                                        </code>
-                                        )
-                                    }}
-                                    }>{content()}</SolidMarkdown>
-                            </Show>
-                        </p>
-                        <div class={styles.imageContainer} id="post-image-container">
-                            <For each={images()}>{image =>
-                                <Image imageData={image} />
-                            }</For>
-                        </div>
-                    </div>
-                }>
-                    <div class={styles.postContent}>
-                        <h1 class={styles.title} id="post-title">{title()}</h1>
-                        {/* https://codepen.io/chriscoyier/pen/XWKEVLy */}
-                        <div class={styles.growWrap} data-replicated-value={content()}>
-                            <textarea class={styles.contentEditing} value={content()} id="editContent" onInput="this.parentNode.dataset.replicatedValue = this.value" onKeyDown={(e) => {if (e.ctrlKey && e.key === 's') {e.preventDefault(); savePost()}}}></textarea>
-                        </div>
-                        <div class={styles.imageContainer} id="post-image-container">
-                            <For each={images()}>{image =>
-                                <Image imageData={image} />
-                            }</For>
-                        </div>
-                    </div>
+                <Show when={isEditing()} fallback={<PostView />}>
+                    <EditPostView />
                 </Show>
                 <div class={styles.postStatistics}>
                     <button class={styles.postLikeButton} onClick={() => {
@@ -345,7 +369,7 @@ setting the data to the state. */
         return (
             <div class={styles.newCommentForm}>
                 <Show when={newCommentRespondsTo()}>
-                    <a onClick={() => highlightPost(newCommentRespondsTo()?._id, null)} class={styles.respondsTo}>
+                    <a onClick={() => highlightPost(newCommentRespondsTo()?._id)} class={styles.respondsTo}>
                         <i class="material-icons">reply</i><p>@{newCommentRespondsTo().creator.username} {newCommentRespondsTo().content}</p>
                         <button class={styles.cancelResponse} onClick={() => {setNewCommentRespondsTo(null)}}>X</button>
                     </a>

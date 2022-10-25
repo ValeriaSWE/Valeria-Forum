@@ -486,3 +486,27 @@ a {
 	/* Place on top of each other */
 	grid-area: 1 / 1 / 2 / 2;
 }
+
+.postComment.highlight::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background-color: var(--color-blue-l);
+	z-index: 100;
+	pointer-events: none;
+	/* opacity: 0; */
+	animation: highlightPost 750ms linear forwards;
+}
+
+@keyframes highlightPost {
+	0% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 10%;
+	}
+	100% {
+		opacity: 0;
+	}
+}
