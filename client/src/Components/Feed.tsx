@@ -1,21 +1,33 @@
 import styles from './StylingModules/Feed.module.css';
-import { splitProps, JSX, createSignal, For, Show } from 'solid-js';
+import { splitProps, JSX, createSignal, For, Show, createResource } from 'solid-js';
+import { createStore } from 'solid-js/store'
 import PostPreview from './PostPreview';
 import { GetAllPosts, GetPinnedPosts } from '../api/posts';
 import $ from "jquery"
 import { useLocation } from 'solid-app-router';
 
+function Loader() {
+  // const isRouting = useIsRouting();
+  return <div data-component="loader" class="loader active" />;
+}
+
 export default function Feed() {
   
+  
   const [allPosts, setAllPosts] = createSignal([])
+  const [allPostsLoaded, setAllPostsLoaded] = createSignal(false)
   const [pinnedPosts, setPinnedPosts] = createSignal([])
   const search = useLocation().search
   const searchParams = new URLSearchParams(search)
 
+  // const [sortParams, setSortParams] = createStore({sort: (searchParams.get('sort') || 'createdAt'), page: parseInt(searchParams.get('page')|| "1"), limit: parseInt(searchParams.get('limit')|| "10")})
+  
   const [sort, setSort] = createSignal(searchParams.get('sort') || 'createdAt')
   const [page, setPage] = createSignal(parseInt(searchParams.get('page')|| "1"))
   const [pages, setPages] = createSignal(1)
   const [limit, setLimit] = createSignal(parseInt(searchParams.get('limit')|| "10"))
+  
+  // const [posts] = createResource(sortParams, GetAllPosts)
 
   function FeedContainer(props: {children: any}) {
     return(
@@ -115,10 +127,12 @@ export default function Feed() {
 
     return (
       <>
-        <div id="all-posts">
-          <For each={allPosts()}>{post =>
-            <PostPreview data={post} />
-          }</For>
+        <div class={styles.posts} id="all-posts">
+          <Show when={allPostsLoaded()} fallback={Loader}>
+            <For each={allPosts()}>{post =>
+              <PostPreview data={post} />
+            }</For>
+          </Show>
         </div>
       </>
     )
@@ -200,22 +214,26 @@ export default function Feed() {
 
   return(
     <>
-      <FeedContainer>
-        <PinnedPosts />
-        <EditFeedResult />
-        <AllPosts />
-        <PageSelect />
-      </FeedContainer>
+      <Show when={allPosts()}>
+        <FeedContainer>
+          <PinnedPosts />
+          <EditFeedResult />
+          <AllPosts />
+          <PageSelect />
+        </FeedContainer>
+      </Show>
     </>
     )
     
-    function sortPosts() {
-      GetAllPosts(sort(), page() - 1, limit()).then((AllPosts) => {
-        setAllPosts(AllPosts.data.posts)
-        setPages(AllPosts.data.pages)
-        searchParams.set('sort', sort())
-        searchParams.set('page', page().toString())
-        searchParams.set('limit', limit().toString())
-      })
-    }
+  function sortPosts() {
+    setAllPostsLoaded(false)
+    GetAllPosts(sort(), page() - 1, limit()).then((AllPosts) => {
+      setAllPosts(AllPosts.data.posts)
+      setPages(AllPosts.data.pages)
+      searchParams.set('sort', sort())
+      searchParams.set('page', page().toString())
+      searchParams.set('limit', limit().toString())
+      setAllPostsLoaded(true)
+    })
+  }
 }
