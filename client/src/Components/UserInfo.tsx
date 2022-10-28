@@ -6,6 +6,13 @@ import PostPreview from "./PostPreview"
 import { GetUserComments, GetUserInfo, GetUserPosts } from "../api/user"
 import SolidMarkdown from "solid-markdown"
 import { LikeComment } from "../api/posts"
+import { createStore } from "solid-js/store"
+import { CheckAuthLevel } from "../functions/user"
+
+function Loader() {
+    // const isRouting = useIsRouting();
+    return <div data-component="loader" class="loader active" />;
+}
 
 export default function UserInfo() {
     const search = useLocation().search
@@ -14,82 +21,47 @@ export default function UserInfo() {
 
     const id = params.id
 
-    const [username, setUsername] = createSignal('username')
-    const [nicknames, setNicknames] = createSignal(['nickname', "nickname2"])
-    const [role, setRole] = createSignal('role')
-    const [roleRank, setRoleRank] = createSignal(0)
-    const [profilePicture, setProfilePicture] = createSignal('none')
-    const [pfpRaw, setPfpRaw] = createSignal('none')
-    const [userPosts, setUserPosts] = createSignal([])
-    const [joinedAt, setJoinedAt] = createSignal('')
-    const [amountOfPosts, setAmountOfPosts] = createSignal(0)
-    const [amountOfComments, setAmountOfComments] = createSignal(0)
+    const [postsLoaded, setPostsLoaded] = createSignal(false)
+    const [commentsLoaded, setCommentsLoaded] = createSignal(false)
 
-    // * User post sorting signals
-    const [postSort, setPostSort] = createSignal(searchParams.get('postSort') || "createdAt")
-    const [postPage, setPostPage] = createSignal(parseInt(searchParams.get('postPage') || "1"))
-    const [postPages, setPostPages] = createSignal(1)
-    const [postLimit, setPostLimit] = createSignal(parseInt(searchParams.get('postLimit') || "10"))
+    const [user, setUser] = createStore({
+        username: 'username',
+        nicknames: ['nickname', 'nick2'],
+        role: "role",
+        roleRank: 0,
+        profilePicture: "none",
+        pfpRaw: "none",
+        posts: {
+            posts: [],
+            sort: (searchParams.get('postSort') || "createdAt"),
+            page: parseInt(searchParams.get('postPage') || "1"),
+            pages: 0,
+            limit: parseInt(searchParams.get('postLimit') || "10")
+        },
+        numberOfPosts: 0,
+        numberOfComments: 0,
+        joinedAt: '',
+        comments: {
+            comments: [],
+            sort: (searchParams.get('commentSort') || "createdAt"),
+            page: parseInt(searchParams.get('commentPage') || "1"),
+            pages: 0,
+            limit: parseInt(searchParams.get('commentLimit') || "10")
+        }
+    })
 
-    // * User comment sorting signals
-    const [comments, setComments] = createSignal([])
-    const [commentSort, setCommentSort] = createSignal(searchParams.get('commentSort') || "createdAt")
-    const [commentPage, setCommentPage] = createSignal(parseInt(searchParams.get('commentPage') || "1"))
-    const [commentPages, setCommentPages] = createSignal(1)
-    const [commentLimit, setCommentLimit] = createSignal(parseInt(searchParams.get('commentLimit') || "10"))
-
-    // Test: vilken tab som är aktiv
+    // * Active Tav signal
     const [activeTab, setActiveTab] = createSignal('posts')
 
     GetUserInfo(id).then(res => {
         const { data } = res
 
-        setPfpRaw(data.profilePicture)
-
-        setUsername(data.username)
-        setRole(data.role)
-        setRoleRank(data.roleRank)
-        setNicknames(data.nicknames)
-        setJoinedAt(data.joinedAt);
-        setAmountOfPosts(data.numberOfPosts)
-        setAmountOfComments(data.numberOfComments)
-        setProfilePicture(`data:image/png;base64,${btoa(new Uint8Array(data.profilePicture.data.data).reduce(function (data, byte) {
+        setUser({...data, pfpRaw: data.profilePicture, profilePicture: `data:image/png;base64,${btoa(new Uint8Array(data.profilePicture.data.data).reduce(function (data, byte) {
             return data + String.fromCharCode(byte);
-        }, ''))}`)
+        }, ''))}`})
         
         sortComments()
         sortPosts()
-        // GetUserPosts(data._id, postSort(), postPage() - 1, postLimit()).then(res => {
-        //     console.log(res)
-        //     const { posts, pages } = res.data
-        //     for(let k in posts) {
-        //         posts[k].creator = {
-        //             username: username(),
-        //             profilePicture: pfpRaw(),
-        //             role: role(),
-        //             roleRank: roleRank(),
-        //         }
-        //     }
-        //     setPostPages(pages)
-    
-        //     setUserPosts(posts)
-        // })
-        
-        // GetUserComments(data._id, commentSort(), commentPage() - 1, commentLimit()).then(res => {
-        //     console.log(res)
-        //     const { comments, pages } = res.data
-        //     for(let k in comments) {
-        //         comments[k].creator = {
-        //             username: username(),
-        //             profilePicture: pfpRaw(),
-        //             role: role(),
-        //             roleRank: roleRank(),
-        //         }
-        //     }
-        //     setCommentPages(pages)
-    
-        //     setComments(comments)
-        // })
     })
 
     const ProfileInfo = () => {
@@ -98,7 +70,7 @@ export default function UserInfo() {
             <>
             <div class={styles.editProfileBtn}>
 
-                <Show when={JSON.parse(localStorage.getItem('profile'))?.result.username === username()}
+                <Show when={CheckAuthLevel(JSON.parse(localStorage.getItem('profile'))?.token, 0) && JSON.parse(localStorage.getItem('profile'))?.result.username === user.username}
                 fallback={
                     <i class="material-icons">more_horiz</i>
                 }
@@ -123,7 +95,7 @@ export default function UserInfo() {
         <>  
             <div class={styles.userInfo}>
                 <EditProfileButton />
-                <img class={styles.userProfilePicture} src={profilePicture()} alt="" srcset="" />
+                <img class={styles.userProfilePicture} src={user.profilePicture} alt="" srcset="" />
                 <div class={styles.profileInformation}>
                     <div class={styles.UserProfileInfo}>
                         <div class={styles.userProfileWrapper}>
@@ -131,15 +103,15 @@ export default function UserInfo() {
                             {/* Eventuellt att man har för olika roller som: staff, whitelistad utvecklar mfl */}
                             </h4>
                             <div class={styles.usernameAndRoles}>
-                                <h2 class={styles.userUsername}>{username()}</h2>
+                                <h2 class={styles.userUsername}>{user.username}</h2>
                                 <span class={styles.showRole}>
-                                    <Show when={roleRank() >= 5}>
-                                        <i class={'material-icons ' + styles.verified} data={role()}>verified</i>
+                                    <Show when={user.roleRank >= 5}>
+                                        <i class={'material-icons ' + styles.verified} data={user.role}>verified</i>
                                     </Show>
-                                    <i class={roleBadge.role} data={role()}>{role()}</i>
+                                    <i class={roleBadge.role} data={user.role}>{user.role}</i>
                                 </span>
                                 <div class={styles.nicknames}>
-                                    <For each={nicknames()}>{nickname => 
+                                    <For each={user.nicknames}>{nickname => 
                                         <p>{nickname}</p>
                                     }</For>
                                 </div>
@@ -147,11 +119,11 @@ export default function UserInfo() {
                         </div>
                     </div>
                     <div class={styles.userStats}>
-                        <p class={styles.stat}>Gick med: {FormatDateJoined(joinedAt())}</p>
+                        <p class={styles.stat}>Gick med: {FormatDateJoined(user.joinedAt)}</p>
                         <i class={"material-icons " + styles.circleIcon}>circle</i>
-                        <p class={styles.stat}>Inlägg: {amountOfPosts()} st</p>
+                        <p class={styles.stat}>Inlägg: {user.numberOfPosts} st</p>
                         <i class={"material-icons " + styles.circleIcon}>circle</i>
-                        <p class={styles.stat}>Komentarer: {amountOfComments()} st</p>
+                        <p class={styles.stat}>Komentarer: {user.numberOfComments} st</p>
                     </div>
                 </div>
             </div>
@@ -200,48 +172,62 @@ export default function UserInfo() {
     };
 
     async function sortPosts() {
-        const res = await GetUserPosts(id, postSort(), postPage() - 1, postLimit())
+        setPostsLoaded(false)
+        const res = await GetUserPosts(id, user.posts.sort, user.posts.page - 1, user.posts.limit)
         const { posts, pages } = res.data
         for(let k in posts) {
             posts[k].creator = {
-                username: username(),
-                profilePicture: pfpRaw(),
-                role: role(),
-                roleRank: roleRank(),
+                username: user.username,
+                profilePicture: user.pfpRaw,
+                role: user.role,
+                roleRank: user.roleRank,
             }
         }
-        setPostPages(pages)
-        setUserPosts(posts)
+        setUser({posts: {... user.posts, pages: pages, posts: posts}})
+        setPostsLoaded(true)
         // })
     }
     
     async function sortComments() {
-        GetUserComments(id, commentSort(), commentPage() - 1, commentLimit()).then(res => {
-            console.log(res)
-            const { comments, pages } = res.data
-            for(let k in comments) {
-                comments[k].creator = {
-                    username: username(),
-                    profilePicture: pfpRaw(),
-                    role: role(),
-                    roleRank: roleRank(),
-                }
+        setCommentsLoaded(false)
+        const res = await GetUserComments(id, user.comments.sort, user.comments.page - 1, user.comments.limit)
+            // console.log(res)
+        const { comments, pages } = res.data
+        for(let k in comments) {
+            comments[k].creator = {
+                username: user.username,
+                profilePicture: user.pfpRaw,
+                role: user.role,
+                roleRank: user.roleRank,
             }
-            setCommentPages(pages)
-    
-            setComments(comments)
-        })
+        }
+        setUser({comments: {... user.comments, pages: pages, comments: comments}})
+        setCommentsLoaded(true)
+        // })
         // })
     }
 
-    function PageButton(props: {
+    function PageButtonPost(props: {
         v: number
     }) {
         const v = props.v
 
         return (
-            <Show when={v + 1 == postPage()} fallback={
-                <button class={styles.editFeedIconButton} onClick={() => {setPostPage(v + 1); sortPosts();}}>{v + 1}</button>
+            <Show when={v + 1 == user.posts.page} fallback={
+                <button class={styles.editFeedIconButton} onClick={() => {setUser({posts: {...user.posts, page:v + 1}}); sortPosts();}}>{v + 1}</button>
+            }>
+                <button class={styles.editFeedIconButton} style="cursor: unset; background-color: var(--color-white-m);">{v + 1}</button>
+            </Show>
+        )
+    }
+    function PageButtonComment(props: {
+        v: number
+    }) {
+        const v = props.v
+
+        return (
+            <Show when={v + 1 == user.comments.page} fallback={
+                <button class={styles.editFeedIconButton} onClick={() => {setUser({comments: {...user.comments, page:v + 1}}); sortComments();}}>{v + 1}</button>
             }>
                 <button class={styles.editFeedIconButton} style="cursor: unset; background-color: var(--color-white-m);">{v + 1}</button>
             </Show>
@@ -250,56 +236,56 @@ export default function UserInfo() {
 
     function PostControls() {
         return (
-            <div class={styles.postsControls} style={userPosts().length == 0 ? "display: none;" : ""}>
+            <div class={styles.postsControls} style={user.posts.posts.length == 0 ? "display: none;" : ""}>
                 <div class={styles.postSortControl}>
                     <button id='sort-hot' class={styles.editFeedIconButton} onClick={() => {
-                        if (postSort() == 'interactionCount') {
-                        setPostSort('interactionCount-inverse')
+                        if (user.posts.sort == 'interactionCount') {
+                            setUser({posts: {...user.posts, sort: 'interactionCount-inverse'}})
                         } else {
-                        setPostSort('interactionCount')
+                            setUser({posts: {...user.posts, sort: 'interactionCount'}})
                         }
 
                         sortPosts()
                     }}>
                         <i class='material-icons'>whatshot</i>
                         <p>Populärt</p>
-                        <Show when={postSort() == 'interactionCount'}>
+                        <Show when={user.posts.sort == 'interactionCount'}>
                         <i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_down</i>
                         </Show>
-                        <Show when={postSort() == 'interactionCount-inverse'}>
+                        <Show when={user.posts.sort == 'interactionCount-inverse'}>
                         <i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_up</i>
                         </Show>
                     </button>
                     <button id='sort-latest' class={styles.editFeedIconButton} onClick={() => {
-                        if (postSort() == 'createdAt') {
-                        setPostSort('createdAt-inverse')
+                        if (user.posts.sort == 'createdAt') {
+                            setUser({posts: {...user.posts, sort: 'createdAt-inverse'}})
                         } else {
-                        setPostSort('createdAt')
+                            setUser({posts: {...user.posts, sort: 'createdAt'}})
                         }
 
                         sortPosts()
                     }}>
                         <i class='material-icons'>update</i>
                         <p>Senaste</p>
-                        <Show when={postSort() == 'createdAt'}>
+                        <Show when={user.posts.sort == 'createdAt'}>
                         <i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_down</i>
                         </Show>
-                        <Show when={postSort() == 'createdAt-inverse'}>
+                        <Show when={user.posts.sort == 'createdAt-inverse'}>
                         <i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_up</i>
                         </Show>
                     </button>
                 </div>
                 <div class={styles.postPageControl}>
-                    <Show when={postPage() > 1} fallback={
+                    <Show when={user.posts.page > 1} fallback={
                         <button class={styles.editFeedIconButton} style="background-color: var(--color-white-m); cursor: unset;"><i class='material-icons'>navigate_before</i></button>
                     }>
-                        <button class={styles.editFeedIconButton} onClick={() => {setPostPage(postPage() - 1); sortPosts();}}><i class='material-icons'>navigate_before</i></button>
+                        <button class={styles.editFeedIconButton} onClick={() => {setUser({posts: {...user.posts, page: user.posts.page - 1}}); sortPosts();}}><i class='material-icons'>navigate_before</i></button>
                     </Show>
-                    <button class={styles.editFeedIconButton} style="cursor: unset;">Sida: {postPage()}</button>
-                    <Show when={postPage() < postPages()} fallback={
+                    <button class={styles.editFeedIconButton} style="cursor: unset;">Sida: {user.posts.page}</button>
+                    <Show when={user.posts.page < user.posts.pages} fallback={
                         <button class={styles.editFeedIconButton} style="background-color: var(--color-white-m); cursor: unset;"><i class='material-icons'>navigate_next</i></button>
                     }>
-                        <button class={styles.editFeedIconButton} onClick={() => {setPostPage(postPage() + 1); sortPosts();}}><i class='material-icons'>navigate_next</i></button>
+                        <button class={styles.editFeedIconButton} onClick={() => {setUser({posts: {...user.posts, page: user.posts.page + 1}}); sortPosts();}}><i class='material-icons'>navigate_next</i></button>
                     </Show>
                 </div>
             </div>
@@ -308,57 +294,57 @@ export default function UserInfo() {
 
     function PostPageSelector() {
         return (
-            <div class={styles.postsControls} style={"justify-content: center;" + (postPages() < 2 ? "display: none;" : "")}>
+            <div class={styles.postsControls} style={"justify-content: center;" + (user.posts.pages < 2 ? "display: none;" : "")}>
                 <div class={styles.postPageControl}>
-                    <Show when={postPage() > 1} fallback={
+                    <Show when={user.posts.page > 1} fallback={
                         <button class={styles.editFeedIconButton} style="background-color: var(--color-white-m); cursor: unset;"><i class='material-icons'>navigate_before</i></button>
                     }>
-                        <button class={styles.editFeedIconButton} onClick={() => {setPostPage(postPage() - 1); sortPosts();}}><i class='material-icons'>navigate_before</i></button>
+                        <button class={styles.editFeedIconButton} onClick={() => {setUser({posts: {...user.posts, page: user.posts.page - 1}}); sortPosts();}}><i class='material-icons'>navigate_before</i></button>
                     </Show>
-                    <Show when={postPages() < 15} fallback={
+                    <Show when={user.posts.pages < 15} fallback={
                         <>
                         {/* Make style work when there is alot of postPages */}
-                        <Show when={postPage() <= 3}>
+                        <Show when={user.posts.page <= 3}>
                             <For each={[... Array(3).keys()]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <PageButtonPost v={v}/>
                             }</For>
                             <p>...</p>
-                            <For each={[postPages() - 1]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <For each={[user.posts.pages - 1]}>{(v, i) =>
+                            <PageButtonPost v={v}/>
                             }</For>
                         </Show>
-                        <Show when={postPage() >= postPages() - 3}>
+                        <Show when={user.posts.page >= user.posts.pages - 3}>
                             <For each={[0]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <PageButtonPost v={v}/>
                             }</For>
                             <p>...</p>
-                            <For each={[postPages() - 3, postPages() - 2, postPages() - 1]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <For each={[user.posts.pages - 3, user.posts.pages - 2, user.posts.pages - 1]}>{(v, i) =>
+                            <PageButtonPost v={v}/>
                             }</For>
                         </Show>
-                        <Show when={postPage() < postPages() - 3 && postPage() > 3}>
+                        <Show when={user.posts.page < user.posts.pages - 3 && user.posts.page > 3}>
                             <For each={[0]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <PageButtonPost v={v}/>
                             }</For>
                             <p>...</p>
-                            <For each={[postPage() - 2, postPage() - 1, postPage()]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <For each={[user.posts.page - 2, user.posts.page - 1, user.posts.page]}>{(v, i) =>
+                            <PageButtonPost v={v}/>
                             }</For>
                             <p>...</p>
-                            <For each={[postPages() - 1]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <For each={[user.posts.pages - 1]}>{(v, i) =>
+                            <PageButtonPost v={v}/>
                             }</For>
                         </Show>
                         </>
                     }>
-                        <For each={[... Array(postPages()).keys()]}>{(v, i) =>
-                        <PageButton v={v}/>
+                        <For each={[... Array(user.posts.pages).keys()]}>{(v, i) =>
+                        <PageButtonPost v={v}/>
                         }</For>
                     </Show>
-                    <Show when={postPage() < postPages()} fallback={
+                    <Show when={user.posts.page < user.posts.pages} fallback={
                         <button class={styles.editFeedIconButton} style="background-color: var(--color-white-m); cursor: unset;"><i class='material-icons'>navigate_next</i></button>
                     }>
-                        <button class={styles.editFeedIconButton} onClick={() => {setPostPage(postPage() + 1); sortPosts();}}><i class='material-icons'>navigate_next</i></button>
+                        <button class={styles.editFeedIconButton} onClick={() => {setUser({posts: {...user.posts, page: user.posts.page + 1}}); sortPosts();}}><i class='material-icons'>navigate_next</i></button>
                     </Show>
                 </div>
             </div>
@@ -367,56 +353,56 @@ export default function UserInfo() {
 
     function CommentControls() {
         return (
-            <div class={styles.commentsControls} style={comments().length == 0 ? "display: none;" : ""}>
+            <div class={styles.commentsControls} style={user.comments.comments.length == 0 ? "display: none;" : ""}>
                 <div class={styles.commentSortControl}>
                     <button id='sort-hot' class={styles.editFeedIconButton} onClick={() => {
-                        if (commentSort() == 'interactionCount') {
-                        setCommentSort('interactionCount-inverse')
+                        if (user.comments.sort == 'interactionCount') {
+                            setUser({comments: {...user.comments, sort: 'interactionCount-inverse'}})
                         } else {
-                        setCommentSort('interactionCount')
+                            setUser({comments: {...user.comments, sort: 'interactionCount'}})
                         }
 
                         sortComments()
                     }}>
                         <i class='material-icons'>whatshot</i>
                         <p>Populärt</p>
-                        <Show when={commentSort() == 'interactionCount'}>
+                        <Show when={user.comments.sort == 'interactionCount'}>
                         <i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_down</i>
                         </Show>
-                        <Show when={commentSort() == 'interactionCount-inverse'}>
+                        <Show when={user.comments.sort == 'interactionCount-inverse'}>
                         <i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_up</i>
                         </Show>
                     </button>
                     <button id='sort-latest' class={styles.editFeedIconButton} onClick={() => {
-                        if (commentSort() == 'createdAt') {
-                        setCommentSort('createdAt-inverse')
+                        if (user.comments.sort == 'createdAt') {
+                            setUser({comments: {...user.comments, sort: 'createdAt-inverse'}})
                         } else {
-                        setCommentSort('createdAt')
+                            setUser({comments: {...user.comments, sort: 'createdAt'}})
                         }
 
                         sortComments()
                     }}>
                         <i class='material-icons'>update</i>
                         <p>Senaste</p>
-                        <Show when={commentSort() == 'createdAt'}>
+                        <Show when={user.comments.sort == 'createdAt'}>
                         <i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_down</i>
                         </Show>
-                        <Show when={commentSort() == 'createdAt-inverse'}>
+                        <Show when={user.comments.sort == 'createdAt-inverse'}>
                         <i class='material-icons' id='current-sort-icon'>keyboard_double_arrow_up</i>
                         </Show>
                     </button>
                 </div>
                 <div class={styles.commentPageControl}>
-                    <Show when={commentPage() > 1} fallback={
+                    <Show when={user.comments.page > 1} fallback={
                         <button class={styles.editFeedIconButton} style="background-color: var(--color-white-m); cursor: unset;"><i class='material-icons'>navigate_before</i></button>
                     }>
-                        <button class={styles.editFeedIconButton} onClick={() => {setCommentPage(commentPage() - 1); sortComments();}}><i class='material-icons'>navigate_before</i></button>
+                        <button class={styles.editFeedIconButton} onClick={() => {setUser({comments: {...user.comments, page: user.comments.page - 1}}); sortComments();}}><i class='material-icons'>navigate_before</i></button>
                     </Show>
-                    <button class={styles.editFeedIconButton} style="cursor: unset;">Sida: {commentPage()}</button>
-                    <Show when={commentPage() < commentPages()} fallback={
+                    <button class={styles.editFeedIconButton} style="cursor: unset;">Sida: {user.comments.page}</button>
+                    <Show when={user.comments.page < user.comments.pages} fallback={
                         <button class={styles.editFeedIconButton} style="background-color: var(--color-white-m); cursor: unset;"><i class='material-icons'>navigate_next</i></button>
                     }>
-                        <button class={styles.editFeedIconButton} onClick={() => {setCommentPage(commentPage() + 1); sortComments();}}><i class='material-icons'>navigate_next</i></button>
+                        <button class={styles.editFeedIconButton} onClick={() => {setUser({comments: {...user.comments, page: user.comments.page + 1}}); sortComments();}}><i class='material-icons'>navigate_next</i></button>
                     </Show>
                 </div>
             </div>
@@ -425,57 +411,57 @@ export default function UserInfo() {
 
     function CommentPageSelector() {
         return (
-            <div class={styles.commentsControls} style={"justify-content: center;" + (commentPages() < 2 ? "display: none;" : "")}>
+            <div class={styles.commentsControls} style={"justify-content: center;" + (user.comments.pages < 2 ? "display: none;" : "")}>
                 <div class={styles.commentPageControl}>
-                    <Show when={commentPage() > 1} fallback={
+                    <Show when={user.comments.page > 1} fallback={
                         <button class={styles.editFeedIconButton} style="background-color: var(--color-white-m); cursor: unset;"><i class='material-icons'>navigate_before</i></button>
                     }>
-                        <button class={styles.editFeedIconButton} onClick={() => {setCommentPage(commentPage() - 1); sortComments();}}><i class='material-icons'>navigate_before</i></button>
+                        <button class={styles.editFeedIconButton} onClick={() => {setUser({comments: {...user.comments, page: user.comments.page - 1}}); sortComments();}}><i class='material-icons'>navigate_before</i></button>
                     </Show>
-                    <Show when={commentPages() < 15} fallback={
+                    <Show when={user.comments.pages < 15} fallback={
                         <>
                         {/* Make style work when there is alot of commentPages */}
-                        <Show when={commentPage() <= 3}>
+                        <Show when={user.comments.page <= 3}>
                             <For each={[... Array(3).keys()]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <PageButtonComment v={v}/>
                             }</For>
                             <p>...</p>
-                            <For each={[commentPages() - 1]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <For each={[user.comments.pages - 1]}>{(v, i) =>
+                            <PageButtonComment v={v}/>
                             }</For>
                         </Show>
-                        <Show when={commentPage() >= commentPages() - 3}>
+                        <Show when={user.comments.page >= user.comments.pages - 3}>
                             <For each={[0]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <PageButtonComment v={v}/>
                             }</For>
                             <p>...</p>
-                            <For each={[commentPages() - 3, commentPages() - 2, commentPages() - 1]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <For each={[user.comments.pages - 3, user.comments.pages - 2, user.comments.pages - 1]}>{(v, i) =>
+                            <PageButtonComment v={v}/>
                             }</For>
                         </Show>
-                        <Show when={commentPage() < commentPages() - 3 && commentPage() > 3}>
+                        <Show when={user.comments.page < user.comments.pages - 3 && user.comments.page > 3}>
                             <For each={[0]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <PageButtonComment v={v}/>
                             }</For>
                             <p>...</p>
-                            <For each={[commentPage() - 2, commentPage() - 1, commentPage()]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <For each={[user.comments.page - 2, user.comments.page - 1, user.comments.page]}>{(v, i) =>
+                            <PageButtonComment v={v}/>
                             }</For>
                             <p>...</p>
-                            <For each={[commentPages() - 1]}>{(v, i) =>
-                            <PageButton v={v}/>
+                            <For each={[user.comments.pages - 1]}>{(v, i) =>
+                            <PageButtonComment v={v}/>
                             }</For>
                         </Show>
                         </>
                     }>
-                        <For each={[... Array(commentPages()).keys()]}>{(v, i) =>
-                        <PageButton v={v}/>
+                        <For each={[... Array(user.comments.pages).keys()]}>{(v, i) =>
+                        <PageButtonComment v={v}/>
                         }</For>
                     </Show>
-                    <Show when={commentPage() < commentPages()} fallback={
+                    <Show when={user.comments.page < user.comments.pages} fallback={
                         <button class={styles.editFeedIconButton} style="background-color: var(--color-white-m); cursor: unset;"><i class='material-icons'>navigate_next</i></button>
                     }>
-                        <button class={styles.editFeedIconButton} onClick={() => {setCommentPage(commentPage() + 1); sortComments();}}><i class='material-icons'>navigate_next</i></button>
+                        <button class={styles.editFeedIconButton} onClick={() => {setUser({comments: {...user.comments, page: user.comments.page + 1}}); sortComments();}}><i class='material-icons'>navigate_next</i></button>
                     </Show>
                 </div>
             </div>
@@ -485,7 +471,7 @@ export default function UserInfo() {
     function Comment(props: {
         comment: any;
     }) {
-        console.log(props.comment)
+        // console.log(props.comment)
         
         const [likedByUser, setLikedByUser] = createSignal(props.comment.likes?.includes(JSON.parse(localStorage.getItem('profile'))?.result._id) || false)
         const [likeCount, setLikeCount] = createSignal(props.comment.likes?.length || 0)
@@ -551,32 +537,40 @@ export default function UserInfo() {
 
     return(
         <>
-            <UserProfile />
-            <div class={styles.userPosts}>
-                <Switch>
-                    <Match when={activeTab() === 'posts'}>
-                        <PostControls />
-                        <For each={userPosts()}>{post =>
+            <Show when={user.username != 'username'} fallback={Loader}>
+                {/* <Loader /> */}
+                <UserProfile />
+                <div class={styles.userPosts}>
+                    <Switch>
+                        <Match when={activeTab() === 'posts'}>
+                            <PostControls />
+                            <div class={styles.posts} id="posts">
+                                <Show when={postsLoaded()} fallback={Loader}>
+                                    <For each={user.posts.posts}>{post =>
+                                        <PostPreview data={post}/>
+                                    }</For>
+                                </Show>
+                            </div>
+                            <PostPageSelector />
+                        </Match>
+                        <Match when={activeTab() === 'comments'}>
+                            <CommentControls />
+                            <div class={styles.comments} id="comments">
+                                <Show when={commentsLoaded()} fallback={Loader}>
+                                    <For each={user.comments.comments}>{comment =>
 
-                            <PostPreview data={post}/>
-                        }</For>
-                        <PostPageSelector />
-                    </Match>
-                    <Match when={activeTab() === 'comments'}>
-                        <CommentControls />
-                        <div class={styles.comments} id="comments">
-                            <For each={comments()}>{comment =>
-
-                                <Comment comment={comment}/>
-                            }</For>
-                        </div>
-                        <CommentPageSelector />
-                    </Match>
-                    <Match when={activeTab() === 'about'}>
-                        om personen
-                    </Match>
-                </Switch>
-            </div>
+                                        <Comment comment={comment}/>
+                                    }</For>
+                                </Show>
+                            </div>
+                            <CommentPageSelector />
+                        </Match>
+                        <Match when={activeTab() === 'about'}>
+                            om personen
+                        </Match>
+                    </Switch>
+                </div>
+            </Show>
         </>
     )
 }

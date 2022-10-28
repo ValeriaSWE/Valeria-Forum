@@ -8,7 +8,7 @@
 	background-color: var(--color-white-m);
 	border-radius: var(--border-radius);
 	display: grid;
-	margin-top: 1rem;
+	/* margin-top: 1rem; */
 	grid-template-areas:
 		"postCreatorImg postTitle postTitle postTitle postStatitics"
 		"postCreatorImg postTitle postTitle postTitle postStatitics";

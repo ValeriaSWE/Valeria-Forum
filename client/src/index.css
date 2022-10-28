@@ -51,9 +51,10 @@ body {
 	display: fixed;
 	background-color: transparent;
 	height: 3px;
-	position: fixed;
+	/* position: fixed; */
 	top: 0;
-	width: 100vw;
+	/* width: 100vw; */
+	z-index: 9999;
 }
 
 .loader.active {
