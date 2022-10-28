@@ -360,3 +360,20 @@
 	color: inherit;
 	margin-right: 0.5ch;
 }
+
+.loader {
+	background-color: var(--color-white-m);
+	border-radius: var(--border-radius);
+	padding: 2px 20px;
+	height: 4rem;
+	display: grid;
+	/* margin-top: 1rem; */
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.loaderPostContent {
+	/* width: 70%; */
+	flex-grow: 1;
+}

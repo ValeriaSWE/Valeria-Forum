@@ -5,9 +5,23 @@ import PostPreview from './PostPreview';
 import { GetAllPosts, GetPinnedPosts } from '../api/posts';
 import $ from "jquery"
 import { useLocation } from 'solid-app-router';
+import Skeleton from "@suid/material/Skeleton"
 
 function Loader() {
   // const isRouting = useIsRouting();
+  return (
+    <div class={styles.loader}>
+      <Skeleton height="2.5rem" variant='circular' style="aspect-ratio: 1/1;" />
+      <Skeleton variant='text' width="7.25rem" style="font-size: 2rem;"/>
+      <div class={styles.loaderPostContent}>
+        <Skeleton variant='text' style="font-size: 1.5rem;"/>
+        <Skeleton variant='text' style="font-size: 1rem;"/>
+      </div>
+      <Skeleton variant='text' style="font-size: 1.5rem;" width="8rem"/>
+      <Skeleton variant='rectangular' width="3.25rem" height="2rem" style="border-radius: var(--border-radius)"/>
+      <Skeleton variant='rectangular' width="3.25rem" height="2rem" style="border-radius: var(--border-radius)"/>
+    </div>
+  )
   return <div data-component="loader" class="loader active" />;
 }
 

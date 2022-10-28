@@ -8,10 +8,23 @@ import SolidMarkdown from "solid-markdown"
 import { LikeComment } from "../api/posts"
 import { createStore } from "solid-js/store"
 import { CheckAuthLevel } from "../functions/user"
+import Skeleton from "@suid/material/Skeleton"
 
 function Loader() {
     // const isRouting = useIsRouting();
-    return <div data-component="loader" class="loader active" />;
+    return (
+        <div class={styles.loader}>
+          <Skeleton height="2.5rem" variant='circular' style="aspect-ratio: 1/1;" />
+          <Skeleton variant='text' width="7.25rem" style="font-size: 2rem;"/>
+          <div class={styles.loaderPostContent}>
+            <Skeleton variant='text' style="font-size: 1.5rem;"/>
+            <Skeleton variant='text' style="font-size: 1rem;"/>
+          </div>
+          <Skeleton variant='text' style="font-size: 1.5rem;" width="8rem"/>
+          <Skeleton variant='rectangular' width="3.25rem" height="2rem" style="border-radius: var(--border-radius)"/>
+          <Skeleton variant='rectangular' width="3.25rem" height="2rem" style="border-radius: var(--border-radius)"/>
+        </div>
+      )
 }
 
 export default function UserInfo() {
@@ -80,7 +93,29 @@ export default function UserInfo() {
             </div>
             </>)
         } 
-
+        function UserLoader() {
+            return (
+                <>
+                    <Skeleton variant="circular" height="100%" style="aspect-ratio: 1/1; margin-right: 1.25rem;"/>
+                    <div class={styles.profileInformation}>
+                        <div class={styles.UserProfileInfo}>
+                            <div class={styles.userProfileWrapper}>
+                                <Skeleton class={styles.profile} width="5rem"/>
+                                <div class={styles.usernameAndRoles}>
+                                    <Skeleton class={styles.userUsername} width="8rem"/>
+                                    <span class={styles.showRole}>
+                                        <Skeleton width="3rem" height="2rem"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class={styles.userStats}>
+                            <Skeleton width="30rem" style="font-size: 1.5rem" />
+                        </div>
+                    </div>
+                </>
+            )
+        }
         const FormatDateJoined = (date:string) => {
             let formatDate = date.split("T")[0].split('-').reverse()
             var monthNames = [
@@ -94,38 +129,40 @@ export default function UserInfo() {
         return(
         <>  
             <div class={styles.userInfo}>
-                <EditProfileButton />
-                <img class={styles.userProfilePicture} src={user.profilePicture} alt="" srcset="" />
-                <div class={styles.profileInformation}>
-                    <div class={styles.UserProfileInfo}>
-                        <div class={styles.userProfileWrapper}>
-                            <h4 class={styles.profile}> Profil
-                            {/* Eventuellt att man har för olika roller som: staff, whitelistad utvecklar mfl */}
-                            </h4>
-                            <div class={styles.usernameAndRoles}>
-                                <h2 class={styles.userUsername}>{user.username}</h2>
-                                <span class={styles.showRole}>
-                                    <Show when={user.roleRank >= 5}>
-                                        <i class={'material-icons ' + styles.verified} data={user.role}>verified</i>
-                                    </Show>
-                                    <i class={roleBadge.role} data={user.role}>{user.role}</i>
-                                </span>
-                                <div class={styles.nicknames}>
-                                    <For each={user.nicknames}>{nickname => 
-                                        <p>{nickname}</p>
-                                    }</For>
+                <EditProfileButton/>
+                <Show when={user.username != "username"} fallback={UserLoader}>
+                    <img class={styles.userProfilePicture} src={user.profilePicture} alt="" srcset="" />
+                    <div class={styles.profileInformation}>
+                        <div class={styles.UserProfileInfo}>
+                            <div class={styles.userProfileWrapper}>
+                                <h4 class={styles.profile}> Profil
+                                {/* Eventuellt att man har för olika roller som: staff, whitelistad utvecklar mfl */}
+                                </h4>
+                                <div class={styles.usernameAndRoles}>
+                                    <h2 class={styles.userUsername}>{user.username}</h2>
+                                    <span class={styles.showRole}>
+                                        <Show when={user.roleRank >= 5}>
+                                            <i class={'material-icons ' + styles.verified} data={user.role}>verified</i>
+                                        </Show>
+                                        <i class={roleBadge.role} data={user.role}>{user.role}</i>
+                                    </span>
+                                    <div class={styles.nicknames}>
+                                        <For each={user.nicknames}>{nickname => 
+                                            <p>{nickname}</p>
+                                        }</For>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div class={styles.userStats}>
+                            <p class={styles.stat}>Gick med: {FormatDateJoined(user.joinedAt)}</p>
+                            <i class={"material-icons " + styles.circleIcon}>circle</i>
+                            <p class={styles.stat}>Inlägg: {user.numberOfPosts} st</p>
+                            <i class={"material-icons " + styles.circleIcon}>circle</i>
+                            <p class={styles.stat}>Komentarer: {user.numberOfComments} st</p>
+                        </div>
                     </div>
-                    <div class={styles.userStats}>
-                        <p class={styles.stat}>Gick med: {FormatDateJoined(user.joinedAt)}</p>
-                        <i class={"material-icons " + styles.circleIcon}>circle</i>
-                        <p class={styles.stat}>Inlägg: {user.numberOfPosts} st</p>
-                        <i class={"material-icons " + styles.circleIcon}>circle</i>
-                        <p class={styles.stat}>Komentarer: {user.numberOfComments} st</p>
-                    </div>
-                </div>
+                </Show>
             </div>
         </>)
     }
@@ -537,7 +574,7 @@ export default function UserInfo() {
 
     return(
         <>
-            <Show when={user.username != 'username'} fallback={Loader}>
+            {/* <Show when={user.username != 'username'} fallback={Loader}> */}
                 {/* <Loader /> */}
                 <UserProfile />
                 <div class={styles.userPosts}>
@@ -570,7 +607,7 @@ export default function UserInfo() {
                         </Match>
                     </Switch>
                 </div>
-            </Show>
+            {/* </Show> */}
         </>
     )
 }
