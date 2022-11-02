@@ -1,5 +1,5 @@
+import TextField from "@suid/material/TextField"
 import $ from "jquery"
-import { onMount } from "solid-js"
 import { LoginUserServerPost } from "../api/user.jsx"
 import { Auth } from "../functions/user.js"
 
@@ -15,8 +15,8 @@ export default function Login(props) {
     function cancel() {
         props.cancel()
         body.style.overflow = "auto";
-        $('#login-email').val('')
-        $('#login-password').val('')
+        // $('#login-email').val('')
+        // $('#login-password').val('')
     }
   
     return(
@@ -26,15 +26,18 @@ export default function Login(props) {
 
                     <h2 class={styles.title}> LOGGA IN</h2>
 
-                    <div class={styles.input}>
+                    {/* <div class={styles.input}>
                         <p>Anändarnamn / Email:</p>
                         <input type="text" name="email" id="login-email" />
-                    </div>
+                        <TextField />
+                    </div> */}
+                    <TextField id="login-email" label="Användarnamn / Epost" variant="standard" required classes={{root: styles.input}} />
 
-                    <div class={styles.input}>
+                    {/* <div class={styles.input}>
                         <p>Lösenord:</p>
                         <input type="password" name="password" id="login-password"/>
-                    </div>
+                    </div> */}
+                    <TextField id="login-password" label="Lösenord" variant="standard" type="password" required classes={{root: styles.input}} />
 
                     <div class={styles.forgotPassword}>
                         <p></p>

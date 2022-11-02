@@ -41,6 +41,23 @@
 .input {
 	font-size: 0.8rem;
 	font-weight: 100;
+	font-family: inherit;
+	color: var(--color-blue-d);
+}
+
+.input * {
+	color: var(--color-blue-d) !important;
+	font-family: inherit !important;
+	font-weight: 100;
+}
+
+.input > div::before {
+	border-color: var(--color-blue-d) !important;
+	color: var(--color-blue-d) !important;
+}
+/* .input {
+	font-size: 0.8rem;
+	font-weight: 100;
 }
 
 .input .sublabel {
@@ -69,7 +86,7 @@
 .input input:not(:valid),
 .input input.incorrect {
 	border-bottom: 2px solid var(--color-red);
-}
+} */
 
 .forgotPassword {
 	width: 12rem;
