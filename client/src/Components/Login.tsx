@@ -1,4 +1,5 @@
 import $ from "jquery"
+import { onMount } from "solid-js"
 import { LoginUserServerPost } from "../api/user.jsx"
 import { Auth } from "../functions/user.js"
 
@@ -8,12 +9,16 @@ import styles from './StylingModules/Login.module.css'
  * Creates the visual elements for a login form
 */
 export default function Login(props) {
+    const body = document.querySelector("body");
+    body.style.overflow = "hidden";
+
     function cancel() {
         props.cancel()
+        body.style.overflow = "auto";
         $('#login-email').val('')
         $('#login-password').val('')
     }
-
+  
     return(
         <>
             <form onSubmit={e => e.preventDefault()}>

@@ -6,6 +6,7 @@ import Login from "./Login";
 import Register from "./Register";
 import styles from './StylingModules/Navbar.module.css';
 import $ from 'jquery';
+import { body } from "@suid/material/CssBaseline";
 
 export default function Navbar() {
   const [toggleResponsNav, setToggleResponsNav] = createSignal(false);
@@ -209,34 +210,16 @@ export default function Navbar() {
 
 
       const DropDownMain = () => {
-        // console.log(JSON.parse(localStorage.getItem('profile'))?.result.username)
-        if (loggedIn) {
-          return(
-            <>          
-              <DropdownItem label={userData?.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={null} href={"/forum/user/" + userData?._id}/>
-              <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={["arrow_forward_ios", 1.5]} action={SetMainDrop(!mainDrop())}/>
-              <Show when={userData?.roleRank >= 10}>
-                <DropdownItem label={"Admin Panel"} leftIcon={"admin_panel_settings"} rightIcon={null} action={null} href={"/admin"}/>
-              </Show>
-              <DropdownItem label={"Logga ut"} leftIcon={"logout"} rightIcon={null} action={logout()}/>
-            </>
-          );
-        } else {
-          const login = () => {
-            setShowLogin(true)
-            setShowRegister(false)
-          }
-          const register = () => {
-            setShowRegister(true)
-            setShowLogin(false)
-          }
-          return(
-            <>
-              <DropdownItem label={"Registrera Konto"} leftIcon={"person_add"} rightIcon={null} action={register()} />
-              <DropdownItem label={"Logga in"} leftIcon={"login"} rightIcon={null} action={login()} />
-            </>
-          );
-        }
+        return(
+          <>          
+            <DropdownItem label={userData?.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={setOpen(!open())} href={"/forum/user/" + userData?._id}/>
+            <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={["arrow_forward_ios", 1.5]} action={SetMainDrop(!mainDrop())}/>
+            <Show when={userData?.roleRank >= 10}>
+              <DropdownItem label={"Admin Panel"} leftIcon={"admin_panel_settings"} rightIcon={null} action={setOpen(!open())}href={"/admin"}/>
+            </Show>
+            <DropdownItem label={"Logga ut"} leftIcon={"logout"} rightIcon={null} action={logout()}/>
+          </>
+        );
       }
 
       const [darkModeToggleIcon, setDarkToggleModeIcon] = createSignal("toggle_off");
@@ -295,20 +278,45 @@ export default function Navbar() {
       );
     };
 
+    const NavItemLoggedOut = (props: {
+      leftIcon: string,
+      label: string,
+      action: any
+    }) => {
+      return(
+        <div class={styles.navbariconsLoggedOut + " " + "NavAccountBtn"} onClick={() => {
+          try{
+            props.action;
+           } catch (err) {
+            throw err;
+           };
+        }}>
+          <i class="material-icons">{props.leftIcon}</i>
+          <p>{props.label}</p>
+        </div>
+      )
+    }
+
     return(
       <>
-        <ul class={styles.navbaricons}>
-          <div>
-          <NavItem action={null} icon={"chat"} children={null} />
-          <NavItem action={null} icon={"notifications"} children={null}/>
-          <NavItem action={"profile"} icon={"profilePicture"}>
-            <DropdwonMenu></DropdwonMenu>
-          </NavItem>
-          </div>
-         
-        </ul>
+      <ul class={styles.navbaricons}>
+        <div>
+          <Show when={loggedIn} fallback={
+            <> 
+              <NavItemLoggedOut leftIcon={"login"} label={"Logga in"} action={setShowLogin(!showLogin())} />
+              <NavItemLoggedOut leftIcon={"person_add"} label={"Registera konto"} action={setShowRegister(!showRegister())} />
+            </>
+          }>
+            <NavItem action={null} icon={"chat"} children={null} />
+            <NavItem action={null} icon={"notifications"} children={null}/>
+            <NavItem action={"profile"} icon={"profilePicture"}>
+              <DropdwonMenu></DropdwonMenu>
+            </NavItem>
+          </Show>
+        </div>
+      </ul>
       </>
-    );
+    )
   };
 
   function HamburgerIcon() {
@@ -347,11 +355,11 @@ export default function Navbar() {
       <>
       <div class={styles.responsiveDropDown} id="responsivenavmenu">
         <ul class={styles.resposniveListItems}>
-            <li><a href="#">Hem</a></li>
-            <li><a href="#">Om oss</a></li>
-            <li><a href="#">Produkter</a></li>
-            <li><a href="#">Kontakt</a></li>
-            <li><a href="#">UF</a></li>
+            <li><a href="#">....</a></li>
+            <li><a href="#">...s</a></li>
+            <li><a href="#">...</a></li>
+            <li><a href="#">...</a></li>
+            <li><a href="#">...</a></li>
         </ul>
     </div>
       </>
@@ -378,6 +386,18 @@ export default function Navbar() {
     checkWidth()
   });
 
+
+  // close modal on esc
+  $(document).ready(function() {
+    $("body").keydown(function(event) {
+        if(event.which == 27) {
+          if(showRegister()) { setShowRegister(!showRegister())}
+          if(showLogin()) { setShowLogin(!showLogin())}
+          document.querySelector("body").style.overflow = "auto";
+        }
+    });
+  });
+
   return(
     <>
       <Nav>
@@ -390,9 +410,11 @@ export default function Navbar() {
         <HamburgerIcon />
       </Nav>
       <Show when={showRegister()}>
+        {setShowLogin(false)}
         <Register cancel={() => setShowRegister(false)} />
       </Show>
       <Show when={showLogin()}>
+        {setShowRegister(false)}
         <Login cancel={() => setShowLogin(false)} />
       </Show>
     </>

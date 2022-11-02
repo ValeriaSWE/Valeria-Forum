@@ -9,8 +9,11 @@ import styles from './StylingModules/Register.module.css'
  * Creates the visual elements for a registration form
 */
 export default function Register(props) {
+    const body = document.querySelector("body");
+    body.style.overflow = "hidden";
     function cancel() {
         props.cancel()
+        body.style.overflow = "auto";
         $('#register-email').val('')
         $('#register-username').val('')
         $('#register-password').val('')
