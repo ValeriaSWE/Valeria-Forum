@@ -263,15 +263,27 @@ export default function Navbar() {
           </>
         )
       }
+      
+      const DropDownLoggedOut = () => {
+        return(
+          <>          
+            <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={["arrow_forward_ios", 1.5]} action={SetMainDrop(!mainDrop())}/>
+            <DropdownItem label={"Logga in"} leftIcon={"login"} rightIcon={null} action={setShowLogin(!showLogin())} />
+            <DropdownItem label={"Registrera Konto"} leftIcon={"person_add"} rightIcon={null} action={setShowRegister(!showRegister())} />
+          </>
+        );
+      }
     
       return(
         <> 
         <div class={styles.dropdown} id="dropdown">
-         <Show 
-         when={mainDrop()}
-         fallback={<DropDownSettings />}
-         >
-          <DropDownMain />
+          <Show 
+          when={mainDrop()}
+          fallback={<DropDownSettings />}
+          >
+            <Show when={loggedIn} fallback={<DropDownLoggedOut />}>
+              <DropDownMain />
+            </Show>
          </Show>
         </div>
         </>
@@ -301,18 +313,18 @@ export default function Navbar() {
       <>
       <ul class={styles.navbaricons}>
         <div>
-          <Show when={loggedIn} fallback={
+          {/* <Show when={loggedIn} fallback={
             <> 
               <NavItemLoggedOut leftIcon={"login"} label={"Logga in"} action={setShowLogin(!showLogin())} />
               <NavItemLoggedOut leftIcon={"person_add"} label={"Registera konto"} action={setShowRegister(!showRegister())} />
             </>
-          }>
-            <NavItem action={null} icon={"chat"} children={null} />
-            <NavItem action={null} icon={"notifications"} children={null}/>
+          }> */}
+            {/* <NavItem action={null} icon={"chat"} children={null} /> 
+            <NavItem action={null} icon={"notifications"} children={null}/> */}
             <NavItem action={"profile"} icon={"profilePicture"}>
               <DropdwonMenu></DropdwonMenu>
             </NavItem>
-          </Show>
+          {/* </Show> */}
         </div>
       </ul>
       </>
