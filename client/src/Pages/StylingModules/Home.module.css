@@ -1,9 +1,10 @@
 @import url("../../index.css");
 
+
 .home {
-	height: 100vh;
-	width: 100vw;
-	overflow: hidden;
+	position: absolute;
+	height: calc(100% - var(--loader-height));
+	width: 100%;
 	color: white;
 	background-color: hsl(218, 46%, 25%); /* var(--color-blue-d); */
 	font-size: large;
