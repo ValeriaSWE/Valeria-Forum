@@ -110,7 +110,11 @@ export default function Feed() {
         <div class={styles.searchFeed}>        
             <i class='material-icons'>search</i>
             <input type="text" placeholder='Sök efter Feed' />
-          </div>
+        </div>
+        <button class={styles.editFeedIconButton} onclick={() => location.href="/forum/newpost"}>
+          <i class='material-icons'>add</i>
+          Skapa inlägg
+        </button>
       <div>
       </div>
     </div>

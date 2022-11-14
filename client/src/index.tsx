@@ -18,6 +18,7 @@ import Admin from "./Pages/Admin";
 import Post from "./Components/Post";
 import $ from "jquery";
 import UserInfoPage from "./Pages/UserInfo";
+import NewPost from "./Components/NewPost";
 
 function delay(ms: number) {
   return new Promise<void>((res) => {
@@ -86,6 +87,7 @@ const Root = () => {
         <Route path="/post/:id" element={OnePost} />
         <Route path="/user/:id" element={UserInfoPage} />
         <Route path="/feed" element={Feed} />
+        <Route path="/newpost" element={NewPost} />
         {/* <Route path=":id" component={SubTab} /> */}
       </Route>
       <Route path="/login" component={LoginPage} />
