@@ -2,10 +2,7 @@
 
 @import url("../../index.css");
 
-* {
-	color: #23395e;
-	user-select: none;
-}
+
 
 .registerInnerContainer {
 	position: fixed;
