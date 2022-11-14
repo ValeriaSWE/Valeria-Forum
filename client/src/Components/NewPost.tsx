@@ -5,6 +5,7 @@ import { CreatePost } from "../api/posts"
 import styles from './StylingModules/NewPost.module.css'
 
 export default function NewPost() {
+    document.title  = "Valeria Roleplay | Nytt inlägg"
 
     // $('#create-post-btn').on('click', function() {
     //     console.log('test')
