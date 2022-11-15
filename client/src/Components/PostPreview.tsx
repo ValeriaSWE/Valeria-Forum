@@ -3,6 +3,7 @@ import { LikePost } from '../api/posts';
 import styles from './StylingModules/PostPreview.module.css';
 import roleBadge from './StylingModules/RoleBadge.module.css'
 import SolidMarkdown from 'solid-markdown'
+import { timeSince } from './UserInfo';
 
 
 export default function PostPreview(props: {
@@ -126,30 +127,30 @@ export default function PostPreview(props: {
     </>
    )
 }
-function timeSince(date) {
+// function timeSince(date) {
 
-    var seconds = Math.floor((new Date() - date) / 1000);
+//     var seconds = Math.floor((new Date() - date) / 1000);
   
-    var interval = seconds / 31536000;
+//     var interval = seconds / 31536000;
   
-    if (interval > 1) {
-      return Math.floor(interval) + " år";
-    }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return Math.floor(interval) + " månader";
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return Math.floor(interval) + " dagar";
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return Math.floor(interval) + " timmar";
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return Math.floor(interval) + " minuter";
-    }
-    return Math.floor(seconds) + " sekunder";
-}
+//     if (interval > 1) {
+//       return Math.floor(interval) + " år";
+//     }
+//     interval = seconds / 2592000;
+//     if (interval > 1) {
+//       return Math.floor(interval) + " månader";
+//     }
+//     interval = seconds / 86400;
+//     if (interval > 1) {
+//       return Math.floor(interval) + " dagar";
+//     }
+//     interval = seconds / 3600;
+//     if (interval > 1) {
+//       return Math.floor(interval) + " timmar";
+//     }
+//     interval = seconds / 60;
+//     if (interval > 1) {
+//       return Math.floor(interval) + " minuter";
+//     }
+//     return Math.floor(seconds) + " sekunder";
+// }

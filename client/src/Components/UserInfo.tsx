@@ -628,30 +628,30 @@ const PostStatitics = (props: {
 
 };
 
-function timeSince(date) {
+export function timeSince(date) {
 
     var seconds = Math.floor((new Date() - date) / 1000);
 
     var interval = seconds / 31536000;
 
     if (interval > 1) {
-      return Math.floor(interval) + " år";
+        return Math.floor(interval) + " år";
     }
     interval = seconds / 2592000;
     if (interval > 1) {
-      return Math.floor(interval) + " månader";
+        return Math.floor(interval) + " månad" + (Math.floor(interval) == 1 ? "" : "er");
     }
     interval = seconds / 86400;
     if (interval > 1) {
-      return Math.floor(interval) + " dagar";
+        return Math.floor(interval) + " dag" + (Math.floor(interval) == 1 ? "" : "ar");
     }
     interval = seconds / 3600;
     if (interval > 1) {
-      return Math.floor(interval) + " timmar";
+        return Math.floor(interval) + " timm" + (Math.floor(interval) == 1 ? "e" : "ar");
     }
     interval = seconds / 60;
     if (interval > 1) {
-      return Math.floor(interval) + " minuter";
+        return Math.floor(interval) + " minut" + (Math.floor(interval) == 1 ? "" : "er");
     }
-    return Math.floor(seconds) + " sekunder";
+    return Math.floor(seconds) + " sekund" + (Math.floor(interval) == 1 ? "" : "er");
 }

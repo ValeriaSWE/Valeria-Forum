@@ -7,6 +7,7 @@ import { useLocation } from "solid-app-router"
 import SolidMarkdown from "solid-markdown"
 import Highlight from "solid-highlight"
 import { CheckAuthLevel } from "../functions/user"
+import { timeSince } from "./UserInfo"
 
 // import "highlight.js/styles/tokyo-night-dark.css"
 // import "highlight.js/styles/devibeans.css"
@@ -580,33 +581,33 @@ const PostStatitics = (props: {
   * @param date - date object to convert
   * @returns - human readable time since date
   */
-function timeSince(date) {
+// function timeSince(date) {
 
-    var seconds = Math.floor((new Date() - date) / 1000);
+//     var seconds = Math.floor((new Date() - date) / 1000);
 
-    var interval = seconds / 31536000;
+//     var interval = seconds / 31536000;
 
-    if (interval > 1) {
-      return Math.floor(interval) + " år";
-    }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return Math.floor(interval) + " månader";
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return Math.floor(interval) + " dagar";
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return Math.floor(interval) + " timmar";
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return Math.floor(interval) + " minuter";
-    }
-    return Math.floor(seconds) + " sekunder";
-}
+//     if (interval > 1) {
+//       return Math.floor(interval) + " år";
+//     }
+//     interval = seconds / 2592000;
+//     if (interval > 1) {
+//       return Math.floor(interval) + " månader";
+//     }
+//     interval = seconds / 86400;
+//     if (interval > 1) {
+//       return Math.floor(interval) + " dagar";
+//     }
+//     interval = seconds / 3600;
+//     if (interval > 1) {
+//       return Math.floor(interval) + " timmar";
+//     }
+//     interval = seconds / 60;
+//     if (interval > 1) {
+//       return Math.floor(interval) + " minuter";
+//     }
+//     return Math.floor(seconds) + " sekunder";
+// }
 
 // https://stackoverflow.com/questions/1500260/detect-urls-in-text-with-javascript
 // https://regexr.com/
