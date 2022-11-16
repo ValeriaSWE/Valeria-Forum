@@ -377,3 +377,158 @@
 	/* width: 70%; */
 	flex-grow: 1;
 }
+
+.editModal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	width: 16rem;
+	border-radius: var(--border-radius) var(--border-radius) var(--border-radius)
+		var(--border-radius);
+
+	padding: 2rem;
+	font-size: 0.8rem;
+
+	background-color: var(--color-white-l);
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	gap: 2rem;
+
+	-moz-box-shadow: 0 0 3px #adadad;
+	-webkit-box-shadow: 0 0 3px #adadad;
+	box-shadow: 0 0 3px #adadad;
+	z-index: 999;
+}
+
+.editModal .title {
+	color: var(--color-blue-d);
+}
+
+.editModal .input {
+	font-size: 0.8rem;
+	font-weight: 100;
+	font-family: inherit;
+	color: var(--color-blue-d);
+}
+
+.editModal .input * {
+	color: var(--color-blue-d) !important;
+	font-family: inherit !important;
+	font-weight: 100;
+}
+
+.editModal .input > div::before {
+	border-color: var(--color-blue-d) !important;
+	color: var(--color-blue-d) !important;
+}
+
+/* .input input {
+	border: none;
+	outline: none;
+
+	width: 12rem;
+	height: 2rem;
+
+	border-bottom: 1px solid var(--color-blue-l);
+
+	transition: 180ms ease-in-out;
+
+	background-color: transparent;
+}
+
+.input input:focus {
+	border-bottom: 1px solid var(--color-blue-d);
+	transform: scale(1.02);
+} */
+
+.saveBtn {
+	width: 10rem;
+	height: 2rem;
+
+	border: none;
+	background-color: var(--color-blue-m);
+
+	border-radius: var(--border-radius);
+	color: white;
+
+	cursor: pointer;
+}
+
+.saveBtn:hover {
+	background-color: var(--color-blue-m-hover);
+}
+
+.cancelBtn {
+	width: 10rem;
+	height: 2rem;
+
+	border: none;
+	background-color: var(--color-red);
+
+	border-radius: var(--border-radius);
+	color: white;
+
+	cursor: pointer;
+}
+
+.cancelBtn:hover {
+	background-color: var(--color-red-hover);
+}
+
+.loginError {
+	color: rgb(255, 133, 133);
+	font-style: italic;
+}
+
+.loginFooter {
+	height: 3.5rem;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.growWrap {
+	display: grid;
+}
+
+/* https://codepen.io/chriscoyier/pen/XWKEVLy */
+.growWrap::after {
+	/* Note the weird space! Needed to preventy jumpy behavior */
+	content: attr(data-replicated-value) " ";
+
+	/* This is how textarea text behaves */
+	white-space: pre-wrap;
+
+	/* Hidden from view, clicks, and screen readers */
+	visibility: hidden;
+}
+.growWrap > textarea {
+	/* You could leave this, but after a user resizes, then it ruins the auto sizing */
+	resize: none;
+
+	/* Firefox shows scrollbar on growth, you can hide like this. */
+	overflow: hidden;
+}
+.growWrap > textarea,
+.growWrap::after {
+	/* Identical styling required!! */
+	background-color: var(--color-white-l);
+	outline: none;
+	border: none;
+	padding: 1rem;
+	border-radius: var(--border-radius);
+	box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.2);
+	/* resize: vertical; */
+	font-size: 1rem;
+	/* scrollbar-color: var(--color-blue-l) var(--color-white-l); */
+
+	/* Place on top of each other */
+	grid-area: 1 / 1 / 2 / 2;
+}

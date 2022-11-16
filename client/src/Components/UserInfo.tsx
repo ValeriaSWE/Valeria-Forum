@@ -3,12 +3,15 @@ import { createSignal, For, JSX, Match, Show, Switch } from "solid-js"
 import styles from "./StylingModules/UserInfo.module.css"
 import roleBadge from "./StylingModules/RoleBadge.module.css"
 import PostPreview from "./PostPreview"
-import { GetUserComments, GetUserInfo, GetUserPosts } from "../api/user"
+import { GetUserComments, GetUserInfo, GetUserPosts, SetUserInfo } from "../api/user"
 import SolidMarkdown from "solid-markdown"
 import { LikeComment } from "../api/posts"
 import { createStore } from "solid-js/store"
 import { CheckAuthLevel } from "../functions/user"
 import Skeleton from "@suid/material/Skeleton"
+import TextField from "@suid/material/TextField"
+import $ from "jquery"
+
 
 function Loader() {
     // const isRouting = useIsRouting();
@@ -60,11 +63,14 @@ export default function UserInfo() {
             page: parseInt(searchParams.get('commentPage') || "1"),
             pages: 0,
             limit: parseInt(searchParams.get('commentLimit') || "10")
-        }
+        },
+        about: '',
+        email: ''
     })
 
     // * Active Tav signal
     const [activeTab, setActiveTab] = createSignal('posts')
+    const [isEditing, setIsEditing] = createSignal(false)
 
     GetUserInfo(id).then(res => {
         const { data } = res
@@ -77,20 +83,98 @@ export default function UserInfo() {
         sortPosts()
     })
 
+    const EditModal = () => {
+        const [userError, setUserError] = createSignal(false)
+
+        const cancel = () => {
+            console.log('cancel')
+            setIsEditing(false)
+        }
+        const save = () => {
+            const newUsername = String($('#user-new-username').val())
+            const newPassword = String($('#user-new-password').val())
+            const newPasswordConfirm = String($('#user-new-password-confirm').val())
+            const oldPassword = String($('#user-old-password').val())
+            const about = String($('#user-about-content').val())
+
+            const token = JSON.parse(localStorage.getItem('profile'))?.token
+
+
+            SetUserInfo(token, oldPassword, newPassword, newPasswordConfirm, newUsername, about)
+            // setUser({username: (newUsername || user.username).toString(), about: (about || user.about || '')?.toString()})
+            setIsEditing(false)
+        }
+
+        return (
+            <Show when={isEditing()}>
+                <form onSubmit={e => e.preventDefault()}>
+                    <div class={styles.editModal}>
+
+                        <h2 class={styles.title}> LOGGA IN</h2>
+
+                        {/* <div class={styles.input}>
+                            <p>Anändarnamn / Email:</p>
+                            <input type="text" name="email" id="login-email" />
+                            <TextField />
+                        </div> */}
+                        <TextField id="user-new-username" label="Användarnamn" variant="standard" required classes={{root: styles.input}} error={userError()} helperText={userError() ? "Minst fyra tecken." : ""} onChange={(e) => {
+                            const regex = /[a-zA-Z0-9._-]{4,}/g
+
+                            if (!e.target.value.match(regex) && !userError()) {
+                                setUserError(true)
+                            } else if (e.target.value.match(regex) && userError()) {
+                                setUserError(false)
+                            }
+                            
+                        }} />
+                        {/* <div class={styles.input}>
+                            <p>Lösenord:</p>
+                            <input type="password" name="password" id="login-password"/>
+                        </div> */}
+                        <TextField id="user-old-password" label="Nuvarande Lösenord" variant="standard" type="password" required classes={{root: styles.input}} />
+                        <TextField id="user-new-password" label="Nytt Lösenord" variant="standard" type="password" classes={{root: styles.input}} />
+                        <TextField id="user-new-password-confirm" label="Upprepa Nytt Lösenord" variant="standard" type="password" classes={{root: styles.input}} />
+                        <div class={styles.growWrap} >
+                            <textarea class={styles.contentEditing} id="user-about-content" onInput="this.parentNode.dataset.replicatedValue = this.value" value={user.about}></textarea>
+                        </div>
+
+                        <button class={styles.saveBtn} id="edit-submit" onClick={save}>Spara Profil</button>
+                        
+                        <button class={styles.cancelBtn} id="edit-cancel" onClick={cancel}>Avbryt</button>
+                        
+                        
+                        <span class={styles.loginError} id="error"></span>
+
+                        <div class={styles.loginFooter}>
+                            <p>Valeria Roleplay | Redigera Profil</p>
+                        </div>
+
+                    </div>
+                </form>
+            </Show>
+        )
+    }
+
     const ProfileInfo = () => {
         const EditProfileButton = () => {
             return(
             <>
-            <div class={styles.editProfileBtn}>
-
-                <Show when={CheckAuthLevel(JSON.parse(localStorage.getItem('profile'))?.token, 0) && JSON.parse(localStorage.getItem('profile'))?.result.username === user.username}
+            <Show when={CheckAuthLevel(JSON.parse(localStorage.getItem('profile'))?.token, 0) && JSON.parse(localStorage.getItem('profile'))?.result.username === user.username}
                 fallback={
+                    <div class={styles.editProfileBtn}>
                     <i class="material-icons">more_horiz</i>
+                    </div>
                 }
                 >
-                <p>Redigera profil</p>
+                    <div class={styles.editProfileBtn}  onClick={() => {
+                            setIsEditing(!isEditing())
+                            // setActiveTab('about')
+                        }}>
+
+                        
+                        <p>{isEditing() ? 'Spara profil' : 'Redigera profil'}</p>
+                    </div>
                 </Show>
-            </div>
             </>)
         } 
         function UserLoader() {
@@ -129,6 +213,7 @@ export default function UserInfo() {
         return(
         <>  
             <div class={styles.userInfo}>
+                <EditModal />
                 <EditProfileButton/>
                 <Show when={user.username != "username"} fallback={UserLoader}>
                     <img class={styles.userProfilePicture} src={user.profilePicture} alt="" srcset="" />
@@ -603,7 +688,7 @@ export default function UserInfo() {
                             <CommentPageSelector />
                         </Match>
                         <Match when={activeTab() === 'about'}>
-                            om personen
+                            {user.about}
                         </Match>
                     </Switch>
                 </div>

@@ -224,3 +224,8 @@ export const GetUserComments = async (req, res) => {
         return res.status(500).send({ message: SomethingWrong, error })
     }
 }
+
+export const SetUserInfo = (req, res) => {
+    console.log(req.body)
+    return res.status(200).send()
+}

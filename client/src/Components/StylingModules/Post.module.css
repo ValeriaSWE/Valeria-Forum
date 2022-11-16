@@ -169,11 +169,14 @@ a {
 	display: flex;
 	flex-direction: column;
 	gap: 2rem;
+	align-items: start;
+	max-height: 50vh;
 }
 
 .inheritPost .postContent img {
 	border-radius: var(--border-radius);
 	height: auto;
+	max-height: inherit;
 }
 
 .inheritPost .postStatistics {

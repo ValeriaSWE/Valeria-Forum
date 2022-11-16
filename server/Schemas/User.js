@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     profilePicture: {type: mongoose.Schema.Types.ObjectId, ref: "Image", default: "6335abe12ff7b5bff877f976"},
     numberOfPosts: {type: Number, default: 0},
     numberOfComments: {type: Number, default: 0},
+    about: {type: String, default: 'Om mig.'}
 })
 
 var User = mongoose.model('User', userSchema);
