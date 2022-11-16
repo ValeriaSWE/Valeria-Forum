@@ -4,7 +4,7 @@ import dotenv from "dotenv"
 import fs from "fs"
 
 import User from "../Schemas/User.js"
-import { IncorrectPassword, PasswordDontMatch, PasswordToShort, SomethingWrong, UserDoesntExists, UsernameTaken } from "../errorMessages.js"
+import { IncorrectPassword, InvalidToken, PasswordDontMatch, PasswordToShort, SomethingWrong, UserDoesntExists, UsernameTaken } from "../errorMessages.js"
 import Image from "../Schemas/Image.js"
 import Post from "../Schemas/Post.js"
 import Comment from "../Schemas/Comment.js"
@@ -225,7 +225,42 @@ export const GetUserComments = async (req, res) => {
     }
 }
 
-export const SetUserInfo = (req, res) => {
-    console.log(req.body)
-    return res.status(200).send()
+export const SetUserInfo = async (req, res) => {
+    const {newUsername, oldPassword, newPassword, newPasswordConfirm, about} = req.body
+    try {
+        const user = await User.findById(req.userId)
+
+        console.log(oldPassword)
+        console.log(user)
+
+        if (!user) return res.status(400).send({ message: InvalidToken })
+
+        if (!(await bcrypt.compare(oldPassword, user.password))) return res.status(400).send({ message: InvalidToken })
+
+
+        if (newUsername) {
+            user.username = newUsername
+        }
+        if (newPassword && newPasswordConfirm) {
+            if (newPassword == newPasswordConfirm) {
+                user.password = bcrypt.hash(newPassword, 12)
+            } else {
+                res.status(400).send({message: PasswordDontMatch })
+            }
+        }
+        user.about = about
+
+        await user.save()
+        user.profilePicture = await Image.findById(user.profilePicture)
+        const token = jwt.sign({ username: user.username, roleRank: user.roleRank, id: user._id }, process.env.JWT_TOKEN, { expiresIn: process.env.JWT_TIMEOUT })
+
+        return res.status(200).send({user, token})
+    } catch (error) {
+        console.error(error)
+        return res.status(400).send({ message: SomethingWrong, error })
+    }
+
+
+
+    // if (bcrypt.compare(oldPassword, ))
 }

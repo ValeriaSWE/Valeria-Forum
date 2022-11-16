@@ -7,7 +7,7 @@ import { GetUserComments, GetUserInfo, GetUserPosts, SetUserInfo } from "../api/
 import SolidMarkdown from "solid-markdown"
 import { LikeComment } from "../api/posts"
 import { createStore } from "solid-js/store"
-import { CheckAuthLevel } from "../functions/user"
+import { Auth, CheckAuthLevel } from "../functions/user"
 import Skeleton from "@suid/material/Skeleton"
 import TextField from "@suid/material/TextField"
 import $ from "jquery"
@@ -100,7 +100,15 @@ export default function UserInfo() {
             const token = JSON.parse(localStorage.getItem('profile'))?.token
 
 
-            SetUserInfo(token, oldPassword, newPassword, newPasswordConfirm, newUsername, about)
+            SetUserInfo(token, oldPassword, newPassword, newPasswordConfirm, newUsername, about).then(res => {
+                const {token} = res.data
+                const {username, about} = res.data.user
+
+                Auth({result: res.data.user, token})
+
+                setUser({username, about})
+                // console.log(user, token)
+            })
             // setUser({username: (newUsername || user.username).toString(), about: (about || user.about || '')?.toString()})
             setIsEditing(false)
         }
@@ -110,14 +118,14 @@ export default function UserInfo() {
                 <form onSubmit={e => e.preventDefault()}>
                     <div class={styles.editModal}>
 
-                        <h2 class={styles.title}> LOGGA IN</h2>
+                        <h2 class={styles.title}>Redigera Profil</h2>
 
                         {/* <div class={styles.input}>
                             <p>Anändarnamn / Email:</p>
                             <input type="text" name="email" id="login-email" />
                             <TextField />
                         </div> */}
-                        <TextField id="user-new-username" label="Användarnamn" variant="standard" required classes={{root: styles.input}} error={userError()} helperText={userError() ? "Minst fyra tecken." : ""} onChange={(e) => {
+                        <TextField id="user-new-username" label="Användarnamn" variant="standard" classes={{root: styles.input}} error={userError()} helperText={userError() ? "Minst fyra tecken." : ""} onChange={(e) => {
                             const regex = /[a-zA-Z0-9._-]{4,}/g
 
                             if (!e.target.value.match(regex) && !userError()) {
