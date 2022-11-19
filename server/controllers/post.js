@@ -15,10 +15,11 @@ import Image from "../Schemas/Image.js"
 dotenv.config()
 
 export const CreatePost = async (req, res) => {
-    const { title, content } = req.body
+    const { title, content, tags } = req.body
     const creator = req.userId
 
     // console.log(req.files)
+    console.log(tags)
 
     let images = []
 
@@ -45,7 +46,7 @@ export const CreatePost = async (req, res) => {
     }
         
     try {
-        const post = await Post.create({ title, creator, content, images })
+        const post = await Post.create({ title, creator, content, images, tags })
 
         const user = await User.findById(creator)
 
@@ -170,7 +171,7 @@ export const GetPost = async (req, res) => {
                 path: 'creator',
                 populate: { path: "profilePicture"},
             }, { path: "respondsTo", populate: { path: "creator" } }],
-        })
+        }).populate('tags')
 
         const commentPages = Math.ceil(post.comments.length / Number(commentLimit))
 

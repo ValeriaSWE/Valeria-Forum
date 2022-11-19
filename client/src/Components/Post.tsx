@@ -8,6 +8,7 @@ import SolidMarkdown from "solid-markdown"
 import Highlight from "solid-highlight"
 import { CheckAuthLevel } from "../functions/user"
 import { timeSince } from "./UserInfo"
+import { createStore } from "solid-js/store";
 
 // import "highlight.js/styles/tokyo-night-dark.css"
 // import "highlight.js/styles/devibeans.css"
@@ -19,24 +20,47 @@ export default function Post(props: {
     const search = useLocation().search
     const searchParams = new URLSearchParams(search)
 
-    const [isEditing, setIsEditing] = createSignal(false)
+    const [post, setPost] = createStore({
+        _id: "637950a1c8cd683ef8be6c1a",
+        title: "title",
+        creator: {
+            nicknames: [],
+            username: "username",
+            role: "pleb",
+            creatorPfp: {
+                data: {
+                    type: "Buffer",
+                    data: "none"
+                },
+                contentType: "image/png",
+            },
+            roleRank: 0,
+            _id: "id"
+        },
+        content: "content",
+        images: [],
+        isEdited: false,
+        comments: [],
+        likes: [],
+        pinned: false,
+        tags: [
+            {
+                color: "gold",
+                minRank: 10,
+                name: "Nyhet",
+            }
+        ],
+        likeCount: 0,
+        likedByUser: false,
+        createdDate: "0 second sedan"
+    })
 
-    // main post signals:
-    const [title, setTitle] = createSignal('title')
-    const [content, setContent] = createSignal('')
-    const [creator, setCreator] = createSignal({username: "username", role: "role"})
-    const [images, setImages] = createSignal([])
-    const [likeCount, setLikeCount] = createSignal(0)
-    const [likedByUser, setLikedByUser] = createSignal(false)
-    const [creatorPfp, setCreatorPfp] = createSignal('')
-    const [createdDate, setCreatedDate] = createSignal("time")
-    const [isEdited, setIsEdited] = createSignal(false)
+    const [isEditing, setIsEditing] = createSignal(false)
 
     const [newCommentRespondsTo, setNewCommentRespondsTo] = createSignal(null)
 
     // Comment signals:
     const [comments, setComments] = createSignal([])
-    const [commentsAmount, setCommentsAmount] = createSignal(0)
     const [commentSort, setCommentSort] = createSignal(searchParams.get('commentSort') || "createdAt")
     const [commentPage, setCommentPage] = createSignal(parseInt(searchParams.get('commentPage') || "1"))
     const [commentPages, setCommentPages] = createSignal(1)
@@ -46,27 +70,19 @@ export default function Post(props: {
 /* A function that is called when the component is mounted. It is fetching data from an API and then
 setting the data to the state. */
     GetPost(props.post, commentSort(), commentPage() - 1, commentLimit()).then(res => {
-        const { post, commentPages, commentPageDict } = res.data
+        const { commentPages, commentPageDict } = res.data
+        const postData =  res.data.post
+        setPost({...postData, createdDate: timeSince(new Date(postData.createdAt).getTime()), likeCount: postData.likes.length, likedByUser: postData.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id), pfpRaw: postData.creator.profilePicture, creatorPfp: `data:image/png;base64,${btoa(new Uint8Array(postData.creator.profilePicture.data.data).reduce(function (data, byte) {
+            return data + String.fromCharCode(byte);
+        }, ''))}`})
+        console.log(postData)
 
         setCommentPages(commentPages)
         // console.log(commentPageDict)
         setCommentPageDict(commentPageDict)
 
-        setTitle(post.title)
-        setCreator(post.creator)
-        setContent(post.content)
-
-        const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(post.creator.profilePicture.data.data).reduce(function (data, byte) {
-            return data + String.fromCharCode(byte);
-        }, ''))}`
-        setCreatorPfp(profilePicture)
-        setImages(post.images)
-        setLikeCount(post.likes.length)
-        setLikedByUser(post.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
-        setComments(post.comments)
-        setCommentsAmount(post.comments.length)
-        setCreatedDate(timeSince(new Date(post.createdAt).getTime()))
-        setIsEdited(post.isEdited)
+        setComments(postData.comments)
+        // console.log(res.data.post.tags)
 
         if (searchParams.get('comment')) {
             highlightPost(searchParams.get('comment'))
@@ -106,13 +122,13 @@ setting the data to the state. */
 
     function Creator() {
         return (
-            <a class={styles.creatorContainer} href={"/forum/user/" + creator()._id}>
+            <a class={styles.creatorContainer} href={"/forum/user/" + post.creator._id}>
                 <div class={styles.creatorImg}>
-                    <img src={creatorPfp()} alt="" />
-                    <i class={'material-icons ' + styles.verified} data={creator().role}>verified</i>
+                    <img src={post.creatorPfp} alt="" />
+                    <i class={'material-icons ' + styles.verified} data={post.creator.role}>verified</i>
                 </div>
-                <h2 class={styles.creatorName}>{creator().username}</h2>
-                <i class={roleBadge.role} data={creator().role}>{creator().role}</i>
+                <h2 class={styles.creatorName}>{post.creator.username}</h2>
+                <i class={roleBadge.role} data={post.creator.role}>{post.creator.role}</i>
             </a>
         )
     }
@@ -166,8 +182,8 @@ setting the data to the state. */
                                 setLikedByUser(res.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
                             })
                         }}>
-                            <i class='material-icons' style={likedByUser() ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
-                            <span>{likeCount()}</span>
+                            <i class='material-icons' style={post.likedByUser ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
+                            <span>{post.likeCount}</span>
                         </button>
                         <button class={styles.postLikeButton} onClick={() => setNewCommentRespondsTo(props.comment)}>
                             <i class='material-icons'>comment</i>
@@ -273,13 +289,13 @@ setting the data to the state. */
     function EditPostView() {
         return (
             <div class={styles.postContent}>
-                <h1 class={styles.title} id="post-title">{title()}</h1>
+                <h1 class={styles.title} id="post-title">{post.title}</h1>
                 {/* https://codepen.io/chriscoyier/pen/XWKEVLy */}
-                <div class={styles.growWrap} data-replicated-value={content()}>
-                    <textarea class={styles.contentEditing} value={content()} id="editContent" onInput="this.parentNode.dataset.replicatedValue = this.value" onKeyDown={(e) => {if (e.ctrlKey && e.key === 's') {e.preventDefault(); savePost()}}}></textarea>
+                <div class={styles.growWrap} data-replicated-value={post.content}>
+                    <textarea class={styles.contentEditing} value={post.content} id="editContent" onInput="this.parentNode.dataset.replicatedValue = this.value" onKeyDown={(e) => {if (e.ctrlKey && e.key === 's') {e.preventDefault(); savePost()}}}></textarea>
                 </div>
                 <div class={styles.imageContainer} id="post-image-container">
-                    <For each={images()}>{image =>
+                    <For each={post.images}>{image =>
                         <Image imageData={image} />
                     }</For>
                 </div>
@@ -290,9 +306,16 @@ setting the data to the state. */
     function PostView() {
         return (
             <div class={styles.postContent}>
-                <h1 class={styles.title} id="post-title">{title()}</h1>
+                <div class={styles.tags}>
+                    <For each={post.tags}>
+                        {(tag, i) => 
+                            <p class={styles.tag} style={"background-color: " + tag.color + ";"}>{tag.name}</p>
+                        }
+                    </For>
+                </div>
+                <h1 class={styles.title} id="post-title">{post.title}</h1>
                 <p class={styles.content} id="post-content">
-                    <Show when={content()}>
+                    <Show when={post.content}>
                         <SolidMarkdown components={{
                             code({node, inline, className, children, ...props}) {
                                 const match = /language-(\w+)/.exec(className || '')
@@ -309,11 +332,11 @@ setting the data to the state. */
                                 </code>
                                 )
                             }}
-                            }>{content()}</SolidMarkdown>
+                            }>{post.content}</SolidMarkdown>
                     </Show>
                 </p>
                 <div class={styles.imageContainer} id="post-image-container">
-                    <For each={images()}>{image =>
+                    <For each={post.images}>{image =>
                         <Image imageData={image} />
                     }</For>
                 </div>
@@ -326,7 +349,7 @@ setting the data to the state. */
             <div class={styles.inheritPost}>
                 <div class={styles.postCreator} id="post-creator">
                     <Creator/>
-                    <Show when={creator()._id == JSON.parse(localStorage.getItem('profile'))?.result._id && CheckAuthLevel(JSON.parse(localStorage.getItem('profile'))?.token, 0)}>
+                    <Show when={post.creator._id == JSON.parse(localStorage.getItem('profile'))?.result._id && CheckAuthLevel(JSON.parse(localStorage.getItem('profile'))?.token, 0)}>
                         <button class={styles.editBtn} onClick={async () => {
                             if (isEditing()) {
                                 savePost()
@@ -337,8 +360,8 @@ setting the data to the state. */
                         }}>{isEditing() ? "Spara" : "Ändra"}</button>
                     </Show>
                     {/* POST  */}
-                    <p class={styles.postDate}>{createdDate()} sedan</p>
-                    <Show when={isEdited()}>
+                    <p class={styles.postDate}>{post.createdDate} sedan</p>
+                    <Show when={post.isEdited}>
                         <span class={styles.editedBadge}>(Redigerad)</span>
                     </Show>
                 </div>
@@ -353,8 +376,8 @@ setting the data to the state. */
                             })
 
                         }}>
-                        <i class='material-icons' id={"likes-icon-" + props.post} style={likedByUser() ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
-                        <span id={"likes-" + props.post}>{likeCount()} Likes</span>
+                        <i class='material-icons' id={"likes-icon-" + props.post} style={post.likedByUser ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
+                        <span id={"likes-" + props.post}>{post.likeCount} Likes</span>
                     </button>
                     <button>
                     <i class='material-icons'>share</i>

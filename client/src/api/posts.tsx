@@ -33,3 +33,10 @@ export const EditPost = (postId: string, content: string, token: string) => axio
         'Authorization': `Bearer ${token}`
     }
 })
+
+export const GetAllTags = (token: string) => axios.get(`${URL}/tags/getTags`, {
+    headers: {
+        // 'content-type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`
+    }
+})

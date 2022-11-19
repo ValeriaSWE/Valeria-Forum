@@ -87,7 +87,9 @@ const Root = () => {
         <Route path="/post/:id" element={OnePost} />
         <Route path="/user/:id" element={UserInfoPage} />
         <Route path="/feed" element={Feed} />
-        <Route path="/newpost" element={NewPost} />
+        <Route path="/newpost" component={ProtectedRoute(0)}>
+          <Route path="" element={NewPost} />
+        </Route>
         {/* <Route path=":id" component={SubTab} /> */}
       </Route>
       <Route path="/login" component={LoginPage} />

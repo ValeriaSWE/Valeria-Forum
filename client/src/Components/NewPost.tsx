@@ -1,10 +1,22 @@
 import $ from "jquery"
 import { useNavigate } from "solid-app-router"
-import { CreatePost } from "../api/posts"
+import { createSignal, For, Show } from "solid-js"
+import { createStore } from "solid-js/store";
+import { CreatePost, GetAllTags } from "../api/posts"
 
 import styles from './StylingModules/NewPost.module.css'
 
 export default function NewPost() {
+    const [tags, setTags] = createStore([])
+
+    GetAllTags(JSON.parse(localStorage.getItem('profile'))?.token || "").then(res => {
+        const {data} = res
+        for (let i = 0; i < data.length; i++) {
+            setTags([...tags, {...data[i], selected: false, id: i}])
+        }
+        console.table(tags)
+    })
+
     document.title  = "Valeria Roleplay | Nytt inlägg"
 
     // $('#create-post-btn').on('click', function() {
@@ -36,6 +48,11 @@ export default function NewPost() {
         })
     })
 
+    function setTagActive(tagId: number, state: boolean) {
+        console.log(tagId)
+        setTags(tag => tag.id === tagId, 'selected', selected => state)
+    }
+
     return (
         <div class={styles.newPostContainer}>
             <form class={styles.newPostForm} action="" id="create-post-form" onSubmit={async e => {
@@ -55,6 +72,12 @@ export default function NewPost() {
                         images.forEach(image => {
                             formData.append('images', image)
                         })
+
+                        tags.forEach(tag => {
+                            if (tag.selected) {
+                                formData.append('tags', tag._id)
+                            }
+                        })
                         
                         formData.append('title', title)
                         formData.append('content', content)
@@ -72,6 +95,23 @@ export default function NewPost() {
                 <h1 class={styles.infoHeader}>Skapa nytt inlägg!</h1>
                 <p class={styles.infoText}>Forumet har stöd för: <a href="https://www.markdownguide.org/basic-syntax/">Markdown</a></p>
                 
+                <div class={styles.pickedTags}>
+                    <p>Valda taggar:</p>
+                    <For each={tags}>{(tag, i) =>
+                        <Show when={tag.selected}>
+                            <button onClick={() => setTagActive(tag.id, false)}>{tag.name} X</button>
+                        </Show>
+                    }</For>
+                </div>
+                <div class={styles.notPickedTags}>
+                    <p>Välj taggar:</p>
+                    <For each={tags}>{(tag) =>
+                        <Show when={!tag.selected}>
+                            <button onClick={() => setTagActive(tag.id, true)}>{tag.name}</button>
+                        </Show>
+                    }</For>
+                </div>
+
                 <input type="text" placeholder="Titel" id="create-post-title" name="title" class={styles.title}/>
                 <div class={styles.growWrap} >
                     <textarea class={styles.contentEditing} id="create-post-content" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
