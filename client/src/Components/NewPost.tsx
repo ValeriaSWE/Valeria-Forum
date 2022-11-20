@@ -2,14 +2,14 @@ import $ from "jquery"
 import { useNavigate } from "solid-app-router"
 import { createSignal, For, Show } from "solid-js"
 import { createStore } from "solid-js/store";
-import { CreatePost, GetAllTags } from "../api/posts"
+import { CreatePost, GetAllowedTags } from "../api/posts"
 
 import styles from './StylingModules/NewPost.module.css'
 
 export default function NewPost() {
     const [tags, setTags] = createStore([])
 
-    GetAllTags(JSON.parse(localStorage.getItem('profile'))?.token || "").then(res => {
+    GetAllowedTags(JSON.parse(localStorage.getItem('profile'))?.token || "").then(res => {
         const {data} = res
         for (let i = 0; i < data.length; i++) {
             setTags([...tags, {...data[i], selected: false, id: i}])
@@ -19,10 +19,6 @@ export default function NewPost() {
 
     document.title  = "Valeria Roleplay | Nytt inlägg"
 
-    // $('#create-post-btn').on('click', function() {
-    //     console.log('test')
-    //     console.log($('#create-post-img').val())
-    // })
     const navigate = useNavigate()
 
     $(function() {
@@ -31,7 +27,6 @@ export default function NewPost() {
             const images = Array.from($(this).prop('files'))
             
             for (const i in images) {
-                // console.log(images[i])
                 const size = parseFloat(((images[i].size/1024)/1024).toFixed(4)) // filesize in MB
 
                 if (size > 5) {
@@ -42,14 +37,10 @@ export default function NewPost() {
                 }
             }
 
-            // console.log("thsi")
-            // console.log(images)
-            // console.log(((images[0]?.size/1024)/1024).toFixed(4))
         })
     })
 
     function setTagActive(tagId: number, state: boolean) {
-        console.log(tagId)
         setTags(tag => tag.id === tagId, 'selected', selected => state)
     }
 
@@ -83,7 +74,6 @@ export default function NewPost() {
                         formData.append('content', content)
                         
                         const post = await CreatePost(formData, JSON.parse(localStorage.getItem('profile'))?.token)
-                        // console.log(post)
 
                         navigate("/forum/post/" + post.data)
 
@@ -129,9 +119,6 @@ export default function NewPost() {
 function urlify(text: string) {
     var urlRegex = /(?<!\]\()(http:\/\/|https:\/\/)[a-zA-Z0-9._+-]+\.[a-z]+[a-zA-Z0-9\/._+-]+/g;
     return (text.replace(urlRegex, function(url: string) {
-            // console.log(url.split('/')[2])
             return ( `[${url.split('/')[2]}](${url})` )
         }))
-    // or alternatively
-    // return text.replace(urlRegex, '<a href="$1">$1</a>')
 }

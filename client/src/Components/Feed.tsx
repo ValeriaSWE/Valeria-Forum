@@ -1,9 +1,9 @@
 import styles from './StylingModules/Feed.module.css';
-import { splitProps, JSX, createSignal, For, Show, createResource } from 'solid-js';
+import { createSignal, For, Show } from 'solid-js';
 import { createStore } from 'solid-js/store'
 import PostPreview from './PostPreview';
-import { GetAllPosts, GetPinnedPosts } from '../api/posts';
-import $ from "jquery"
+import { GetAllPosts, GetAllTags, GetPinnedPosts } from '../api/posts';
+// import $ from "jquery"
 import { useLocation } from 'solid-app-router';
 import Skeleton from "@suid/material/Skeleton"
 
@@ -22,7 +22,7 @@ function Loader() {
       <Skeleton variant='rectangular' width="3.25rem" height="2rem" style="border-radius: var(--border-radius)"/>
     </div>
   )
-  return <div data-component="loader" class="loader active" />;
+  // return <div data-component="loader" class="loader active" />;
 }
 
 export default function Feed() {
@@ -41,6 +41,15 @@ export default function Feed() {
   const [pages, setPages] = createSignal(1)
   const [limit, setLimit] = createSignal(parseInt(searchParams.get('limit')|| "10"))
   
+  const [tags, setTags] = createStore([])
+
+  GetAllTags(JSON.parse(localStorage.getItem('profile'))?.token || "").then(res => {
+    const {data} = res
+    for (let i = 0; i < data.length; i++) {
+        setTags([...tags, {...data[i], selected: false, id: i}])
+    }
+    console.table(tags)
+  })
   // const [posts] = createResource(sortParams, GetAllPosts)
 
   function FeedContainer(props: {children: any}) {
@@ -230,12 +239,41 @@ export default function Feed() {
     )
   }
 
+  function TagFilters() {
+
+    function setTagActive(tagId: number, state: boolean) {
+      console.log(tagId)
+      setTags(tag => tag.id === tagId, 'selected', selected => state)
+      sortPosts()
+    }
+
+    return (
+      <div class={styles.pageControls}>
+        <div class={styles.selectedTags}>
+          <For each={tags}>{ tag =>
+            <Show when={tag.selected}>
+              <button onClick={() => setTagActive(tag.id, false)}>{ tag.name } X</button>
+            </Show>
+          }</For>
+        </div>
+        <div class={styles.notSelectedTags}>
+          <For each={tags}>{ tag =>
+            <Show when={!tag.selected}>
+              <button onClick={() => setTagActive(tag.id, true)}>{ tag.name }</button>
+            </Show>
+          }</For>
+        </div>
+      </div>
+    )
+  }
+
   return(
     <>
       <Show when={allPosts()}>
         <FeedContainer>
           <PinnedPosts />
           <EditFeedResult />
+          <TagFilters />
           <AllPosts />
           <PageSelect />
         </FeedContainer>
@@ -244,8 +282,18 @@ export default function Feed() {
     )
     
   function sortPosts() {
+    let tagList: string[] = []
+
+    tags.forEach(tag => {
+      if (tag.selected) {
+        tagList = [...tagList, tag._id]
+      }
+    })
+
+    // console.log(tagList)
+
     setAllPostsLoaded(false)
-    GetAllPosts(sort(), page() - 1, limit()).then((AllPosts) => {
+    GetAllPosts(sort(), page() - 1, limit(), tagList).then((AllPosts) => {
       setAllPosts(AllPosts.data.posts)
       setPages(AllPosts.data.pages)
       searchParams.set('sort', sort())

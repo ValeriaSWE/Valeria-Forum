@@ -11,15 +11,13 @@ import User from "../Schemas/User.js"
 
 import Tag from "../Schemas/Tag.js"
 import Image from "../Schemas/Image.js"
+import mongoose from "mongoose"
 
 dotenv.config()
 
 export const CreatePost = async (req, res) => {
     const { title, content, tags } = req.body
     const creator = req.userId
-
-    // console.log(req.files)
-    console.log(tags)
 
     let images = []
 
@@ -33,7 +31,6 @@ export const CreatePost = async (req, res) => {
                         contentType: image.mimetype
                     }))._id
                     
-                // console.log(imgId)
                 return imgId
             } catch (error) {
                 console.error(error)
@@ -69,8 +66,6 @@ export const EditPost = async (req, res) => {
     try {
         const post = await Post.findById(postId)
 
-        // console.log(post)
-
         if (!post) return res.status(500).send(PostDoesntExists)
 
         if (post.creator != creator) return res.status(500).send(NotYourPost)
@@ -99,8 +94,14 @@ export const EditPost = async (req, res) => {
  */
 export const GetPosts = (pinned) => {
     return async (req, res) => {
-        let { sort, page, limit } = req.query
+        let { sort, page, limit, tags } = req.query
         
+        let matchFilter = { pinned: pinned }
+
+        if (tags && JSON.parse(tags).length > 0) {
+            matchFilter.tags = {$in: JSON.parse(tags).map(t => new mongoose.Types.ObjectId(t))}
+        }
+
         let sortPort = {}
         let dir = -1
         if (sort.includes('-inverse')) {
@@ -110,14 +111,11 @@ export const GetPosts = (pinned) => {
 
         sortPort[sort] = dir
 
-        // console.log(Number(page) * Number(limit))
-        // console.log(pinned)
-
         try {
 
             let posts = await Post.aggregate([
                 {
-                    $match: { pinned: pinned }
+                    $match: matchFilter
                 },
                 {
                     $addFields: { interactionCount: { $add: [{$size: { "$ifNull": [ "$comments", [] ] } }, {$size: { "$ifNull": [ "$likes", [] ] } }]} }
@@ -141,7 +139,7 @@ export const GetPosts = (pinned) => {
                 }
             ])
             
-            const pages = Math.ceil((await Post.count()) / Number(limit))
+            const pages = Math.ceil((await Post.find(matchFilter).count()) / Number(limit))
 
             for (var k in posts) {
                 posts[k]['creator'] = await User.findById(posts[k]['creator']).populate('profilePicture')
@@ -204,9 +202,7 @@ export const GetPost = async (req, res) => {
         }
 
         post.comments = post.comments.slice(Number(commentPage) * Number(commentLimit), Number(commentPage) * Number(commentLimit) + Number(commentLimit))
-        
-        
-        // console.table(commentPageDict)
+
         return res.status(200).send({ post, commentPages, commentPageDict})
     } catch (error) {
         return res.status(500).send({message: SomethingWrong, error})
@@ -225,8 +221,6 @@ export const NewComment = async (req, res) => {
     const { id } = req.params
     const { content, respondsTo } = req.body
     const { userId } = req
-
-    // console.log(respondsTo)
 
     const post = await Post.findById(id).populate({
         path: 'creator',

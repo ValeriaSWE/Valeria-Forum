@@ -10,3 +10,8 @@ export const GetTags = async (req, res) => {
         return res.status(200).send(tags)
     }
 }
+export const GetAllTags = async (req, res) => {
+    const tags = await Tag.find()
+
+    return res.status(200).send(tags)
+}

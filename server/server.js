@@ -11,7 +11,7 @@ import { GetUserList, SetUserRole } from './controllers/admin.js'
 import { CreatePost, EditPost, GetImage, GetPost, GetPosts, LikeComment, LikePost, NewComment } from './controllers/post.js'
 import { FileUpload } from './middleware/posts.js'
 import { GetValeriaServerData, ValeriaServerHook } from './controllers/fivemhooks.js'
-import { GetTags } from './controllers/tags.js'
+import { GetAllTags, GetTags } from './controllers/tags.js'
 
 app.use(express.json())
 // app.get('/', (req, res) => res.send('Hello World!'))
@@ -61,6 +61,7 @@ app.post('/posts/editPost/', Authorize(0), EditPost)
 
 // * Tag functions
 app.get('/tags/getTags', Authorize(0), GetTags)
+app.get('/tags/getAllTags', GetAllTags)
 
 // * FiveM Server api connections
 app.post('/api/fivem', ValeriaServerHook)
