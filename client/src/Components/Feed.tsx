@@ -249,14 +249,14 @@ export default function Feed() {
         <div class={styles.selectedTags}>
           <For each={tags}>{ tag =>
             <Show when={tag.selected}>
-              <button onClick={() => setTagActive(tag.id, false)}>{ tag.name } X</button>
+              <button onClick={() => setTagActive(tag.id, false)} class={styles.tag} style={"background-color: " + tag.color}>{ tag.name } X</button>
             </Show>
           }</For>
         </div>
         <div class={styles.notSelectedTags}>
           <For each={tags}>{ tag =>
             <Show when={!tag.selected}>
-              <button onClick={() => setTagActive(tag.id, true)}>{ tag.name }</button>
+              <button onClick={() => setTagActive(tag.id, true)} class={styles.tag} style={"background-color: " + tag.color}>{ tag.name }</button>
             </Show>
           }</For>
         </div>

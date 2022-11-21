@@ -306,7 +306,7 @@ setting the data to the state. */
                     <p>Valda taggar:</p>
                     <For each={tags}>{(tag, i) =>
                         <Show when={tag.selected}>
-                            <button onClick={() => setTagActive(tag.id, false)}>{tag.name} X</button>
+                            <button style={"background-color: " + tag.color} class={styles.tag} onClick={() => setTagActive(tag.id, false)}>{tag.name} X</button>
                         </Show>
                     }</For>
                 </div>
@@ -314,7 +314,7 @@ setting the data to the state. */
                     <p>Välj taggar:</p>
                     <For each={tags}>{(tag) =>
                         <Show when={!tag.selected}>
-                            <button onClick={() => setTagActive(tag.id, true)}>{tag.name}</button>
+                            <button style={"background-color: " + tag.color} class={styles.tag} onClick={() => setTagActive(tag.id, true)}>{tag.name}</button>
                         </Show>
                     }</For>
                 </div>
