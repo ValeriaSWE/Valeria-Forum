@@ -636,7 +636,6 @@ export default function UserInfo() {
                         <PostStatitics date={props.comment.createdAt} />
                         <button class={styles.postLikeButton} onClick={() => {
                             LikeComment(props.comment._id, JSON.parse(localStorage.getItem('profile'))?.token).then((res) => {
-                                // console.log(res.data)
                                 setLikeCount(res.data.likes.length)
                                 setLikedByUser(res.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
                             })
@@ -644,12 +643,6 @@ export default function UserInfo() {
                             <i class='material-icons' style={likedByUser() ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
                             <span>{likeCount()}</span>
                         </button>
-                        {/* <form action={"/forum/post/" + props.comment.onPost + "?comment=" + props.comment._id}>
-                        <button class={styles.postLikeButton}>
-                            <i class='material-icons'>comment</i>
-                            <span>Svara</span>
-                        </button>
-                        </form> */}
                     </div>
 
                 </div>

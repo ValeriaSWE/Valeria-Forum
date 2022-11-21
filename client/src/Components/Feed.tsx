@@ -48,9 +48,7 @@ export default function Feed() {
     for (let i = 0; i < data.length; i++) {
         setTags([...tags, {...data[i], selected: false, id: i}])
     }
-    console.table(tags)
   })
-  // const [posts] = createResource(sortParams, GetAllPosts)
 
   function FeedContainer(props: {children: any}) {
     return(

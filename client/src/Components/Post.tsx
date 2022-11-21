@@ -286,7 +286,6 @@ setting the data to the state. */
             for (let i = 0; i < data.length; i++) {
                 setTags([...tags, {...data[i], selected: findTag(data[i]._id), id: i}])
             }
-            // console.table(tags)
         })
 
         function findTag(tagId) {

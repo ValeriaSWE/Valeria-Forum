@@ -108,8 +108,6 @@ export const GetUserPosts = async (req, res) => {
     let { sort, page, limit } = req.query
     const { id } = req.params
         
-    // console.table({id, sort, page, limit})
-
     let sortPort = {}
     let dir = -1
     if (sort.includes('-inverse')) {
@@ -166,8 +164,6 @@ export const GetUserComments = async (req, res) => {
     let { sort, page, limit } = req.query
     const { id } = req.params
         
-    // console.table({id, sort, page, limit})
-
     let sortPort = {}
     let dir = -1
     if (sort.includes('-inverse')) {

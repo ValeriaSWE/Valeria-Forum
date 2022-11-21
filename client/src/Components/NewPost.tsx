@@ -14,7 +14,6 @@ export default function NewPost() {
         for (let i = 0; i < data.length; i++) {
             setTags([...tags, {...data[i], selected: false, id: i}])
         }
-        console.table(tags)
     })
 
     document.title  = "Valeria Roleplay | Nytt inlägg"
