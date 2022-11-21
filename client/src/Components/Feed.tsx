@@ -242,7 +242,6 @@ export default function Feed() {
   function TagFilters() {
 
     function setTagActive(tagId: number, state: boolean) {
-      console.log(tagId)
       setTags(tag => tag.id === tagId, 'selected', selected => state)
       sortPosts()
     }
@@ -289,8 +288,6 @@ export default function Feed() {
         tagList = [...tagList, tag._id]
       }
     })
-
-    // console.log(tagList)
 
     setAllPostsLoaded(false)
     GetAllPosts(sort(), page() - 1, limit(), tagList).then((AllPosts) => {

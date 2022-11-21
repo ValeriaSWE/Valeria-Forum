@@ -89,8 +89,6 @@ export const registerUser = async (req, res) => {
 export const GetUserInfo = async (req, res) => {
     const { id } = req.params
     
-    // console.log(id.length)
-
     try {
         let user
         if (id.length == 24) user = await User.findById(id).populate('profilePicture')
@@ -229,9 +227,6 @@ export const SetUserInfo = async (req, res) => {
     const {newUsername, oldPassword, newPassword, newPasswordConfirm, about} = req.body
     try {
         const user = await User.findById(req.userId)
-
-        console.log(oldPassword)
-        console.log(user)
 
         if (!user) return res.status(400).send({ message: InvalidToken })
 

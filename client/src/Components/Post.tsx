@@ -1,4 +1,4 @@
-import { EditPost, GetImage, GetPost, LikeComment, LikePost, NewComment } from "../api/posts"
+import { EditPost, GetAllowedTags, GetImage, GetPost, LikeComment, LikePost, NewComment } from "../api/posts"
 import $ from "jquery"
 import roleBadge from './StylingModules/RoleBadge.module.css'
 import styles from './StylingModules/Post.module.css'
@@ -37,7 +37,7 @@ export default function Post(props: {
             roleRank: 0,
             _id: "id"
         },
-        content: "content",
+        content: "",
         images: [],
         isEdited: false,
         comments: [],
@@ -56,6 +56,7 @@ export default function Post(props: {
     })
 
     const [isEditing, setIsEditing] = createSignal(false)
+    const [tags, setTags] = createStore([]) // All available tags (for when editing)
 
     const [newCommentRespondsTo, setNewCommentRespondsTo] = createSignal(null)
 
@@ -75,14 +76,11 @@ setting the data to the state. */
         setPost({...postData, createdDate: timeSince(new Date(postData.createdAt).getTime()), likeCount: postData.likes.length, likedByUser: postData.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id), pfpRaw: postData.creator.profilePicture, creatorPfp: `data:image/png;base64,${btoa(new Uint8Array(postData.creator.profilePicture.data.data).reduce(function (data, byte) {
             return data + String.fromCharCode(byte);
         }, ''))}`})
-        console.log(postData)
 
         setCommentPages(commentPages)
-        // console.log(commentPageDict)
         setCommentPageDict(commentPageDict)
 
         setComments(postData.comments)
-        // console.log(res.data.post.tags)
 
         if (searchParams.get('comment')) {
             highlightPost(searchParams.get('comment'))
@@ -97,10 +95,7 @@ setting the data to the state. */
 
         if (!$("#new-comment").val()) return
 
-        // console.log(urlify($("#new-comment").val()?.toString()))
-
         const content = urlify($("#new-comment").val()?.toString())
-        // const content = $("#new-comment").val()
 
         const respondsTo = newCommentRespondsTo()?._id
 
@@ -112,10 +107,8 @@ setting the data to the state. */
 
         const { data } = await NewComment(postId, content, respondsTo, token)
 
-        // console.log(data)
-
         setComments(data.comments)
-        setCommentsAmount(data.comments.length)
+        // setCommentsAmount(data.comments.length)
 
         $('html, body').scrollTop($('#' + data.comments[data.comments.length - 1]._id).offset()?.top)
     }
@@ -142,8 +135,6 @@ setting the data to the state. */
         const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(props.comment.creator.profilePicture.data.data).reduce(function (data, byte) {
             return data + String.fromCharCode(byte);
         }, ''))}`
-
-        // console.log(props.comment.respondsTo?.__v)
 
         return(
             <>
@@ -177,7 +168,6 @@ setting the data to the state. */
                         <PostStatitics date={props.comment.createdAt} />
                         <button class={styles.postLikeButton} onClick={() => {
                             LikeComment(props.comment._id, JSON.parse(localStorage.getItem('profile'))?.token).then((res) => {
-                                // console.log(res.data)
                                 setLikeCount(res.data.likes.length)
                                 setLikedByUser(res.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
                             })
@@ -195,7 +185,6 @@ setting the data to the state. */
             </>
         )
     }
-    // console.log(JSON.parse(localStorage.getItem('profile'))?.result._id)
 
     async function sortComments() {
         const res = await GetPost(props.post, commentSort(), commentPage() - 1, commentLimit())
@@ -276,19 +265,60 @@ setting the data to the state. */
 
 
     async function savePost() {
-        const newPostData = await EditPost(props.post, $('#editContent').val()?.toString(), JSON.parse(localStorage.getItem('profile'))?.token)
+        let activeTags: string[] = []
+        tags.forEach(tag => {
+            if (tag.selected) {
+                activeTags.push(tag._id)
+            }
+        });
+        const newPostData = await EditPost(props.post, $('#editContent').val()?.toString(), activeTags, JSON.parse(localStorage.getItem('profile'))?.token)
 
-        // console.log(newPostData)
-
-        setContent(newPostData.data.content)
-        setIsEdited(newPostData.data.isEdited)
+        setPost({...post, content: newPostData.data.content, isEdited: newPostData.data.isEdited, tags: newPostData.data.tags})
 
         setIsEditing(false)
     }
       
     function EditPostView() {
+
+        GetAllowedTags(JSON.parse(localStorage.getItem('profile'))?.token || "").then(res => {
+            const {data} = res
+            setTags([])
+            for (let i = 0; i < data.length; i++) {
+                setTags([...tags, {...data[i], selected: findTag(data[i]._id), id: i}])
+            }
+            // console.table(tags)
+        })
+
+        function findTag(tagId) {
+            for (let i = 0; i < post.tags.length; i++) {
+                if (post.tags[i]._id == tagId) {
+                    return true
+                }
+            }
+            return false
+        }
+
+        function setTagActive(tagId: number, state: boolean) {
+            setTags(tag => tag.id === tagId, 'selected', selected => state)
+        }
         return (
             <div class={styles.postContent}>
+                <div class={styles.pickedTags}>
+                    <p>Valda taggar:</p>
+                    <For each={tags}>{(tag, i) =>
+                        <Show when={tag.selected}>
+                            <button onClick={() => setTagActive(tag.id, false)}>{tag.name} X</button>
+                        </Show>
+                    }</For>
+                </div>
+                <div class={styles.notPickedTags}>
+                    <p>Välj taggar:</p>
+                    <For each={tags}>{(tag) =>
+                        <Show when={!tag.selected}>
+                            <button onClick={() => setTagActive(tag.id, true)}>{tag.name}</button>
+                        </Show>
+                    }</For>
+                </div>
                 <h1 class={styles.title} id="post-title">{post.title}</h1>
                 {/* https://codepen.io/chriscoyier/pen/XWKEVLy */}
                 <div class={styles.growWrap} data-replicated-value={post.content}>
@@ -637,9 +667,6 @@ const PostStatitics = (props: {
 function urlify(text: string) {
     var urlRegex = /(?<!\]\()(http:\/\/|https:\/\/)[a-zA-Z0-9._+-]+\.[a-z]+[a-zA-Z0-9\/._+-]+/g;
     return (text.replace(urlRegex, function(url: string) {
-            // console.log(url.split('/')[2])
             return ( `[${url.split('/')[2]}](${url})` )
         }))
-    // or alternatively
-    // return text.replace(urlRegex, '<a href="$1">$1</a>')
 }

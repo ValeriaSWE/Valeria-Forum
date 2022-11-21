@@ -158,6 +158,5 @@ const registerSubmit = async () => {
         window.location.reload();
     } catch (error) {
         $('#error').html(error.response.data.message)
-        // console.log(error.response.data.message)
     }
 }

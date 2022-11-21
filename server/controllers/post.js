@@ -60,7 +60,7 @@ export const CreatePost = async (req, res) => {
 }
 
 export const EditPost = async (req, res) => {
-    const { postId, content } = req.body
+    const { postId, content, tags } = req.body
     const creator = req.userId
 
     try {
@@ -72,12 +72,16 @@ export const EditPost = async (req, res) => {
 
         post.content = content
 
+        post.tags = tags
+
         post.lastEditedAt = Date.now()
         post.isEdited = true
 
         await post.save()
 
-        return res.status(200).send(post)
+        const editedPost = await Post.findById(postId).populate('tags')
+
+        return res.status(200).send(editedPost)
     } catch (error) {
         console.error(error)
         return res.status(500).send({ message: SomethingWrong, error })

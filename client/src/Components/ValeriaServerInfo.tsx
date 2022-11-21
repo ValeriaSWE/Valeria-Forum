@@ -5,7 +5,6 @@ export default function ValeriaServerInfo() {
 
     const [serverData, setServerData] = createSignal(null)
     GetValeriaData().then(res => {
-        console.log(res.data)
         setServerData(res.data)
     })
 

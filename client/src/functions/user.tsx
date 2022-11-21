@@ -6,7 +6,6 @@ import jwt_decode from "jwt-decode"
  */
 export const Auth = async (data) => {
     localStorage.setItem('profile', JSON.stringify({ ... data }))
-    // console.log(data)
 }
 
 /**
@@ -20,8 +19,6 @@ export const CheckAuthLevel = (token: string, authLevel: number) => {
 
     const data = jwt_decode(token)    
     let exp = false
-
-    console.log(data?.exp * 1000 - Date.now())
 
     try {
         exp = data?.exp * 1000 >= Date.now()

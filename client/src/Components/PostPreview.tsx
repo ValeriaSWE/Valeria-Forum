@@ -20,26 +20,24 @@ export default function PostPreview(props: {
                 _id: string,
                 data: {
                     type: string,
-                    data: [any]
+                    data: any[]
                 },
                 contentType: string,
             },
             roleRank: 10
         },
         content: string,
-        images: [string],
-        comments: [string],
-        likes: [string],
+        images: string[],
+        comments: string[],
+        likes: string[],
         pinned: boolean,
-        tags: [any],
+        tags: any[],
         createdAt: string,
         lastEditedAt: string,
         interactionCount: number,
         isEdited: boolean,
     };
-    // FÅR FIXAS SENARE :))
 }) {
-    // console.log(props.data)
     const [likedByUser, setLikedByUser] = createSignal(props.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
     const [likeCount, setLikeCount] = createSignal(props.data.likes.length)
 

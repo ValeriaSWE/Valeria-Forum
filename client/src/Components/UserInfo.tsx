@@ -87,7 +87,6 @@ export default function UserInfo() {
         const [userError, setUserError] = createSignal(false)
 
         const cancel = () => {
-            console.log('cancel')
             setIsEditing(false)
         }
         const save = () => {
@@ -107,9 +106,7 @@ export default function UserInfo() {
                 Auth({result: res.data.user, token})
 
                 setUser({username, about})
-                // console.log(user, token)
             })
-            // setUser({username: (newUsername || user.username).toString(), about: (about || user.about || '')?.toString()})
             setIsEditing(false)
         }
 
@@ -321,7 +318,6 @@ export default function UserInfo() {
     async function sortComments() {
         setCommentsLoaded(false)
         const res = await GetUserComments(id, user.comments.sort, user.comments.page - 1, user.comments.limit)
-            // console.log(res)
         const { comments, pages } = res.data
         for(let k in comments) {
             comments[k].creator = {
@@ -600,17 +596,13 @@ export default function UserInfo() {
 
     function Comment(props: {
         comment: any;
-    }) {
-        // console.log(props.comment)
-        
+    }) {        
         const [likedByUser, setLikedByUser] = createSignal(props.comment.likes?.includes(JSON.parse(localStorage.getItem('profile'))?.result._id) || false)
         const [likeCount, setLikeCount] = createSignal(props.comment.likes?.length || 0)
 
         const profilePicture = `data:image/png;base64,${btoa(new Uint8Array(props.comment.creator.profilePicture.data.data).reduce(function (data, byte) {
             return data + String.fromCharCode(byte);
         }, ''))}`
-
-        // console.log(props.comment.respondsTo?.__v)
 
         return(
             <>

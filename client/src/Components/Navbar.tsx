@@ -27,11 +27,6 @@ export default function Navbar() {
     loggedIn = true
   }
 
-  // const tmp = String.fromCharCode( ... new Uint8Array(userData.profilePicture.data))
-
-
-  // console.log(profilePicture)
-
   function logout() {
     localStorage.removeItem('profile')
     window.location.reload();
