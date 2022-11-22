@@ -70,7 +70,7 @@ export default function UserInfo() {
 
     // * Active Tav signal
     const [activeTab, setActiveTab] = createSignal('posts')
-    const [isEditing, setIsEditing] = createSignal(true)
+    const [isEditing, setIsEditing] = createSignal(false)
 
     GetUserInfo(id).then(res => {
         const { data } = res
