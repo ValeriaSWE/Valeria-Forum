@@ -25,6 +25,13 @@
 	gap: 1rem;
 }
 
+.pickedTags div,
+.notPickedTags div{
+	display: inline-flex;
+	gap: .5rem;
+}
+
+
 .newPostForm input {
 	background-color: transparent;
 	border: none;
@@ -38,7 +45,7 @@
 	border-bottom: 0.125rem solid var(--color-blue-m);
 }
 
-.newPostForm button {
+.newPostForm .submit {
 	background-color: var(--color-blue-m);
 	outline: none;
 	border: none;

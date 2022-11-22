@@ -3,6 +3,7 @@ import { useNavigate } from "solid-app-router"
 import { createSignal, For, Show } from "solid-js"
 import { createStore } from "solid-js/store";
 import { CreatePost, GetAllowedTags } from "../api/posts"
+import PostTag from "./PostTag";
 
 import styles from './StylingModules/NewPost.module.css'
 
@@ -86,19 +87,23 @@ export default function NewPost() {
                 
                 <div class={styles.pickedTags}>
                     <p>Valda taggar:</p>
-                    <For each={tags}>{(tag, i) =>
-                        <Show when={tag.selected}>
-                            <button style={"color: var(--color-blue-d); background-color: " + tag.color} class={styles.tag} onClick={() => setTagActive(tag.id, false)}>{tag.name} X</button>
-                        </Show>
-                    }</For>
+                    <div>
+                        <For each={tags}>{(tag, i) =>
+                            <Show when={tag.selected}>
+                                <PostTag isButton={true} icon={"cancel"} func={setTagActive(tag.id, false)} color={tag.color} name={tag.name} />
+                            </Show>
+                        }</For>
+                    </div>
                 </div>
                 <div class={styles.notPickedTags}>
                     <p>Välj taggar:</p>
-                    <For each={tags}>{(tag) =>
-                        <Show when={!tag.selected}>
-                            <button style={"color: var(--color-blue-d); background-color: " + tag.color} class={styles.tag} onClick={() => setTagActive(tag.id, true)}>{tag.name}</button>
-                        </Show>
-                    }</For>
+                    <div>
+                        <For each={tags}>{(tag) =>
+                            <Show when={!tag.selected}>
+                                <PostTag isButton={true} icon={null} func={setTagActive(tag.id, true)} color={tag.color} name={tag.name} />
+                            </Show>
+                        }</For>
+                    </div>
                 </div>
 
                 <input type="text" placeholder="Titel" id="create-post-title" name="title" class={styles.title}/>
@@ -107,7 +112,7 @@ export default function NewPost() {
                 </div>
                 {/* <textarea name="content" id="create-post-content" cols="30" rows="10"></textarea> */}
                 <input type="file" name="image" id="create-post-img" multiple accept="image/png, image/jpeg"/>
-                <button type="submit" id="create-post-btn">Skapa</button>
+                <button class={styles.submit} type="submit" id="create-post-btn">Skapa</button>
             </form>
         </div>
     )
