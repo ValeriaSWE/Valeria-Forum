@@ -214,7 +214,7 @@ a {
 
 .tags {
 	display: flex;
-	gap: 1rem;
+	gap: .5rem;
 }
 
 .tag {
