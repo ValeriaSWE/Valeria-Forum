@@ -95,6 +95,14 @@ a {
 	gap: 1rem;
 }
 
+.pickedTags div,
+.notPickedTags div{
+	display: inline-flex;
+	gap: .5rem;
+}
+
+
+
 .inheritPost .postContent .title {
 	color: var(--color-blue-d);
 }

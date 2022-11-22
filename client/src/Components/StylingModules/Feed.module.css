@@ -80,6 +80,17 @@
 	align-items: center;
 	justify-content: space-between;
 }
+
+.pageControls .selectedTags,
+.pageControls .notSelectedTags {
+	display: flex;
+	gap: .5rem;
+}
+
+
+
+
+
 .editFeed > div {
 	display: flex;
 	height: 100%;

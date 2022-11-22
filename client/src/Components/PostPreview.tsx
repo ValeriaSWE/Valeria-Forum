@@ -4,6 +4,7 @@ import styles from './StylingModules/PostPreview.module.css';
 import roleBadge from './StylingModules/RoleBadge.module.css'
 import SolidMarkdown from 'solid-markdown'
 import { timeSince } from './UserInfo';
+import PostTag from './PostTag';
 
 
 export default function PostPreview(props: {
@@ -73,7 +74,7 @@ export default function PostPreview(props: {
                 </Show>
                 <For each={props.tags}>
                     {(tag, i) => 
-                        <p class={styles.tag} style={"background-color: " + tag.color + ";"}>{tag.name}</p>
+                    <PostTag isButton={false} func={null} color={tag.color} name={tag.name} />
                     }
                 </For>
                 <p class={styles.postDate}>{ timeSince(new Date(props.date).getTime()) } sedan</p>

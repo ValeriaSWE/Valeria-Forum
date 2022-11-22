@@ -6,6 +6,7 @@ import { GetAllPosts, GetAllTags, GetPinnedPosts } from '../api/posts';
 // import $ from "jquery"
 import { useLocation } from 'solid-app-router';
 import Skeleton from "@suid/material/Skeleton"
+import PostTag from './PostTag';
 
 function Loader() {
   // const isRouting = useIsRouting();
@@ -249,14 +250,14 @@ export default function Feed() {
         <div class={styles.selectedTags}>
           <For each={tags}>{ tag =>
             <Show when={tag.selected}>
-              <button onClick={() => setTagActive(tag.id, false)} class={styles.tag} style={"background-color: " + tag.color}>{ tag.name } X</button>
+              <PostTag isButton={true} icon={"cancel"} func={setTagActive(tag.id, false)} color={tag.color} name={tag.name} />
             </Show>
           }</For>
         </div>
         <div class={styles.notSelectedTags}>
           <For each={tags}>{ tag =>
             <Show when={!tag.selected}>
-              <button onClick={() => setTagActive(tag.id, true)} class={styles.tag} style={"background-color: " + tag.color}>{ tag.name }</button>
+              <PostTag isButton={true} icon={null} func={setTagActive(tag.id, true)} color={tag.color} name={tag.name} />
             </Show>
           }</For>
         </div>

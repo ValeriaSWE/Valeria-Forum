@@ -9,6 +9,7 @@ import Highlight from "solid-highlight"
 import { CheckAuthLevel } from "../functions/user"
 import { timeSince } from "./UserInfo"
 import { createStore } from "solid-js/store";
+import PostTag from "./PostTag"
 
 // import "highlight.js/styles/tokyo-night-dark.css"
 // import "highlight.js/styles/devibeans.css"
@@ -304,19 +305,23 @@ setting the data to the state. */
             <div class={styles.postContent}>
                 <div class={styles.pickedTags}>
                     <p>Valda taggar:</p>
-                    <For each={tags}>{(tag, i) =>
-                        <Show when={tag.selected}>
-                            <button style={"background-color: " + tag.color} class={styles.tag} onClick={() => setTagActive(tag.id, false)}>{tag.name} X</button>
-                        </Show>
-                    }</For>
+                    <div>
+                        <For each={tags}>{(tag, i) =>
+                            <Show when={tag.selected}>
+                                <PostTag isButton={true} icon={"cancel"} func={setTagActive(tag.id, false)} color={tag.color} name={tag.name} />
+                            </Show>
+                        }</For>
+                    </div>
                 </div>
                 <div class={styles.notPickedTags}>
                     <p>Välj taggar:</p>
-                    <For each={tags}>{(tag) =>
-                        <Show when={!tag.selected}>
-                            <button style={"background-color: " + tag.color} class={styles.tag} onClick={() => setTagActive(tag.id, true)}>{tag.name}</button>
-                        </Show>
-                    }</For>
+                    <div>
+                        <For each={tags}>{(tag) =>
+                            <Show when={!tag.selected}>
+                                <PostTag isButton={true} icon={null} func={setTagActive(tag.id, true)} color={tag.color} name={tag.name} />
+                            </Show>
+                        }</For>
+                    </div>
                 </div>
                 <h1 class={styles.title} id="post-title">{post.title}</h1>
                 {/* https://codepen.io/chriscoyier/pen/XWKEVLy */}
@@ -338,7 +343,7 @@ setting the data to the state. */
                 <div class={styles.tags}>
                     <For each={post.tags}>
                         {(tag, i) => 
-                            <p class={styles.tag} style={"background-color: " + tag.color + ";"}>{tag.name}</p>
+                            <PostTag isButton={false} icon={null} func={null} color={tag.color} name={tag.name} />
                         }
                     </For>
                 </div>
