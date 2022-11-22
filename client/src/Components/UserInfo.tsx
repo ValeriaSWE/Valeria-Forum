@@ -70,7 +70,7 @@ export default function UserInfo() {
 
     // * Active Tav signal
     const [activeTab, setActiveTab] = createSignal('posts')
-    const [isEditing, setIsEditing] = createSignal(false)
+    const [isEditing, setIsEditing] = createSignal(true)
 
     GetUserInfo(id).then(res => {
         const { data } = res
@@ -110,50 +110,75 @@ export default function UserInfo() {
             setIsEditing(false)
         }
 
+
+
+       
+
         return (
             <Show when={isEditing()}>
                 <form onSubmit={e => e.preventDefault()}>
                     <div class={styles.editModal}>
 
                         <h2 class={styles.title}>Redigera Profil</h2>
+                        <div class={styles.profileContent}>
+                            <div class={styles.profilePictureDiv}>
+                                <label for="file">
+                                    <img id={styles.editProfilePictureModal} class={styles.profilePicture} src={user.profilePicture} alt="" />
+                                </label>         
+                                <div>
+                                    <label for="file"><h3>Ändra profilbild</h3></label>                   
+                                    <input type="file" name="file" id="file" />
+                                </div>
+                            </div>
+                            <div class={styles.profileInformation}>
+                                <TextField id="user-new-username" label="Användarnamn" variant="standard" classes={{root: styles.input}} error={userError()} helperText={userError() ? "Minst fyra tecken." : ""} onChange={(e) => {
+                                    const regex = /[a-zA-Z0-9._-]{4,}/g
+
+                                    if (!e.target.value.match(regex) && !userError()) {
+                                        setUserError(true)
+                                    } else if (e.target.value.match(regex) && userError()) {
+                                        setUserError(false)
+                                    }
+                                    
+                                }} />
+                                {/* <div class={styles.input}>
+                            <p>Lösenord:</p>
+                            <input type="password" name="password" id="login-password"/>
+                        </div> * */}
+                       <TextField id="user-old-password" label="Nuvarande Lösenord" variant="standard" type="password" required classes={{root: styles.input}} />
+                        <TextField id="user-new-password" label="Nytt Lösenord" variant="standard" type="password" classes={{root: styles.input}} />
+                        <TextField id="user-new-password-confirm" label="Upprepa Nytt Lösenord" variant="standard" type="password" classes={{root: styles.input}} />
+                        
+                       
+                        
+                        
+                        <span class={styles.loginError} id="error"></span> 
+
+
+                            </div>
+
+                        </div>
+                        <div class={styles.growWrap} >
+                            <textarea class={styles.contentEditing} id="user-about-content" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder="Berätta lite om dig själv" value={user.about}></textarea>
+                        </div>
+                        
 
                         {/* <div class={styles.input}>
                             <p>Anändarnamn / Email:</p>
                             <input type="text" name="email" id="login-email" />
                             <TextField />
                         </div> */}
-                        <TextField id="user-new-username" label="Användarnamn" variant="standard" classes={{root: styles.input}} error={userError()} helperText={userError() ? "Minst fyra tecken." : ""} onChange={(e) => {
-                            const regex = /[a-zA-Z0-9._-]{4,}/g
-
-                            if (!e.target.value.match(regex) && !userError()) {
-                                setUserError(true)
-                            } else if (e.target.value.match(regex) && userError()) {
-                                setUserError(false)
-                            }
-                            
-                        }} />
-                        {/* <div class={styles.input}>
-                            <p>Lösenord:</p>
-                            <input type="password" name="password" id="login-password"/>
-                        </div> */}
-                        <TextField id="user-old-password" label="Nuvarande Lösenord" variant="standard" type="password" required classes={{root: styles.input}} />
-                        <TextField id="user-new-password" label="Nytt Lösenord" variant="standard" type="password" classes={{root: styles.input}} />
-                        <TextField id="user-new-password-confirm" label="Upprepa Nytt Lösenord" variant="standard" type="password" classes={{root: styles.input}} />
-                        <div class={styles.growWrap} >
-                            <textarea class={styles.contentEditing} id="user-about-content" onInput="this.parentNode.dataset.replicatedValue = this.value" value={user.about}></textarea>
-                        </div>
-
-                        <button class={styles.saveBtn} id="edit-submit" onClick={save}>Spara Profil</button>
-                        
-                        <button class={styles.cancelBtn} id="edit-cancel" onClick={cancel}>Avbryt</button>
-                        
-                        
-                        <span class={styles.loginError} id="error"></span>
+                       
+                       <div class={styles.editModalSubmit}>
+                            <button class={styles.saveBtn} id="edit-submit" onClick={save}>Spara Profil</button>
+                            <button class={styles.cancelBtn} id="edit-cancel" onClick={cancel}>Avbryt</button>
+                       </div>
+                      
 
                         <div class={styles.loginFooter}>
                             <p>Valeria Roleplay | Redigera Profil</p>
                         </div>
-
+                      
                     </div>
                 </form>
             </Show>

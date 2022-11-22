@@ -383,12 +383,12 @@
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-
-	width: 16rem;
+	height: auto;
+	width: 30rem;
 	border-radius: var(--border-radius) var(--border-radius) var(--border-radius)
 		var(--border-radius);
 
-	padding: 2rem;
+	padding: 1.5rem;
 	font-size: 0.8rem;
 
 	background-color: var(--color-white-m);
@@ -407,6 +407,86 @@
 
 .editModal .title {
 	color: var(--color-blue-d);
+}
+
+.editModal .profileContent {
+	width: 100%;
+	display: inline-flex;
+} 
+
+.editModal .profileContent .profilePictureDiv{
+	position: relative;
+	min-width: 42.5%;
+	max-width: 42.5%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	user-select: none;
+
+}
+.editModal .profileContent .profilePictureDiv img {
+	width: 100%;
+	aspect-ratio: 1/1;
+	border-radius: 999px;
+	background-color: var(--color-white-l);
+	padding: 0.2rem;
+	box-shadow: 0px 1px 2px 1px rgb(0 0 0 / 20%);
+	transition: 0.3s ease-in-out;
+	cursor: pointer;
+}
+
+.editModal .profileContent .profilePictureDiv img:hover {
+	filter: blur(2px);
+}
+
+.editModal .profileContent .profilePictureDiv div {
+	position: relative;
+	padding: .5rem 0rem;
+	margin-top: 1rem;
+	width: 8rem;
+	height: 1rem;
+	border-radius: var(--border-radius);
+	gap: .5rem;
+	background-color: var(--color-white-l);
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+	cursor: pointer;
+}
+.editModal .profileContent .profilePictureDiv div  label {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	display: inline-flex;
+	align-items: center;
+	gap: .5rem;
+	cursor: pointer;
+	justify-content: center;
+}
+
+.editModal .profileContent .profilePictureDiv div  label h3 {
+	white-space: nowrap;
+}
+
+.editModal .profileContent .profilePictureDiv  input {
+	opacity: 0;
+}
+
+
+.editModal .profileContent .profileInformation {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	height: auto;
+	gap: .75rem;
+}
+
+.editModal .editModalSubmit{
+	display: inline-flex;
+	gap: 2rem;
+	height: auto;
 }
 
 .editModal .input {
@@ -486,7 +566,7 @@
 }
 
 .loginFooter {
-	height: 3.5rem;
+	height: 1.5rem;
 
 	display: flex;
 	flex-direction: column;
@@ -496,6 +576,8 @@
 
 .growWrap {
 	display: grid;
+	width: 100%;
+	max-width: 100%;
 }
 
 /* https://codepen.io/chriscoyier/pen/XWKEVLy */
