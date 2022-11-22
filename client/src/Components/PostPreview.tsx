@@ -74,7 +74,7 @@ export default function PostPreview(props: {
                 </Show>
                 <For each={props.tags}>
                     {(tag, i) => 
-                    <PostTag isButton={false} func={null} color={tag.color} name={tag.name} />
+                    <PostTag isButton={false} icon={null} func={null} color={tag.color} name={tag.name} />
                     }
                 </For>
                 <p class={styles.postDate}>{ timeSince(new Date(props.date).getTime()) } sedan</p>
