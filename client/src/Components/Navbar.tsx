@@ -21,7 +21,7 @@ export default function Navbar() {
   let profilePicture = ''
   if (localStorage.getItem('profile') && CheckAuthLevel(JSON.parse(localStorage.getItem('profile'))?.token, 0)) {
     userData = JSON.parse(localStorage.getItem('profile'))?.result
-    profilePicture = `data:image/png;base64,${btoa(new Uint8Array(userData.profilePicture.data.data).reduce(function (data, byte) {
+    profilePicture = `data:image/png;base64,${btoa(new Uint8Array(userData.profilePicture?.data?.data).reduce(function (data, byte) {
       return data + String.fromCharCode(byte);
     }, ''))}`
     loggedIn = true

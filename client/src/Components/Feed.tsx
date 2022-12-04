@@ -242,6 +242,7 @@ export default function Feed() {
 
     function setTagActive(tagId: number, state: boolean) {
       setTags(tag => tag.id === tagId, 'selected', selected => state)
+      setPage(1)
       sortPosts()
     }
 
