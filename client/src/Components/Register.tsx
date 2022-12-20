@@ -1,6 +1,6 @@
 import TextField from "@suid/material/TextField";
 import $ from "jquery"
-import { RegisterUserServerPost } from "../api/user.jsx"
+import { RegisterUserServerPost } from "../api/user.js"
 import { Auth } from "../functions/user.js"
 import { createSignal } from "solid-js"
 

@@ -1,6 +1,6 @@
 import TextField from "@suid/material/TextField"
 import $ from "jquery"
-import { LoginUserServerPost } from "../api/user.jsx"
+import { LoginUserServerPost } from "../api/user.js"
 import { Auth } from "../functions/user.js"
 
 import styles from './StylingModules/Login.module.css'
