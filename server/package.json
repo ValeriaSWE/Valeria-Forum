@@ -1,28 +1,31 @@
 {
-  "name": "va-forum-server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "restart": "pm2 restart server"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "bcrypt": "^5.0.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.2",
-    "express": "^4.18.1",
-    "FileReader": "^0.10.2",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.6.0",
-    "multer": "^1.4.5-lts.1"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.19"
-  }
+	"name": "va-forum-server",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.js",
+	"type": "module",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "nodemon server.js",
+		"start": "node server.js",
+		"restart": "pm2 restart server"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"bcrypt": "^5.0.1",
+		"cfx-api": "^1.0.122",
+		"cors": "^2.8.5",
+		"dotenv": "^16.0.2",
+		"easyimage": "^3.1.1",
+		"express": "^4.18.1",
+		"FileReader": "^0.10.2",
+		"imagemagick": "^0.1.3",
+		"jsonwebtoken": "^8.5.1",
+		"mongoose": "^6.6.0",
+		"multer": "^1.4.5-lts.1"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.19"
+	}
 }

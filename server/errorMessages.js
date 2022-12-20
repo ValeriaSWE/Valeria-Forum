@@ -13,3 +13,7 @@ export const IncorrectPassword = "Ogiltligt användarnamn eller lösenord."
 export const InvalidToken = "Autentiseringsfel. Försök igen."
 
 export const AuthLevel = "Inte tillräckliga roller."
+
+export const NotYourPost = "Inte ditt inlägg. Logga in på kontot som skapade inlägget och försök igen."
+
+export const PostDoesntExists = "Inlägget finns inte."

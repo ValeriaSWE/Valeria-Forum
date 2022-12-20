@@ -1,0 +1,616 @@
+/* @import url("../../index.css"); */
+
+.userProfile {
+	padding: 1rem 20px 0 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	background-color: var(--color-white-m);
+	border-radius: var(--border-radius);
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+
+	/* temporärt */
+	height: auto;
+}
+
+.userProfile .userInfo {
+	position: relative;
+	display: inline-flex;
+	width: 100%;
+	height: 8rem;
+}
+
+.userProfile .userInfo .userProfilePicture {
+	height: 100%;
+	border-radius: 50%;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.39);
+	background-color: white;
+	padding: 2px;
+	aspect-ratio: 1/1 !important;
+	object-fit: cover;
+	margin-right: 0.5rem;
+	font-size: small;
+	margin-right: 1rem;
+}
+
+.userProfile .userInfo .profileInformation {
+	display: flex;
+	flex-direction: column;
+}
+
+.userProfile .userInfo .profileInformation .UserProfileInfo {
+	height: 8rem;
+	display: inline-flex;
+	align-items: flex-end;
+	justify-content: flex-start;
+	width: 100%;
+}
+
+.userProfile
+	.userInfo
+	.profileInformation
+	.UserProfileInfo
+	.userProfileWrapper {
+	display: flex;
+	flex-direction: column;
+}
+
+.userProfile
+	.userInfo
+	.profileInformation
+	.UserProfileInfo
+	.userProfileWrapper
+	.profile {
+	font-weight: bolder;
+	color: var(--color-blue-m);
+	margin-bottom: -0.35rem; /* Lite sketchy sätt att göra det på men men*/
+}
+
+.userProfile
+	.userInfo
+	.profileInformation
+	.UserProfileInfo
+	.userProfileWrapper
+	.usernameAndRoles {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.userProfile
+	.userInfo
+	.profileInformation
+	.UserProfileInfo
+	.userProfileWrapper
+	.usernameAndRoles
+	.verified {
+	position: absolute;
+	left: 5.5rem;
+	bottom: 0rem;
+	font-size: 1.75rem;
+	color: var(--color-blue-m);
+	z-index: 9;
+	border-radius: 50%;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+	border: 1px solid var(--color-white-m);
+	background-color: var(--color-white-m);
+}
+
+.userProfile
+	.userInfo
+	.profileInformation
+	.UserProfileInfo
+	.userProfileWrapper
+	.usernameAndRoles
+	.userUsername {
+	font-size: 2rem;
+}
+
+.userProfile .userInfo .userStats {
+	height: 50%;
+	display: inline-flex;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+.userProfile .userInfo .userStats .stat {
+	font-weight: 400;
+	font-size: 1.1rem;
+	color: var(--color-blue-m);
+}
+
+.userProfile .userInfo .userStats .circleIcon {
+	font-size: 0.65rem;
+	color: var(--color-blue-m);
+}
+
+.userProfile .userInfo .editProfileBtn {
+	position: absolute;
+	top: 0;
+	right: 0px;
+	height: 2rem;
+	aspect-ratio: 2/3;
+	width: auto;
+	padding: 0.1rem 1rem;
+	background-color: var(--color-white-l);
+	border-radius: var(--border-radius);
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--color-blue-d);
+	font-weight: 700;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.userProfile .tabLinks {
+	/* temporärt */
+	padding-top: 3rem;
+
+	width: 100%;
+	height: 3rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.userProfile .tabLinks .tabLink {
+	width: fit-content;
+	padding: 0.5rem 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 2rem;
+	cursor: pointer;
+}
+.userProfile .tabLinks > #active {
+	border-bottom: 2px solid var(--color-blue-d);
+}
+.userProfile .tabLinks > #active:hover {
+	background-color: transparent;
+	color: inherit;
+	border-radius: 0;
+}
+
+.userProfile .tabLinks .tabLink:hover {
+	background-color: var(--color-blue-m-hover);
+	color: var(--color-white-l);
+	border-radius: var(--border-radius);
+}
+
+.editFeedIconButton {
+	display: flex;
+	width: fit-content;
+	padding: 2px 10px;
+	height: 80%;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--color-white-l);
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	gap: 1rem;
+	border: none;
+	cursor: pointer;
+}
+.editFeedIconButton > i,
+.editFeedIconButton > p {
+	color: var(--color-blue-d);
+}
+
+.postsControls,
+.commentsControls {
+	position: relative;
+	/* width: 80rem; */
+	height: calc(50px - 10px);
+	padding: 5px 20px;
+	margin-top: 1rem;
+	background-color: var(--color-white-m);
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	flex-direction: row;
+	gap: 2rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.postsControls > div,
+.commentsControls > div {
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+}
+
+.posts {
+	margin-top: 1rem;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+
+.comments {
+	margin-top: 1rem;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+
+.postComment {
+	--comment-width: 70rem;
+	--profile-picture: 3rem;
+	display: flex;
+	width: var(--post-width);
+	background-color: var(--color-white-m);
+	border-radius: var(--border-radius);
+	/* align-items: center; */
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+	padding-block: 0.5rem;
+	position: relative;
+	scale: 100%;
+}
+
+.postComment .feedTitle p {
+	margin-right: 1rem;
+	/* overflow: hidden; */
+	/* text-overflow: ellipsis; */
+	max-width: 37rem;
+	/* padding-block: 1.5rem; */
+	padding-block: 1rem;
+}
+
+.postComment .CommentCreator {
+	/* height: 5rem; */
+	max-width: 15rem;
+	padding: 2px 20px;
+	overflow: hidden;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 1rem;
+}
+
+.postComment .CommentCreator h2 {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.postComment .CommentCreator .creatorImg {
+	position: relative;
+	cursor: pointer;
+}
+
+.postComment .CommentCreator .creatorImg > img {
+	position: relative;
+	width: var(--profile-picture);
+	height: var(--profile-picture);
+	border-radius: 50%;
+}
+
+.postComment .CommentCreator .creatorImg .verified {
+	position: absolute;
+	right: -0.5rem;
+	bottom: -0.3rem;
+	border: 1px solid var(--color-white-m);
+	background-color: var(--color-white-m);
+	border-radius: 50%;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.postComment .commentStatitics {
+	margin-left: auto;
+	margin-right: 1rem;
+	max-width: 40%;
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.5rem;
+}
+.postComment .commentStatitics button {
+	display: flex;
+	flex-direction: row;
+	border-radius: var(--border-radius);
+	color: var(--color-blue-d);
+	align-items: center;
+	border: none;
+	padding: 5px 5px;
+	gap: 10px;
+	cursor: pointer;
+	background-color: var(--color-white-l);
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+}
+
+.respondsTo {
+	position: absolute;
+	top: -0.75rem;
+	left: 5rem;
+	font-style: italic;
+	color: var(--color-blue-l);
+	background-color: var(--color-white-l);
+	border-radius: var(--border-radius);
+	padding: 0.25rem 0.75rem;
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+	font-size: 0.85rem;
+	max-width: 25rem;
+	cursor: pointer;
+	display: flex;
+}
+
+.respondsTo p {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.respondsTo i {
+	font-size: inherit;
+	color: inherit;
+	margin-right: 0.5ch;
+}
+
+.loader {
+	background-color: var(--color-white-m);
+	border-radius: var(--border-radius);
+	padding: 2px 20px;
+	height: 4rem;
+	display: grid;
+	/* margin-top: 1rem; */
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.loaderPostContent {
+	/* width: 70%; */
+	flex-grow: 1;
+}
+
+.editModal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: auto;
+	width: 30rem;
+	border-radius: var(--border-radius) var(--border-radius) var(--border-radius)
+		var(--border-radius);
+
+	padding: 1.5rem;
+	font-size: 0.8rem;
+
+	background-color: var(--color-white-m);
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	gap: 2rem;
+
+	-moz-box-shadow: 0 0 3px #adadad;
+	-webkit-box-shadow: 0 0 3px #adadad;
+	box-shadow: 0 0 3px #adadad;
+	z-index: 999;
+}
+
+.editModal .title {
+	color: var(--color-blue-d);
+}
+
+.editModal .profileContent {
+	width: 100%;
+	display: inline-flex;
+} 
+
+.editModal .profileContent .profilePictureDiv{
+	position: relative;
+	min-width: 42.5%;
+	max-width: 42.5%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	user-select: none;
+
+}
+.editModal .profileContent .profilePictureDiv img {
+	width: 100%;
+	aspect-ratio: 1/1;
+	border-radius: 999px;
+	background-color: var(--color-white-l);
+	padding: 0.2rem;
+	box-shadow: 0px 1px 2px 1px rgb(0 0 0 / 20%);
+	transition: 0.3s ease-in-out;
+	cursor: pointer;
+}
+
+.editModal .profileContent .profilePictureDiv img:hover {
+	filter: blur(2px);
+}
+
+.editModal .profileContent .profilePictureDiv div {
+	position: relative;
+	padding: .5rem 0rem;
+	margin-top: 1rem;
+	width: 8rem;
+	height: 1rem;
+	border-radius: var(--border-radius);
+	gap: .5rem;
+	background-color: var(--color-white-l);
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+	cursor: pointer;
+}
+.editModal .profileContent .profilePictureDiv div  label {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	display: inline-flex;
+	align-items: center;
+	gap: .5rem;
+	cursor: pointer;
+	justify-content: center;
+}
+
+.editModal .profileContent .profilePictureDiv div  label h3 {
+	white-space: nowrap;
+}
+
+.editModal .profileContent .profilePictureDiv  input {
+	opacity: 0;
+}
+
+
+.editModal .profileContent .profileInformation {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	height: auto;
+	gap: .75rem;
+}
+
+.editModal .editModalSubmit{
+	display: inline-flex;
+	gap: 2rem;
+	height: auto;
+}
+
+.editModal .input {
+	font-size: 0.8rem;
+	font-weight: 100;
+	font-family: inherit;
+	color: var(--color-blue-d);
+}
+
+.editModal .input * {
+	color: var(--color-blue-d) !important;
+	font-family: inherit !important;
+	font-weight: 100;
+}
+
+.editModal .input > div::before {
+	border-color: var(--color-blue-d) !important;
+	color: var(--color-blue-d) !important;
+}
+
+/* .input input {
+	border: none;
+	outline: none;
+
+	width: 12rem;
+	height: 2rem;
+
+	border-bottom: 1px solid var(--color-blue-l);
+
+	transition: 180ms ease-in-out;
+
+	background-color: transparent;
+}
+
+.input input:focus {
+	border-bottom: 1px solid var(--color-blue-d);
+	transform: scale(1.02);
+} */
+
+.saveBtn {
+	width: 10rem;
+	height: 2rem;
+
+	border: none;
+	background-color: var(--color-blue-m);
+
+	border-radius: var(--border-radius);
+	color: white;
+
+	cursor: pointer;
+}
+
+.saveBtn:hover {
+	background-color: var(--color-blue-m-hover);
+}
+
+.cancelBtn {
+	width: 10rem;
+	height: 2rem;
+
+	border: none;
+	background-color: var(--color-red);
+
+	border-radius: var(--border-radius);
+	color: white;
+
+	cursor: pointer;
+}
+
+.cancelBtn:hover {
+	background-color: var(--color-red-hover);
+}
+
+.loginError {
+	color: rgb(255, 133, 133);
+	font-style: italic;
+}
+
+.loginFooter {
+	height: 1.5rem;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.growWrap {
+	display: grid;
+	width: 100%;
+	max-width: 100%;
+}
+
+/* https://codepen.io/chriscoyier/pen/XWKEVLy */
+.growWrap::after {
+	/* Note the weird space! Needed to preventy jumpy behavior */
+	content: attr(data-replicated-value) " ";
+
+	/* This is how textarea text behaves */
+	white-space: pre-wrap;
+
+	/* Hidden from view, clicks, and screen readers */
+	visibility: hidden;
+}
+.growWrap > textarea {
+	/* You could leave this, but after a user resizes, then it ruins the auto sizing */
+	resize: none;
+
+	/* Firefox shows scrollbar on growth, you can hide like this. */
+	overflow: hidden;
+}
+.growWrap > textarea,
+.growWrap::after {
+	/* Identical styling required!! */
+	background-color: var(--color-white-l);
+	outline: none;
+	border: none;
+	padding: 1rem;
+	border-radius: var(--border-radius);
+	box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.2);
+	/* resize: vertical; */
+	font-size: 1rem;
+	/* scrollbar-color: var(--color-blue-l) var(--color-white-l); */
+
+	/* Place on top of each other */
+	grid-area: 1 / 1 / 2 / 2;
+}

@@ -1,0 +1,103 @@
+.newPostContainer {
+	--post-width: 70vw;
+	--profile-picture: 3rem;
+
+	height: auto;
+	width: clamp(40rem, var(--post-width), 70rem);
+	border-radius: var(--border-radius);
+
+	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: column;
+
+	background-color: var(--color-white-m);
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+}
+
+.newPostForm {
+	width: 100%;
+	box-sizing: border-box;
+	overflow-x: hidden;
+	padding: 2rem 3rem;
+
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.pickedTags div,
+.notPickedTags div{
+	display: inline-flex;
+	gap: .5rem;
+}
+
+
+.newPostForm input {
+	background-color: transparent;
+	border: none;
+	outline: none;
+	padding: 0.25rem 0.5rem;
+}
+
+.newPostForm input.title {
+	font-size: 2rem;
+	font-weight: 700;
+	border-bottom: 0.125rem solid var(--color-blue-m);
+}
+
+.newPostForm .submit {
+	background-color: var(--color-blue-m);
+	outline: none;
+	border: none;
+	width: fit-content;
+	margin-left: auto;
+	padding: 0.75em 1em;
+	color: var(--color-white-l);
+	font-weight: 700;
+	font-size: 1rem;
+	border-radius: var(--border-radius);
+	cursor: pointer;
+}
+
+.infoText a {
+	text-decoration: underline;
+}
+
+.growWrap {
+	display: grid;
+}
+
+/* https://codepen.io/chriscoyier/pen/XWKEVLy */
+.growWrap::after {
+	/* Note the weird space! Needed to preventy jumpy behavior */
+	content: attr(data-replicated-value) " ";
+
+	/* This is how textarea text behaves */
+	white-space: pre-wrap;
+
+	/* Hidden from view, clicks, and screen readers */
+	visibility: hidden;
+}
+.growWrap > textarea {
+	/* You could leave this, but after a user resizes, then it ruins the auto sizing */
+	resize: none;
+
+	/* Firefox shows scrollbar on growth, you can hide like this. */
+	overflow: hidden;
+}
+.growWrap > textarea,
+.growWrap::after {
+	/* Identical styling required!! */
+	background-color: var(--color-white-l);
+	outline: none;
+	border: none;
+	padding: 1rem;
+	border-radius: var(--border-radius);
+	box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.2);
+	/* resize: vertical; */
+	font-size: 1rem;
+	/* scrollbar-color: var(--color-blue-l) var(--color-white-l); */
+
+	/* Place on top of each other */
+	grid-area: 1 / 1 / 2 / 2;
+}

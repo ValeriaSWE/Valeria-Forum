@@ -6,6 +6,7 @@ import Login from "./Login";
 import Register from "./Register";
 import styles from './StylingModules/Navbar.module.css';
 import $ from 'jquery';
+import { body } from "@suid/material/CssBaseline";
 
 export default function Navbar() {
   const [toggleResponsNav, setToggleResponsNav] = createSignal(false);
@@ -20,16 +21,11 @@ export default function Navbar() {
   let profilePicture = ''
   if (localStorage.getItem('profile') && CheckAuthLevel(JSON.parse(localStorage.getItem('profile'))?.token, 0)) {
     userData = JSON.parse(localStorage.getItem('profile'))?.result
-    profilePicture = `data:image/png;base64,${btoa(new Uint8Array(userData.profilePicture.data.data).reduce(function (data, byte) {
+    profilePicture = `data:image/png;base64,${btoa(new Uint8Array(userData.profilePicture?.data?.data).reduce(function (data, byte) {
       return data + String.fromCharCode(byte);
     }, ''))}`
     loggedIn = true
   }
-
-  // const tmp = String.fromCharCode( ... new Uint8Array(userData.profilePicture.data))
-
-
-  // console.log(profilePicture)
 
   function logout() {
     localStorage.removeItem('profile')
@@ -137,7 +133,7 @@ export default function Navbar() {
           <NavLink icon="Medlemmar" href="#"></NavLink>
           <NavLink icon="Trådar" href="#"></NavLink>
           <NavLink icon="Tickets" href="#"></NavLink>
-          <Show when={userData?.roleRank >= 10}>¨
+          <Show when={userData?.roleRank >= 10}>
             <NavLink icon="DEV" href="/dev"></NavLink>
           </Show>
         </ul>
@@ -196,11 +192,11 @@ export default function Navbar() {
                 props.leftIcon === "profilePicture" ?
                   <img src={profilePicture} class={styles.profilePicture}></img>
                 :
-                  props.leftIcon
+                  props.leftIcon 
               }
             </span>
             {props.label}
-            <span class={styles.iconright  + " material-icons"}  id="nav-item" style={"font-size: " + (props.rightIcon ? props.rightIcon[1] : null) + "rem; color: var(--color-white-l);"}>
+            <span class={styles.iconright + " material-icons"}  id="nav-item" style={"font-size: " + (props.rightIcon ? props.rightIcon[1] : null) + "rem; color: white;"}>
               {props.rightIcon ? props.rightIcon[0] : null }
             </span>
           </a>
@@ -209,83 +205,125 @@ export default function Navbar() {
 
 
       const DropDownMain = () => {
-        // console.log(JSON.parse(localStorage.getItem('profile'))?.result.username)
-        if (loggedIn) {
-          return(
-            <>          
-              <DropdownItem label={userData?.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={null}/>
-              <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={["arrow_forward_ios", 1.5]} action={SetMainDrop(!mainDrop())}/>
-              <Show when={userData?.roleRank >= 10}>
-                <DropdownItem label={"Admin Panel"} leftIcon={"admin_panel_settings"} rightIcon={null} action={null} href={"/admin"}/>
-              </Show>
-              <DropdownItem label={"Logga ut"} leftIcon={"logout"} rightIcon={null} action={logout()}/>
-            </>
-          );
-        } else {
-          const login = () => {
-            setShowLogin(true)
-            setShowRegister(false)
-          }
-          const register = () => {
-            setShowRegister(true)
-            setShowLogin(false)
-          }
-          return(
-            <>
-              <DropdownItem label={"Registrera Konto"} leftIcon={"person_add"} rightIcon={null} action={register()} />
-              <DropdownItem label={"Logga in"} leftIcon={"login"} rightIcon={null} action={login()} />
-            </>
-          );
-        }
+        return(
+          <>          
+            <DropdownItem label={userData?.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={setOpen(!open())} href={"/forum/user/" + userData?._id}/>
+            <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={["arrow_forward_ios", 1.5]} action={SetMainDrop(!mainDrop())}/>
+            <Show when={userData?.roleRank >= 10}>
+              <DropdownItem label={"Admin Panel"} leftIcon={"admin_panel_settings"} rightIcon={null} action={setOpen(!open())}href={"/admin"}/>
+            </Show>
+            <DropdownItem label={"Logga ut"} leftIcon={"logout"} rightIcon={null} action={logout()}/>
+          </>
+        );
       }
 
-      function toggleDarkmode() {
-        let lightModeOn = localStorage.getItem('lightmode') || "off"
-        
-        localStorage.setItem('lightmode', (lightModeOn == "off" ? "on": "off"))
+      const [darkModeToggleIcon, setDarkToggleModeIcon] = createSignal("toggle_off");
+      const [darkModeIcon, setDarkModeIcon] = createSignal("light_mode");
+      const [darkModeLabel, setdarkModeLabel] = createSignal("Ljust läge");
 
-        location.reload()
+  
+
+      function toggleDarkmode() {
+        let lightModeOn = localStorage.getItem('lightmode') == "off" ? "on" : "off" || "on"
+        
+        localStorage.setItem('lightmode', lightModeOn)
+        // UpdateIcon 
+        
+
+        $(':root').attr('data-dark-mode', (lightModeOn == "off" ? "true": "false") )
+        $('#dark-code-styling').attr('disabled', (lightModeOn == "on"))
+        $('#light-code-styling').attr('disabled', (lightModeOn == "off"))
+
+        setDarkToggleModeIcon((lightModeOn == "off" ? "toggle_on": "toggle_off"))
+        setDarkModeIcon((lightModeOn == "off" ? "dark_mode": "light_mode"))
+        setdarkModeLabel((lightModeOn == "off" ? "Mörkt läge": "Ljust läge"))
+        // location.reload()
       }
 
       const DropDownSettings = () => {
+
+        // Set to darkmode if darkmode is toggled in localstorage
+        if(localStorage.getItem('lightmode') == "off") {
+          setDarkToggleModeIcon("toggle_on");
+          setDarkModeIcon("dark_mode");
+          setdarkModeLabel("Mörkt läge");
+        }
+
         return(
           <>
           <DropdownItem label={"Gå Tillbaka"} leftIcon={"arrow_back"} rightIcon={null} action={SetMainDrop(!mainDrop())} />
-          <DropdownItem label={"Mörkt läge"} leftIcon={"light_mode"} rightIcon={[(localStorage.getItem('lightmode') == "on" ? 'toggle_off': "toggle_on"), 3]} action={toggleDarkmode()}/>
+          <DropdownItem label={darkModeLabel()} leftIcon={darkModeIcon()} rightIcon={[darkModeToggleIcon(), 3]} action={toggleDarkmode()}/>
           <DropdownItem label={"Inställning 2 "} leftIcon={"settings"} rightIcon={null} action={null} />
           <DropdownItem label={"Inställning 3... "} leftIcon={"settings"} rightIcon={null} action={null} />
           </>
         )
       }
+      
+      const DropDownLoggedOut = () => {
+        return(
+          <>          
+            <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={["arrow_forward_ios", 1.5]} action={SetMainDrop(!mainDrop())}/>
+            <DropdownItem label={"Logga in"} leftIcon={"login"} rightIcon={null} action={setShowLogin(!showLogin())} />
+            <DropdownItem label={"Registrera Konto"} leftIcon={"person_add"} rightIcon={null} action={setShowRegister(!showRegister())} />
+          </>
+        );
+      }
     
       return(
         <> 
         <div class={styles.dropdown} id="dropdown">
-         <Show 
-         when={mainDrop()}
-         fallback={<DropDownSettings />}
-         >
-          <DropDownMain />
+          <Show 
+          when={mainDrop()}
+          fallback={<DropDownSettings />}
+          >
+            <Show when={loggedIn} fallback={<DropDownLoggedOut />}>
+              <DropDownMain />
+            </Show>
          </Show>
         </div>
         </>
       );
     };
 
+    const NavItemLoggedOut = (props: {
+      leftIcon: string,
+      label: string,
+      action: any
+    }) => {
+      return(
+        <div class={styles.navbariconsLoggedOut + " " + "NavAccountBtn"} onClick={() => {
+          try{
+            props.action;
+           } catch (err) {
+            throw err;
+           };
+        }}>
+          <i class="material-icons">{props.leftIcon}</i>
+          <p>{props.label}</p>
+        </div>
+      )
+    }
+
     return(
       <>
-        <ul class={styles.navbaricons}>
-          <div>
-          <NavItem action={null} icon={"chat"} children={null} />
-          <NavItem action={null} icon={"notifications"} children={null}/>
-          <NavItem action={"profile"} icon={"profilePicture"}>
-            <DropdwonMenu></DropdwonMenu>
-          </NavItem>
-          </div>
-         
-        </ul>
+      <ul class={styles.navbaricons}>
+        <div>
+          {/* <Show when={loggedIn} fallback={
+            <> 
+              <NavItemLoggedOut leftIcon={"login"} label={"Logga in"} action={setShowLogin(!showLogin())} />
+              <NavItemLoggedOut leftIcon={"person_add"} label={"Registera konto"} action={setShowRegister(!showRegister())} />
+            </>
+          }> */}
+            {/* <NavItem action={null} icon={"chat"} children={null} /> 
+            <NavItem action={null} icon={"notifications"} children={null}/> */}
+            <NavItem action={"profile"} icon={"profilePicture"}>
+              <DropdwonMenu></DropdwonMenu>
+            </NavItem>
+          {/* </Show> */}
+        </div>
+      </ul>
       </>
-    );
+    )
   };
 
   function HamburgerIcon() {
@@ -324,11 +362,11 @@ export default function Navbar() {
       <>
       <div class={styles.responsiveDropDown} id="responsivenavmenu">
         <ul class={styles.resposniveListItems}>
-            <li><a href="#">Hem</a></li>
-            <li><a href="#">Om oss</a></li>
-            <li><a href="#">Produkter</a></li>
-            <li><a href="#">Kontakt</a></li>
-            <li><a href="#">UF</a></li>
+            <li><a href="#">....</a></li>
+            <li><a href="#">...s</a></li>
+            <li><a href="#">...</a></li>
+            <li><a href="#">...</a></li>
+            <li><a href="#">...</a></li>
         </ul>
     </div>
       </>
@@ -355,6 +393,18 @@ export default function Navbar() {
     checkWidth()
   });
 
+
+  // close modal on esc
+  $(document).ready(function() {
+    $("body").keydown(function(event) {
+        if(event.which == 27) {
+          if(showRegister()) { setShowRegister(!showRegister())}
+          if(showLogin()) { setShowLogin(!showLogin())}
+          document.querySelector("body").style.overflow = "auto";
+        }
+    });
+  });
+
   return(
     <>
       <Nav>
@@ -367,9 +417,11 @@ export default function Navbar() {
         <HamburgerIcon />
       </Nav>
       <Show when={showRegister()}>
+        {setShowLogin(false)}
         <Register cancel={() => setShowRegister(false)} />
       </Show>
       <Show when={showLogin()}>
+        {setShowRegister(false)}
         <Login cancel={() => setShowLogin(false)} />
       </Show>
     </>

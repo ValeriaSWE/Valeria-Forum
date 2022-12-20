@@ -1,110 +1,534 @@
-.post {
-	position: relative;
-	width: 80rem;
-	height: 60px;
-	padding: 2px 20px;
-	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
-	background-color: var(--color-white-m);
+a {
+	text-decoration: none;
+	color: unset;
+}
+
+.inheritPost {
+	--post-width: 70vw;
+	--profile-picture: 3rem;
+
+	height: auto;
+	width: clamp(40rem, var(--post-width), 70rem);
 	border-radius: var(--border-radius);
+
 	display: flex;
-	align-items: center;
+	flex-wrap: nowrap;
+	flex-direction: column;
+
+	background-color: var(--color-white-m);
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+}
+
+.inheritPost .postCreator {
+	height: 5rem;
+	width: cacl(100% - cacl(2 * var(--padding)));
+	padding: 2px 20px;
+
+	display: flex;
+	flex-direction: row;
 	justify-content: flex-start;
-	flex-direction: row;
-	margin-top: 1rem;
-}
-
-.postCreator {
-	display: flex;
-	flex-direction: row;
 	align-items: center;
-	max-width: calc(80rem * 0.25);
-	gap: 0.5rem;
-	min-width: 10rem;
-}
-
-.postCreator h2 {
-	max-width: 8rem;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-.creatorImg {
-	width: 2.125rem;
-	aspect-ratio: 1/1;
-	border-radius: 50%;
-	object-fit: cover;
-	margin-right: 0.5rem;
-}
-
-.creatorName {
-	font-size: 1.15rem;
-}
-
-.post .feedTitle {
-	max-width: 55%;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	text-align: start;
-
-	margin-top: 2px;
-	color: #1c1c1f;
-	font-size: large;
-}
-
-.post .feedTitle p {
-	padding-left: 1rem;
-	/* text-shadow: 0px 1px 0px #000; */
-	max-width: 100%;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-
-.showRole {
-	display: flex;
-	flex-direction: row;
-	width: fit-content;
-	gap: 10px;
-	/* margin-left: 0.5rem; */
-	align-items: center;
-}
-
-.verified {
-	position: absolute;
-	left: 2.65rem;
-	bottom: 0.6rem;
-	font-size: 1.125rem;
-	color: var(--color-blue-m);
-}
-
-.pinicon {
-	font-size: 1.1rem;
-	color: red;
-	transform: rotate(22.5deg);
-}
-
-.postStats {
-	position: absolute;
-	right: 20px;
-	display: flex;
-	max-width: 37.5%;
-	overflow: hidden;
-	flex-direction: row;
-	align-items: center;
-	justify-content: flex-end;
 	gap: 1rem;
 }
-.postStats button {
+
+.inheritPost .postCreator .creatorContainer {
+	display: inline-flex;
+	align-items: center;
+	gap: 1rem;
+	cursor: pointer;
+}
+.inheritPost .postCreator .creatorContainer h2 {
+	color: var(--color-blue-d);
+}
+
+.inheritPost .postCreator .creatorImg {
+	position: relative;
+	cursor: pointer;
+}
+.inheritPost .postCreator .creatorImg > img {
+	width: var(--profile-picture);
+	height: var(--profile-picture);
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.inheritPost .postCreator .creatorImg .verified {
+	position: absolute;
+	right: -0.5rem;
+	bottom: -0.3rem;
+	border: 1px solid var(--color-white-m);
+	background-color: var(--color-white-m);
+	border-radius: 50%;
+
+	color: var(--color-blue-m);
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.inheritPost .postCreator .postDate {
+	margin-left: auto;
+}
+
+.inheritPost .postCreator .editBtn {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.6rem 1rem;
+	border-radius: var(--border-radius);
+	border: none;
+	background-color: var(--color-blue-m);
+	color: var(--color-white-l);
+	box-shadow: 0px 1px 2px var(--color-blue-m);
+}
+
+.inheritPost .postContent {
+	width: 100%;
+	box-sizing: border-box;
+	overflow-x: hidden;
+	padding: 0.25rem 3rem;
+
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.pickedTags div,
+.notPickedTags div{
+	display: inline-flex;
+	gap: .5rem;
+}
+
+
+.inheritPost .postContent .title {
+	color: var(--color-blue-d);
+}
+.inheritPost .postContent .content div {
+	color: var(--color-blue-d);
+	font-size: 1.2rem;
+	line-height: 2rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.inheritPost .postContent .content div > * {
+	color: var(--color-blue-d);
+}
+
+/* * markdown styling start */
+.inheritPost .postContent .content a,
+.postComment .feedTitle a {
+	text-decoration: underline;
+	color: var(--color-blue-l);
+	font-weight: 700;
+}
+
+.inheritPost .postContent .content blockquote {
+	/* border-left: 0.25rem solid var(--color-blue-l); */
+	position: relative;
+	padding-left: 1.5rem;
+	background-color: var(--color-white-l);
+	border-radius: var(--border-radius);
+	/* overflow: hidden; */
+	box-shadow: 1px 1px 4px rgb(0 0 0 / 20%);
+}
+
+.inheritPost .postContent .content blockquote::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: var(--border-radius);
+	border-radius: 100rem;
+	background-color: var(--color-blue-l);
+	/* box-shadow: 1px 1px 4px rgb(0 0 0 / 20%); */
+}
+
+.inheritPost .postContent .content ul,
+.inheritPost .postContent .content ol {
+	padding-left: 1.5rem;
+}
+
+.inheritPost .postContent .content li::marker {
+	color: var(--color-blue-d);
+}
+
+.inheritPost .postContent .content img {
+	max-width: 100%;
+}
+
+.inheritPost .postContent .content code {
+	border-radius: var(--border-radius);
+	user-select: text;
+	background: var(--color-white-l);
+	box-shadow: inset 1px 1px 4px rgb(0 0 0 / 20%);
+}
+.inheritPost .postContent .content code * {
+	user-select: text;
+}
+/* * markdown styling end */
+
+.inheritPost .postContent .imageContainer {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	align-items: start;
+	max-height: 50vh;
+}
+
+.inheritPost .postContent img {
+	border-radius: var(--border-radius);
+	height: auto;
+	max-height: inherit;
+}
+
+.inheritPost .postStatistics {
+	width: var(--post-width);
+	height: 4rem;
+	background-color: transparent;
+	margin-left: 20px;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 1rem;
+}
+.inheritPost .postStatistics button {
+	display: flex;
+	flex-direction: row;
+	border-radius: var(--border-radius);
+	color: var(--color-blue-d);
+	align-items: center;
+	border: none;
+	padding: 5px 8px;
+	gap: 10px;
+	cursor: pointer;
+	background-color: var(--color-white-l);
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+}
+
+.tags {
+	display: flex;
+	gap: .5rem;
+}
+
+.tag {
+	border-radius: var(--border-radius);
+	padding: 0.35em 0.75em;
+	font-size: 0.75rem;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.newCommentForm {
+	position: relative;
+}
+
+.newCommentForm form {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: start;
+	margin-top: 1rem;
+	gap: 1rem;
+}
+.newCommentForm .newCommentInput {
+	height: 2rem;
+	width: 90%;
+	padding: 10px;
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+	border: none;
+	border-radius: var(--border-radius);
+	background-color: var(--color-white-m);
+	font-size: 1rem;
+	color: var(--color-blue-d);
+	outline: none;
+}
+
+.newCommentForm .postCommentButton {
+	width: 8rem;
+	border-radius: var(--border-radius);
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+	border: none;
+	background-color: var(--color-white-m);
+	color: var(--color-blue-d);
+
+	display: inline-flex;
+	gap: 0.75rem;
+	align-items: center;
+	justify-content: center;
+
+	cursor: pointer;
+}
+.newCommentForm .postCommentButton h4 {
+	font-size: 1rem;
+}
+
+.comments {
+	margin-top: 1rem;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+
+.postComment {
+	--comment-width: 70rem;
+	--profile-picture: 3rem;
+	display: flex;
+	width: var(--post-width);
+	background-color: var(--color-white-m);
+	border-radius: var(--border-radius);
+	/* align-items: center; */
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+	padding-block: 0.5rem;
+	position: relative;
+	scale: 100%;
+}
+
+.postComment .feedTitle p {
+	margin-right: 1rem;
+	/* overflow: hidden; */
+	/* text-overflow: ellipsis; */
+	max-width: 37rem;
+	/* padding-block: 1.5rem; */
+	padding-block: 1rem;
+}
+
+.postComment .CommentCreator {
+	/* height: 5rem; */
+	max-width: 15rem;
+	padding: 2px 20px;
+	overflow: hidden;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 1rem;
+}
+
+.postComment .CommentCreator h2 {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.postComment .CommentCreator .creatorImg {
+	position: relative;
+	cursor: pointer;
+}
+
+.postComment .CommentCreator .creatorImg > img {
+	position: relative;
+	width: var(--profile-picture);
+	height: var(--profile-picture);
+	border-radius: 50%;
+}
+
+.postComment .CommentCreator .creatorImg .verified {
+	position: absolute;
+	right: -0.5rem;
+	bottom: -0.3rem;
+	border: 1px solid var(--color-white-m);
+	background-color: var(--color-white-m);
+	border-radius: 50%;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.postComment .commentStatitics {
+	margin-left: auto;
+	margin-right: 1rem;
+	max-width: 40%;
+	position: relative;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	border: none;
-	border-radius: var(--border-radius);
-	background-color: var(--color-white-l);
-	padding: 5px 10px;
-	gap: 10px;
+	gap: 0.5rem;
 }
-.postStats button i {
-	font-size: medium;
+.postComment .commentStatitics button {
+	display: flex;
+	flex-direction: row;
+	border-radius: var(--border-radius);
+	color: var(--color-blue-d);
+	align-items: center;
+	border: none;
+	padding: 5px 5px;
+	gap: 10px;
+	cursor: pointer;
+	background-color: var(--color-white-l);
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+}
+
+.respondsTo {
+	position: absolute;
+	top: -0.75rem;
+	left: 5rem;
+	font-style: italic;
+	color: var(--color-blue-l);
+	background-color: var(--color-white-l);
+	border-radius: var(--border-radius);
+	padding: 0.25rem 0.75rem;
+	box-shadow: 0px 1px 2px rgb(0 0 0 / 20%);
+	font-size: 0.85rem;
+	max-width: 25rem;
+	cursor: pointer;
+	display: flex;
+}
+
+.respondsTo p {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.respondsTo i {
+	font-size: inherit;
+	color: inherit;
+	margin-right: 0.5ch;
+}
+
+.newCommentForm .respondsTo {
+	left: 1rem;
+}
+
+.newCommentForm .cancelResponse {
+	position: absolute;
+	right: -0.4rem;
+	top: -0.4rem;
+	background-color: var(--color-blue-d);
+	border: none;
+	color: var(--color-white-l);
+	width: 1.5em;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	font-weight: 900;
+	font-size: 0.75rem;
+	cursor: pointer;
+}
+
+.editFeedIconButton {
+	display: flex;
+	width: fit-content;
+	padding: 2px 10px;
+	height: 80%;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--color-white-l);
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	gap: 1rem;
+	border: none;
+	cursor: pointer;
+}
+.editFeedIconButton > i,
+.editFeedIconButton > p {
+	color: var(--color-blue-d);
+}
+
+.commentsControls {
+	position: relative;
+	/* width: 80rem; */
+	height: calc(50px - 10px);
+	padding: 5px 20px;
+	margin-top: 1rem;
+	background-color: var(--color-white-m);
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	flex-direction: row;
+	gap: 2rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.commentsControls > div {
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+}
+
+/* .postContent textarea {
+	background-color: var(--color-white-l);
+	outline: none;
+	border: none;
+	padding: 1rem;
+	border-radius: var(--border-radius);
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+	resize: vertical;
+	font-size: 1rem;
+	scrollbar-color: var(--color-blue-l) var(--color-white-l);
+} */
+
+.growWrap {
+	display: grid;
+}
+
+/* https://codepen.io/chriscoyier/pen/XWKEVLy */
+.growWrap::after {
+	/* Note the weird space! Needed to preventy jumpy behavior */
+	content: attr(data-replicated-value) " ";
+
+	/* This is how textarea text behaves */
+	white-space: pre-wrap;
+
+	/* Hidden from view, clicks, and screen readers */
+	visibility: hidden;
+}
+.growWrap > textarea {
+	/* You could leave this, but after a user resizes, then it ruins the auto sizing */
+	resize: none;
+
+	/* Firefox shows scrollbar on growth, you can hide like this. */
+	overflow: hidden;
+}
+.growWrap > textarea,
+.growWrap::after {
+	/* Identical styling required!! */
+	background-color: var(--color-white-l);
+	outline: none;
+	border: none;
+	padding: 1rem;
+	border-radius: var(--border-radius);
+	box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.2);
+	/* resize: vertical; */
+	font-size: 1rem;
+	/* scrollbar-color: var(--color-blue-l) var(--color-white-l); */
+
+	/* Place on top of each other */
+	grid-area: 1 / 1 / 2 / 2;
+}
+
+.postComment.highlight::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background-color: var(--color-blue-l);
+	z-index: 100;
+	pointer-events: none;
+	/* opacity: 0; */
+	animation: highlightPost 750ms linear forwards;
+}
+
+@keyframes highlightPost {
+	0% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 10%;
+	}
+	100% {
+		opacity: 0;
+	}
 }

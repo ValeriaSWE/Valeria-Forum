@@ -1,0 +1,8 @@
+.dev {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	margin-top: 5rem;
+	flex-direction: column;
+	gap: 5rem;
+}

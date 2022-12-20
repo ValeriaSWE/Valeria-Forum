@@ -6,7 +6,6 @@ import jwt_decode from "jwt-decode"
  */
 export const Auth = async (data) => {
     localStorage.setItem('profile', JSON.stringify({ ... data }))
-    // console.log(data)
 }
 
 /**
@@ -16,8 +15,16 @@ export const Auth = async (data) => {
  * @returns {bool} - if the user is permitted or not
  */
 export const CheckAuthLevel = (token: string, authLevel: number) => {
-    
+    if (!token) return false
+
     const data = jwt_decode(token)    
-    
-    return (data?.roleRank >= authLevel && data?.exp * 1000 >= Date.now())
+    let exp = false
+
+    try {
+        exp = data?.exp * 1000 >= Date.now()
+    } catch (error) {
+        console.error(error)
+    }
+
+    return (data?.roleRank >= authLevel && exp)
 }

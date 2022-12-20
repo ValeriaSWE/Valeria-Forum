@@ -1,15 +1,47 @@
-import { For, Show } from 'solid-js';
+import { createSignal, For, Show } from 'solid-js';
 import { LikePost } from '../api/posts';
 import styles from './StylingModules/PostPreview.module.css';
 import roleBadge from './StylingModules/RoleBadge.module.css'
+import SolidMarkdown from 'solid-markdown'
+import { timeSince } from './UserInfo';
+import PostTag from './PostTag';
 
-import $ from 'jquery';
 
 export default function PostPreview(props: {
-    minimal: boolean;
-    data: any;
-    // FÅR FIXAS SENARE :))
+    data: {
+        _id: string,
+        title: string,
+        creator: {
+            _id: string,
+            nicknames: [string],
+            username: string,
+            email: string,
+            role: string,
+            profilePicture: {
+                _id: string,
+                data: {
+                    type: string,
+                    data: any[]
+                },
+                contentType: string,
+            },
+            roleRank: 10
+        },
+        content: string,
+        images: string[],
+        comments: string[],
+        likes: string[],
+        pinned: boolean,
+        tags: any[],
+        createdAt: string,
+        lastEditedAt: string,
+        interactionCount: number,
+        isEdited: boolean,
+    };
 }) {
+    const [likedByUser, setLikedByUser] = createSignal(props.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
+    const [likeCount, setLikeCount] = createSignal(props.data.likes.length)
+
     const ShowRoleInPost = (props: {
         role: string;
     }) => {
@@ -29,32 +61,32 @@ export default function PostPreview(props: {
         likes: [string];
         comments: number;
         postId: string;
-        tags: [any]
+        tags: [any];
+        images: number;
     }) => {
         return (
             <>
             <div class={styles.postStatitics}>
+                <Show when={props.images > 0}>
+                    <span className="material-icons" class={styles.fileAttachments}>
+                        {props.images == 1 ? "photo" : "photo_library"}
+                    </span>
+                </Show>
                 <For each={props.tags}>
                     {(tag, i) => 
-                        <p class={styles.tag} style={"background-color: " + tag.color + ";"}>{tag.name}</p>
+                    <PostTag isButton={false} icon={null} func={null} color={tag.color} name={tag.name} />
                     }
                 </For>
                 <p class={styles.postDate}>{ timeSince(new Date(props.date).getTime()) } sedan</p>
                 <button onClick={() => {
-                    // console.log(JSON.parse(localStorage.getItem('profile'))?.token)
                         LikePost(props.postId, JSON.parse(localStorage.getItem('profile'))?.token).then((res) => {
-                            const { data } = res
-                            $('#likes-' + props.postId).html(data.likes.length)
-                            if (data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id)) {
-                                $('#likes-icon-' + props.postId).css('color', 'var(--color-blue-l)')
-                            } else {
-                                $('#likes-icon-' + props.postId).css('color', 'inherit')
-                            }
+                            setLikeCount(res.data.likes.length)
+                            setLikedByUser(res.data.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id))
                         })
                         
                     }}>
-                    <i class='material-icons' id={"likes-icon-" + props.postId} style={props.likes.includes(JSON.parse(localStorage.getItem('profile'))?.result._id) ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
-                    <span id={"likes-" + props.postId}>{props.likes.length}</span>
+                    <i class='material-icons' id={"likes-icon-" + props.postId} style={likedByUser() ? "color: var(--color-blue-l);" : "color: inherit;"}>thumb_up</i>
+                    <span id={"likes-" + props.postId}>{likeCount()}</span>
                 </button>
                 <form action={"/forum/post/" + props.postId}>
                     <button>
@@ -62,7 +94,7 @@ export default function PostPreview(props: {
                         {props.comments}
                     </button>
                 </form>  
-                <button><i class='material-icons'>more_horiz</i></button>  
+                {/* <button><i class='material-icons'>more_horiz</i></button>   */}
             </div>
             </>
         )
@@ -72,55 +104,52 @@ export default function PostPreview(props: {
         return data + String.fromCharCode(byte);
     }, ''))}`
 
-    // console.log(props.data.tags)
-
    return(
     <>
     <div class={styles.post} id={props.data._id}>
-        <div class={styles.postCreatorImg}>
+        <a href={"/forum/user/" + props.data.creator._id} class={styles.postCreatorImg}>
             <img class={styles.profileImg} src={profilePicture} alt="" />
             <h2 class={styles.creatorName}>{props.data.creator.username}</h2>
             <Show when={props.data.creator.roleRank >= 5}>
                 <ShowRoleInPost role={props.data.creator.role}/>
             </Show>
             {props.data.pinned ? <i class={styles.pinicon + " material-icons"}>push_pin</i> : <></>}
-        </div>
+        </a>
         <a class={styles.postTitle} href={`/forum/post/${props.data._id}`} style="text-decoration: none;">
             <h2>{props.data.title}</h2>
-            <p>{props.data.content}</p> 
+            <p>
+                <SolidMarkdown>{props.data.content}</SolidMarkdown>
+            </p> 
         </a>
-        <PostStatitics date={props.data.createdAt} likes={props.data.likes} comments={props.data.comments.length} postId={props.data._id} tags={props.data.tags}/>
+        <PostStatitics date={props.data.createdAt} likes={props.data.likes} comments={props.data.comments.length} postId={props.data._id} tags={props.data.tags} images={props.data.images.length} />
     </div>
     </>
    )
 }
-function timeSince(date) {
+// function timeSince(date) {
 
-    var seconds = Math.floor((new Date() - date) / 1000);
+//     var seconds = Math.floor((new Date() - date) / 1000);
   
-    var interval = seconds / 31536000;
+//     var interval = seconds / 31536000;
   
-    if (interval > 1) {
-      return Math.floor(interval) + " år";
-    }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return Math.floor(interval) + " månader";
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return Math.floor(interval) + " dagar";
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return Math.floor(interval) + " timmar";
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return Math.floor(interval) + " minuter";
-    }
-    return Math.floor(seconds) + " sekunder";
-  }
-//   var aDay = 24*60*60*1000;
-//   console.log(timeSince(new Date(Date.now()-aDay)));
-//   console.log(timeSince(new Date(Date.now()-aDay*2)));
+//     if (interval > 1) {
+//       return Math.floor(interval) + " år";
+//     }
+//     interval = seconds / 2592000;
+//     if (interval > 1) {
+//       return Math.floor(interval) + " månader";
+//     }
+//     interval = seconds / 86400;
+//     if (interval > 1) {
+//       return Math.floor(interval) + " dagar";
+//     }
+//     interval = seconds / 3600;
+//     if (interval > 1) {
+//       return Math.floor(interval) + " timmar";
+//     }
+//     interval = seconds / 60;
+//     if (interval > 1) {
+//       return Math.floor(interval) + " minuter";
+//     }
+//     return Math.floor(seconds) + " sekunder";
+// }

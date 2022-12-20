@@ -1,12 +1,7 @@
 /* @import url("../../index.css"); */
 
-* {
-	color: #23395e;
-	user-select: none;
-}
-
 .loginInnerContainer {
-	position: absolute;
+	position: fixed;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
@@ -33,15 +28,28 @@
 }
 
 .title {
-	color: #23395e;
+	color: var(--color-blue-d);
 }
 
 .input {
 	font-size: 0.8rem;
 	font-weight: 100;
+	font-family: inherit;
+	color: var(--color-blue-d);
 }
 
-.input input {
+.input * {
+	color: var(--color-blue-d) !important;
+	font-family: inherit !important;
+	font-weight: 100;
+}
+
+.input > div::before {
+	border-color: var(--color-blue-d) !important;
+	color: var(--color-blue-d) !important;
+}
+
+/* .input input {
 	border: none;
 	outline: none;
 
@@ -51,12 +59,14 @@
 	border-bottom: 1px solid var(--color-blue-l);
 
 	transition: 180ms ease-in-out;
+
+	background-color: transparent;
 }
 
 .input input:focus {
 	border-bottom: 1px solid var(--color-blue-d);
 	transform: scale(1.02);
-}
+} */
 
 .forgotPassword {
 	width: 12rem;

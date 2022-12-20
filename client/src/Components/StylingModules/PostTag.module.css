@@ -1,0 +1,28 @@
+.tag {
+	border-radius: var(--border-radius);
+	padding: 0.35em 0.75em;
+	font-size: 0.75rem;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+    display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: .5rem;
+}
+
+.tagButton {
+    padding: 0.35em 0.75em;
+	font-size: 0.75rem;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+    border-radius: var(--border-radius);
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: .5rem;
+    border: none;
+    cursor: pointer;
+}
+
+.tagButton i {
+	font-size: 1.3rem;
+}

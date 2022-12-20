@@ -1,6 +1,3 @@
-/* Importing All Style Modules */
-@import url("./Components/Components.css");
-
 /*FONT*/
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap");
 
@@ -12,38 +9,51 @@ body {
 :root {
 	--color-white-l: #fff;
 	--color-white-m: #f0f2f5;
-
+	
 	--color-blue-l: hsl(217, 43%, 52%); /* Ljus Accent */
 	--color-blue-m: hsl(216, 39%, 37%); /* Mellan Accent */
-	--color-blue-d: hsl(218, 46%, 25%); /* Mörk Accent */
-
+	--color-blue-d: rgb(34, 56, 93); /* Mörk Accent */
+	
 	--color-blue-l-hover: hsl(217, 43%, 47%); /* Ljus Accent Hover */
 	--color-blue-m-hover: hsl(216, 39%, 32%); /* Mellan Accent Hover*/
 	--color-blue-d-hover: hsl(218, 46%, 20%); /* Mörk Accent Hover*/
-
+	
 	--color-red: hsl(0, 50%, 50%);
 	--color-red-hover: hsl(0, 50%, 45%);
-
+	
 	--border-radius: 8px;
-
+	
 	/* font-size: 1.5vh; */
-
+	
 	background-color: var(--color-white-l);
+	scroll-behavior: smooth;
+	--loader-height: .25rem;
+}
+
+:root[data-dark-mode="true"] {
+	--color-white-l: #090d29; /* --color-blue-d */
+	--color-white-m: #0e1440;
+	--color-blue-l: hsl(216, 48%, 53%); /* --color-blue-d */
+	--color-blue-m: hsl(216, 48%, 73%); /* --color-blue-d */
+	--color-blue-d: white;
 }
 
 * {
 	margin: 0;
 	padding: 0;
 	font-family: "Nunito", sans-serif;
+	color: var(--color-blue-d);
 }
 
 .loader {
 	display: fixed;
 	background-color: transparent;
-	height: 3px;
-	position: fixed;
+	height: var(--loader-height);
+	border-radius: var(--border-radius);
+	/* position: fixed; */
 	top: 0;
-	width: 100vw;
+	/* width: 100vw; */
+	z-index: 9999;
 }
 
 .loader.active {
@@ -59,7 +69,7 @@ body {
 	);
 	background-size: 200%;
 	background-position-x: 100%;
-	animation: loader-scroll 3s ease infinite;
+	animation: loader-scroll 5s ease forwards;
 }
 
 @keyframes loader-scroll {

@@ -17,6 +17,8 @@ import NotAuthed from "./Pages/NotAuthed";
 import Admin from "./Pages/Admin";
 import Post from "./Components/Post";
 import $ from "jquery";
+import UserInfoPage from "./Pages/UserInfo";
+import NewPost from "./Components/NewPost";
 
 function delay(ms: number) {
   return new Promise<void>((res) => {
@@ -31,21 +33,21 @@ async function fetchSubTabData(id: string) {
   };
 }
 
-function SubTab() {
-  const params = useParams();
-  const [data] = createResource(() => params.id, fetchSubTabData);
-  if(params.id === "feed") {
-    return  <Show when={data()}>
-    <Feed></Feed>
-  </Show>
-  }
-  return (
-    <Show when={data()}>
-      <h2>{data()!.name}</h2>
-      <p>This content is loaded asynchronously</p>
-    </Show>
-  );
-}
+// function SubTab() {
+//   const params = useParams();
+//   const [data] = createResource(() => params.id, fetchSubTabData);
+//   if(params.id === "feed") {
+//     return  <Show when={data()}>
+//     <Feed></Feed>
+//   </Show>
+//   }
+//   return (
+//     <Show when={data()}>
+//       <h2>{data()!.name}</h2>
+//       <p>This content is loaded asynchronously</p>
+//     </Show>
+//   );
+// }
 
 function Loader() {
   const isRouting = useIsRouting();
@@ -83,7 +85,12 @@ const Root = () => {
       <Route path="/forum" component={Forum}>
         <Route path="/" element={<Navigate href="feed" />} />
         <Route path="/post/:id" element={OnePost} />
-        <Route path=":id" component={SubTab} />
+        <Route path="/user/:id" element={UserInfoPage} />
+        <Route path="/feed" element={Feed} />
+        <Route path="/newpost" component={ProtectedRoute(0)}>
+          <Route path="" element={NewPost} />
+        </Route>
+        {/* <Route path=":id" component={SubTab} /> */}
       </Route>
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
@@ -110,11 +117,10 @@ const App = () => {
 $(function () {
   const lightModeOn = localStorage.getItem('lightmode') || "on"
 
-  console.log(lightModeOn)
-
   if (lightModeOn == "off") {
-    $(':root').css('--color-white-l', "#000")
-    $(':root').css('--color-white-m', "#555")
+    $(':root').attr('data-dark-mode', 'true')
+    $('#dark-code-styling').removeAttr('disabled')
+    $('#light-code-styling').attr('disabled', true)
   }
 })
 

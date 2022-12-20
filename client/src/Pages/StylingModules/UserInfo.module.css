@@ -1,0 +1,5 @@
+@import url("../../index.css");
+
+.userInfoComponent {
+	width: clamp(50rem, 80vw, 70rem);
+}

@@ -1,3 +1,4 @@
+import TextField from "@suid/material/TextField"
 import $ from "jquery"
 import { LoginUserServerPost } from "../api/user.jsx"
 import { Auth } from "../functions/user.js"
@@ -8,12 +9,16 @@ import styles from './StylingModules/Login.module.css'
  * Creates the visual elements for a login form
 */
 export default function Login(props) {
+    const body = document.querySelector("body");
+    body.style.overflow = "hidden";
+
     function cancel() {
         props.cancel()
-        $('#login-email').val('')
-        $('#login-password').val('')
+        body.style.overflow = "auto";
+        // $('#login-email').val('')
+        // $('#login-password').val('')
     }
-
+  
     return(
         <>
             <form onSubmit={e => e.preventDefault()}>
@@ -21,15 +26,18 @@ export default function Login(props) {
 
                     <h2 class={styles.title}> LOGGA IN</h2>
 
-                    <div class={styles.input}>
+                    {/* <div class={styles.input}>
                         <p>Anändarnamn / Email:</p>
                         <input type="text" name="email" id="login-email" />
-                    </div>
+                        <TextField />
+                    </div> */}
+                    <TextField id="login-email" label="Användarnamn / Epost" variant="standard" required classes={{root: styles.input}} />
 
-                    <div class={styles.input}>
+                    {/* <div class={styles.input}>
                         <p>Lösenord:</p>
                         <input type="password" name="password" id="login-password"/>
-                    </div>
+                    </div> */}
+                    <TextField id="login-password" label="Lösenord" variant="standard" type="password" required classes={{root: styles.input}} />
 
                     <div class={styles.forgotPassword}>
                         <p></p>
@@ -77,7 +85,6 @@ const loginSubmit = async () => {
         window.location.reload();
     } catch (error) {
         $('#error').html(error.response.data.message)
-        // console.log(error.response.data.message)
     }
     
 }
