@@ -1,4 +1,5 @@
 var serverData = null
+import cfx from "cfx-api";
 
 export const ValeriaServerHook = (req, res) => {
     const {data, auth} = req.body
@@ -12,6 +13,15 @@ export const ValeriaServerHook = (req, res) => {
     return res.status(200).send()
 }
 
-export const GetValeriaServerData = (req, res) => {
+export const GetValeriaServerData = async (req, res) => {
+    const server = await cfx.fetchServer("3x4dk8") 
+
+    // console.log(server)
+
+    // if (serverData) {
+    //     serverData.players = server.data.clients
+    // }
+
+
     return res.status(200).send(serverData)
 }

@@ -74,7 +74,7 @@ export default function Register(props) {
                         <p class={styles.sublabel}>Minst åtta tecken.</p>
                     </div> */}
                     <TextField id="register-password" label="Lösenord" variant="standard" required classes={{root: styles.input}} type="password" error={passError()} helperText={passError() ? "Minst åtta tecken." : ""} onChange={(e) => {
-                        const regex = /[a-zA-Z0-9!@#$%^&*+_£-]{8,}/g
+                        const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/g // /[a-zA-Z0-9!@#$%^&*+_£-]{8,}/g
 
                         if (!e.target.value.match(regex) && !passError()) {
                             setPassError(true)

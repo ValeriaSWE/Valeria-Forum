@@ -14,6 +14,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"bcrypt": "^5.0.1",
+		"cfx-api": "^1.0.122",
 		"cors": "^2.8.5",
 		"dotenv": "^16.0.2",
 		"easyimage": "^3.1.1",
