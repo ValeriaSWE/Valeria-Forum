@@ -1,6 +1,6 @@
 import express from 'express'
 const app = express()   
-const port = 8000
+const port = process.env.PORT || 8000
 
 import mongoose from 'mongoose'
 import cors from 'cors'
