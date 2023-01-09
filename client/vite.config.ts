@@ -12,5 +12,6 @@ export default defineConfig(({command, mode }) => {
   },
   build: {
     target: 'esnext',
+    polyfillDynamicImport: false,
   },
 }});
