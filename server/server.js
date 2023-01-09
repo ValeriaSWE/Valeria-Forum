@@ -20,7 +20,8 @@ app.use(express.json())
 // app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }))
 app.use(cors());
 
-const uri = "mongodb+srv://vaforum:MQNai79kxLGmpUC1@cluster0.v3wgq.mongodb.net/?retryWrites=true&w=majority" // * Mongo Atlas
+const uri = process.env.DATABASE_URI
+// const uri = "mongodb+srv://vaforum:MQNai79kxLGmpUC1@cluster0.v3wgq.mongodb.net/?retryWrites=true&w=majority" // * Mongo Atlas
 // const uri = "mongodb://localhost:27017" // * Localhost
 
 async function connect() {

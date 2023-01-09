@@ -337,14 +337,14 @@ export default function Navbar() {
 
 
     return (
-        <div>
-            <h1>Valeria Server Status:</h1>
+        <div style="color: white">
+            <h1 style="color: white">Valeria Server Status:</h1>
             <Show when={serverData()} fallback={
-                <p>Servern är offline! : (</p>
+                <p style="color: white">Servern är offline! : (</p>
             }>
-                <p>Servern är online! : )</p>
-                <p>Spelare: {serverData().players}</p>
-                <p>Poliser: {serverData().cops}</p>
+                <p style="color: white">Servern är online! : )</p>
+                <p style="color: white">Spelare: {serverData().players}</p>
+                <p style="color: white">Poliser: {serverData().cops}</p>
             </Show>
         </div>
     )
