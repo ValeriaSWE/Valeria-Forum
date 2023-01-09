@@ -96,11 +96,10 @@ a {
 }
 
 .pickedTags div,
-.notPickedTags div{
+.notPickedTags div {
 	display: inline-flex;
-	gap: .5rem;
+	gap: 0.5rem;
 }
-
 
 .inheritPost .postContent .title {
 	color: var(--color-blue-d);
@@ -184,6 +183,7 @@ a {
 	border-radius: var(--border-radius);
 	height: auto;
 	max-height: inherit;
+	max-width: 100%;
 }
 
 .inheritPost .postStatistics {
@@ -214,7 +214,7 @@ a {
 
 .tags {
 	display: flex;
-	gap: .5rem;
+	gap: 0.5rem;
 }
 
 .tag {
