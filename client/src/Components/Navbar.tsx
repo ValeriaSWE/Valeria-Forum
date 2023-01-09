@@ -6,11 +6,11 @@ import Login from "./Login";
 import Register from "./Register";
 import styles from './StylingModules/Navbar.module.css';
 import $ from 'jquery';
-import { body } from "@suid/material/CssBaseline";
+import { GetValeriaData } from "../api/valeria";
 
 export default function Navbar() {
   const [toggleResponsNav, setToggleResponsNav] = createSignal(false);
-  const [open, setOpen] = createSignal(false);
+  const [open, setOpen] = createSignal("none");
   const [showRegister, setShowRegister] = createSignal(false);
   const [showLogin, setShowLogin] = createSignal(false);
 
@@ -50,25 +50,23 @@ export default function Navbar() {
 
 
 
-  window.onclick = function(e) {
-    if(open()) {
-      if(e.target.id == "dropdown" || e.target.id ==  "menu-item"|| e.target.id == "nav-item" || e.target.id == "profile") {
-      } else {
-        setOpen(!open())
-      }
-    }
-  }
+  // window.onclick = function(e) {
+  //   if(open()) {
+  //     if(e.target.id == "dropdown" || e.target.id ==  "menu-item"|| e.target.id == "nav-item" || e.target.id == "profile") {
+  //     } else {
+  //       setOpen(!open())
+  //     }
+  //   }
+  // }
 
   document.onkeydown = function(evt) {
     evt = evt || window.event;
     var isEscape = false;
     if ("key" in evt) {
-        isEscape = (evt.key === "Escape" || evt.key === "Esc");
-    } else {
-        isEscape = (evt.keyCode === 27);
+        isEscape = (evt.key === "Escape" || evt.key === "Esc" || evt.keyCode === 27);
     }
     if (isEscape && open()) {
-        setOpen(!open);
+        setOpen("none");
     } 
   };
 
@@ -99,7 +97,7 @@ export default function Navbar() {
 
     return(
       <>
-      <a class={styles.logo} href="/forum/">
+      <a class={styles.logo} href="/">
         <ImageLogo imgSrc="../../images/valeria.png" />
       </a>
       </>
@@ -133,9 +131,6 @@ export default function Navbar() {
           <NavLink icon="Medlemmar" href="#"></NavLink>
           <NavLink icon="Trådar" href="#"></NavLink>
           <NavLink icon="Tickets" href="#"></NavLink>
-          <Show when={userData?.roleRank >= 10}>
-            <NavLink icon="DEV" href="/dev"></NavLink>
-          </Show>
         </ul>
       </>
     );
@@ -144,13 +139,13 @@ export default function Navbar() {
   function NavBarIcons() {
     
     const NavItem = (props: {
-      children: JSX.Element; icon: JSX.Element; action: any;
+      children: JSX.Element; icon: JSX.Element; action: string; color?: "string";
     }) => {
       return(
         <>
         <li class={styles.navitem} >
-          <a href="#" class={styles.iconbutton + " material-icons"}  id={props.action} onclick={() => {
-            setOpen(!open())}}>
+          <a href="#" class={styles.iconbutton + " material-icons"} style={props.color ? "background-color: " + props.color : ""} id={props.action} onclick={() => {
+            setOpen(open() == props.action ? "none" : props.action)}}>
             {/* {props.icon} */}
             {
               props.icon === "profilePicture" ?
@@ -159,18 +154,20 @@ export default function Navbar() {
                 :
                   "person"
               :
-                props.icon
+                props.icon?.toString().endsWith(".png") ?
+                  <img src={"../../images/" + props.icon} class={styles.profilePicture}></img>
+                :
+                  props.icon
             }
           </a>
-          {open() && props.children}  
+          {open() == props.action && props.children}
         </li>
         </>
       );
     };
     
-    function DropdwonMenu() {
+    function ProfileDropdownMenu() {
       const [mainDrop, SetMainDrop] = createSignal(true);
-
 
       function DropdownItem(props: { 
         leftIcon: string;
@@ -207,10 +204,11 @@ export default function Navbar() {
       const DropDownMain = () => {
         return(
           <>          
-            <DropdownItem label={userData?.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={setOpen(!open())} href={"/forum/user/" + userData?._id}/>
+            <DropdownItem label={userData?.username || "Profil"} leftIcon={"profilePicture"} rightIcon={null} action={setOpen("none")} href={"/forum/user/" + userData?._id}/>
             <DropdownItem label={"Inställningar"} leftIcon={"settings"} rightIcon={["arrow_forward_ios", 1.5]} action={SetMainDrop(!mainDrop())}/>
             <Show when={userData?.roleRank >= 10}>
-              <DropdownItem label={"Admin Panel"} leftIcon={"admin_panel_settings"} rightIcon={null} action={setOpen(!open())}href={"/admin"}/>
+              <DropdownItem label={"Admin Panel"} leftIcon={"admin_panel_settings"} rightIcon={null} action={setOpen("none")}href={"/admin"}/>
+              <DropdownItem label={"DEV Panel"} leftIcon={"terminal"} rightIcon={null} action={setOpen("none")} href={"/dev"}/>
             </Show>
             <DropdownItem label={"Logga ut"} leftIcon={"logout"} rightIcon={null} action={logout()}/>
           </>
@@ -316,8 +314,13 @@ export default function Navbar() {
           }> */}
             {/* <NavItem action={null} icon={"chat"} children={null} /> 
             <NavItem action={null} icon={"notifications"} children={null}/> */}
+            <NavItem action={"status"} icon={"valeria.png"} color={serverData() ? "green" : "red"}>
+              <div class={styles.dropdown} id="dropdown">
+                <ValeriaServerInfo/>
+              </div>
+            </NavItem>
             <NavItem action={"profile"} icon={"profilePicture"}>
-              <DropdwonMenu></DropdwonMenu>
+              <ProfileDropdownMenu></ProfileDropdownMenu>
             </NavItem>
           {/* </Show> */}
         </div>
@@ -325,6 +328,27 @@ export default function Navbar() {
       </>
     )
   };
+
+  const [serverData, setServerData] = createSignal(null)
+  GetValeriaData().then(res => {
+      setServerData(res.data)
+  })
+  function ValeriaServerInfo() {
+
+
+    return (
+        <div>
+            <h1>Valeria Server Status:</h1>
+            <Show when={serverData()} fallback={
+                <p>Servern är offline! : (</p>
+            }>
+                <p>Servern är online! : )</p>
+                <p>Spelare: {serverData().players}</p>
+                <p>Poliser: {serverData().cops}</p>
+            </Show>
+        </div>
+    )
+}
 
   function HamburgerIcon() {
     // class={styles.menuicon + styles.checkbox3}
