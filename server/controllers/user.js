@@ -30,9 +30,9 @@ export const loginUser = async (req, res) => {
         let existingUser
         
         if (usernameIsEmail) {
-            existingUser = await User.findOne({ email: username }).populate('profilePicture')
+            existingUser = await User.findOne({ email: new RegExp(`^${username}$`, 'i') }).populate('profilePicture')
         } else {
-            existingUser = await User.findOne({ username: username }).populate('profilePicture')
+            existingUser = await User.findOne({ username: new RegExp(`^${username}$`, 'i') }).populate('profilePicture')
         }
 
         if(!existingUser) return res.status(404).json({ message: UserDoesntExists })
@@ -63,7 +63,7 @@ export const registerUser = async (req, res) => {
     const { email, password, passwordConfirm, username } = req.body
 
     try {
-        const existingUser = await User.findOne({ username: username })
+        const existingUser = await User.findOne({ username: new RegExp(`^${username}$`, 'i') })
 
         if(existingUser) return res.status(400).json({ message: UsernameTaken })
 
