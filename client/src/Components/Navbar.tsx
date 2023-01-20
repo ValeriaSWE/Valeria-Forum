@@ -129,7 +129,7 @@ export default function Navbar() {
           <NavLink icon="Flöde" href="/forum/feed"></NavLink>
           <NavLink icon="Ansökningar" href="#"></NavLink>
           <NavLink icon="Medlemmar" href="#"></NavLink>
-          <NavLink icon="Trådar" href="#"></NavLink>
+          <NavLink icon="Butik" href="https://valeria.tebex.io/"></NavLink>
           <NavLink icon="Tickets" href="#"></NavLink>
         </ul>
       </>
