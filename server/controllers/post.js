@@ -98,12 +98,20 @@ export const EditPost = async (req, res) => {
  */
 export const GetPosts = (pinned) => {
     return async (req, res) => {
-        let { sort, page, limit, tags } = req.query
+        let { sort, page, limit, tags, search } = req.query
         
         let matchFilter = { pinned: pinned }
 
         if (tags && JSON.parse(tags).length > 0) {
             matchFilter.tags = {$in: JSON.parse(tags).map(t => new mongoose.Types.ObjectId(t))}
+        }
+
+        // console.log(req.query)
+        if (search) {
+            // console.log(search)
+            matchFilter.$text = { $search: search }
+            // matchFilter.content.$text = { $search: search }
+            // console.log(matchFilter)
         }
 
         let sortPort = {}
@@ -216,9 +224,13 @@ export const GetPost = async (req, res) => {
 export const GetImage = async (req, res) => {
     const { id } = req.params
 
-    const image = await Image.findById(id)
+    try {
+        const image = await Image.findById(id)
+        res.status(200).send(image)
+    } catch (error) {
+        res.status(500).send({message: SomethingWrong, error})
+    }
 
-    res.status(200).send(image)
 }
 
 export const NewComment = async (req, res) => {

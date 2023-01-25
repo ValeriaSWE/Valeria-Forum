@@ -1,7 +1,7 @@
 /* Importing the necessary modules from the SolidJS library. */
-import { Show, createContext, createSignal, useContext, children, createResource } from "solid-js";
+import { Show } from "solid-js";
 import { render } from "solid-js/web";
-import {Router,Routes, Route, Link, useRoutes, Outlet, RouteDefinition, useParams, Navigate, useIsRouting} from "solid-app-router";
+import {Router,Routes, Route, Outlet, useParams, Navigate, useIsRouting} from "solid-app-router";
 import './index.css';
 
 // Importing pages
@@ -19,35 +19,6 @@ import Post from "./Components/Post";
 import $ from "jquery";
 import UserInfoPage from "./Pages/UserInfo";
 import NewPost from "./Components/NewPost";
-
-function delay(ms: number) {
-  return new Promise<void>((res) => {
-    setTimeout(() => res(), ms);
-  });
-}
-
-async function fetchSubTabData(id: string) {
-  return {
-    id,
-    name: `SubTab ${id.toUpperCase()}`
-  };
-}
-
-// function SubTab() {
-//   const params = useParams();
-//   const [data] = createResource(() => params.id, fetchSubTabData);
-//   if(params.id === "feed") {
-//     return  <Show when={data()}>
-//     <Feed></Feed>
-//   </Show>
-//   }
-//   return (
-//     <Show when={data()}>
-//       <h2>{data()!.name}</h2>
-//       <p>This content is loaded asynchronously</p>
-//     </Show>
-//   );
-// }
 
 function Loader() {
   const isRouting = useIsRouting();
@@ -76,9 +47,7 @@ function OnePost() {
   )
 }
 
-/**
- * Create the Routes
- */
+/* Create the Routes */
 const Root = () => {
   return (
     <><Loader /><Routes>

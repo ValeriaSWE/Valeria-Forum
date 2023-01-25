@@ -3,13 +3,11 @@ import { createSignal, For, Show } from 'solid-js';
 import { createStore } from 'solid-js/store'
 import PostPreview from './PostPreview';
 import { GetAllPosts, GetAllTags, GetPinnedPosts } from '../api/posts';
-// import $ from "jquery"
 import { useLocation } from 'solid-app-router';
 import Skeleton from "@suid/material/Skeleton"
 import PostTag from './PostTag';
 
 function Loader() {
-  // const isRouting = useIsRouting();
   return (
     <div class={styles.loader}>
       <Skeleton height="2.5rem" variant='circular' style="aspect-ratio: 1/1;" />
@@ -23,7 +21,6 @@ function Loader() {
       <Skeleton variant='rectangular' width="3.25rem" height="2rem" style="border-radius: var(--border-radius)"/>
     </div>
   )
-  // return <div data-component="loader" class="loader active" />;
 }
 
 export default function Feed() {
@@ -34,8 +31,6 @@ export default function Feed() {
   const [pinnedPosts, setPinnedPosts] = createSignal([])
   const search = useLocation().search
   const searchParams = new URLSearchParams(search)
-
-  // const [sortParams, setSortParams] = createStore({sort: (searchParams.get('sort') || 'createdAt'), page: parseInt(searchParams.get('page')|| "1"), limit: parseInt(searchParams.get('limit')|| "10")})
   
   const [sort, setSort] = createSignal(searchParams.get('sort') || 'createdAt')
   const [page, setPage] = createSignal(parseInt(searchParams.get('page')|| "1"))
