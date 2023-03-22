@@ -675,6 +675,34 @@ export default function UserInfo() {
         )
     }
 
+    function UserAbout() {
+        // return(
+        //     <>
+        //     <div class={styles.userAbout}>
+        //         <div class={styles.textContainer}>
+        //             <h1>Om {user.username}</h1>
+        //             {
+        //                 user.about ? <p>{user.about}</p> : <p>{user.username} har ingen besrkivning....</p>
+        //             }
+        //         </div>
+        //     </div>
+        //     </>
+        // )
+        return(
+            <>
+            <div class={styles.userAbout}>
+                <div class={styles.textContainer}>
+                    <h1>Om isaach</h1>
+                    {/* {
+                        user.about ? <p>{user.about}</p> : <p>{user.username} har ingen besrkivning....</p>
+                    } */}
+                    <p>Beskrivning om mig!</p>
+                </div>
+            </div>
+            </>
+        )
+    }
+
     return(
         <>
             {/* <Show when={user.username != 'username'} fallback={Loader}> */}
@@ -706,7 +734,7 @@ export default function UserInfo() {
                             <CommentPageSelector />
                         </Match>
                         <Match when={activeTab() === 'about'}>
-                            {user.about}
+                            <UserAbout />
                         </Match>
                     </Switch>
                 </div>
